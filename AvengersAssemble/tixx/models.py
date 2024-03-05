@@ -40,5 +40,20 @@ class User():
         
     def makePayment():
 
-    
+class ticket():
+    ticketid = models.IntegerField()
+    eventid = models.models.CharField(max_length=50)
+    seatnum = models.CharField(max_length=50)
+    QRCode = models.CharField(max_length=50)
+    price = models.IntegerField()
+    ticketType = models.CharField(max_length=50)
+
+    def getUser():
+
+    def getEvent():
+
+    def getSeat():
+
+    def getString():
+
     
