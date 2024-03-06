@@ -18,9 +18,6 @@ class User():
 
     def __str__(self):
         return self.username
-
-
-
 class ticket():
     ticketid = models.IntegerField()
     eventid = models.models.CharField(max_length=50)
