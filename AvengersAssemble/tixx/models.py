@@ -20,7 +20,7 @@ class User():
         return self.username
 class ticket():
     ticketid = models.IntegerField()
-    eventid = models.models.CharField(max_length=50)
+    eventid = models.CharField(max_length=50)
     seatnum = models.CharField(max_length=50)
     QRCode = models.CharField(max_length=50)
     price = models.IntegerField()

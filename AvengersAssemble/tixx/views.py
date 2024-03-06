@@ -9,3 +9,6 @@ def home(request):
 def events(request):
     events = Event.objects.all()
     return render(request, 'events.html', {'events': events})
+
+def register(request):
+    return render(request, "register.html")
