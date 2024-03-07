@@ -26,3 +26,6 @@ def checkout(request):
 
 def filtered_events(request):
     return render(request, "filtered_events.html")
+
+def figure(request):
+    return render(request, "figure.html")
