@@ -8,7 +8,7 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
-
+        
     # Browser Test for Login
     def test_login_view(self):
         response = self.client.get(reverse('login'))
@@ -50,3 +50,10 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('filtered_events'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'filtered_events.html')
+                
+    # Browser Test for Figure
+    def test_figure(self):
+        response = self.client.get(reverse('figure'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'figure.html')
+
