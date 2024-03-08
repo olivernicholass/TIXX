@@ -10,4 +10,3 @@ Welcome to the Avengers Assemble team! Here's a list of our awesome members:
 
 Team Agreement: [📝](https://github.com/olivernicholass/Avengers-Assemble/blob/main/Avengers%20Assemble%20-%20Team%20Agreement.pdf)
 
-
