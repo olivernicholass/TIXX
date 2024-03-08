@@ -55,3 +55,12 @@ class Review(models.Model):
 
     def __str__(self):
         return self.reviewTitle  # Needed to return correct attribute
+
+class Seat(models.Model):
+    seatId = models.AutoField(primary_key=True)
+    ticketId = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True)
+    seatNumber = models.IntegerField()
+
+    def __str__(self):
+        return self.seatNumber 
+
