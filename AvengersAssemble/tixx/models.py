@@ -1,5 +1,7 @@
 from django.db import models
 
+# Create your models here
+
 class Event(models.Model):
     eventName = models.CharField(max_length=100)
     eventDate = models.DateField()
