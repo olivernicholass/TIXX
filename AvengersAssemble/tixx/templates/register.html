@@ -1,0 +1,50 @@
+{% extends "base.html" %} 
+{% load static %}
+
+
+{% block title%} Register Page {% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/register-styles.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<form action="POST">
+    <p>
+        <label for="email">Enter Email:</label>
+        <input id="email" type="text" name="email">
+    </p>
+    <p>
+        <label for="phone">Enter Phone:</label>
+        <input id="phone" type="text" name="phone">
+    </p>
+    <p>
+        <label for="address">Enter address:</label>
+        <input id="address" type="text" name="address">
+    </p>
+    <p>
+        <label for="username">Enter username:</label>
+        <input id="username" type="text" name="username">
+    </p>
+
+    <p>
+        <label for="password">Enter password:</label>
+        <input id="password" type="text" name="password"/>
+    </p>
+    <p>
+        <label for="confirm-password">Confirm password:</label>
+        <input id="confirm-password" type="text" name="confirm password">
+    </p>
+
+
+
+    <input type="submit" value="Submit">
+
+</form>
+
+
+
+{% endblock %}
+
+

@@ -6,6 +6,10 @@ from django.shortcuts import render, HttpResponse
 def home(request):
     return render(request, "home.html")
 
+def events(request):
+    events = Event.objects.all()
+    return render(request, 'events.html', {'events': events})
+
 def login(request):
     return render(request, "login.html")
 
