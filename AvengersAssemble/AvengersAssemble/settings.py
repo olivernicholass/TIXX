@@ -17,6 +17,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tixx',
+    "crispy_forms",
+    'register.apps.RegisterConfig',
 ]
 
 MIDDLEWARE = [
