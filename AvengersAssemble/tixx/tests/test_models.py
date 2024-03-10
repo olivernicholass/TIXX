@@ -1,0 +1,60 @@
+from django.test import TestCase
+from tixx.models import Event, Ticket, User, Payment, Review
+
+# Tests for each model
+
+class ModelTestCase(TestCase):
+    def setUp(self):
+        self.event = Event.objects.create(
+            eventName="Test Event",
+            eventDate="2024-03-10",
+            eventLocation="Test Location",
+            eventDescription="Test Description",
+            eventStatus="Upcoming",
+            eventGenre="Test Genre"
+        )
+        self.ticket = Ticket.objects.create(
+            eventId=self.event,
+            seatNum="A1",
+            ticketQR="test_qr_code",
+            ticketPrice=50,
+            ticketType="Regular"
+        )
+        self.user = User.objects.create(
+            userId="test_user",
+            username="Test User",
+            userEmail="test@example.com",
+            userPhoneNumber="1234567890",
+            userAddress="Test Address"
+        )
+        self.payment = Payment.objects.create(
+            paymentId="test_payment",
+            userId=self.user,
+            paymentAmount=100.00,
+            paymentMethod="Credit Card",
+            paymentDate="2024-03-09",
+            transactionId="1234567890"
+        )
+        self.review = Review.objects.create(
+            reviewRating=5,
+            reviewTitle="Great Event",
+            reviewText="Drake was great!!!",
+            eventID=self.event,
+            reviewDate="2024-03-09"
+        )
+
+    def test_event_str(self):
+        self.assertEqual(str(self.event), "Test Event")
+
+    def test_ticket_str(self):
+        self.assertEqual(str(self.ticket), "A1")
+
+    def test_user_str(self):
+        self.assertEqual(str(self.user), "Test User")
+
+    def test_payment_str(self):
+        self.assertEqual(str(self.payment), "test_payment")
+
+    def test_review_str(self):
+        self.assertEqual(str(self.review), "Great Event")
+
