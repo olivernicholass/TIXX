@@ -1,5 +1,9 @@
 from django.shortcuts import render, HttpResponse
-
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import admin
+from django.urls import path, include
+from tixx import views as v
 
 # Create your views here.
 
@@ -16,8 +20,9 @@ def login(request):
 def profile(request):
     return render(request, "profile.html")
 
-def register(request):
-    return render(request, "register.html")
+def register(response):
+    form = UserCreationForm()
+    return render(response, "register.html", {"form":form})
 
 def search_results(request):
     return render(request, "search_results.html")
