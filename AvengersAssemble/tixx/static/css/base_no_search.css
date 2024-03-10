@@ -1,0 +1,102 @@
+.nav-item {
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-item:hover {
+    transform: scale(1.1);
+  }
+  
+  .nav-link.concerts:hover::after {
+    display: none;
+  }
+  
+  
+  .nav-link.concerts::after {
+    display: none !important;
+  }
+  
+  .nav-link.sports::after {
+    display: none !important;
+  }
+  
+  .dropdown-menu .container .row .col-sm-4 {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dropdown-menu .container .row .col-sm-4 .dropdown-item {
+    margin-bottom: 5px;
+  }
+  
+  .nav-link.concerts,
+  .nav-link.sports,
+  .nav-link.contact,
+  .nav-link.login-register {
+    color: #28282B !important; 
+  }
+  
+  .navbar-nav {
+    margin-top: 15px;
+    color: black;
+  }
+  
+  .nav-link {
+    color: black;
+  }
+  
+  .nav-item {
+    font-family: 'arial-bold', sans-serif;
+    font-size: larger;
+  }
+  
+  
+  .col-sm-4 {
+    padding: 10px;
+    margin-right: 50px;
+  }
+  
+  .long-search-input {
+    width: 400px;
+  }
+  
+  .horizontal-space {
+    height: 35px;
+    width: auto;
+    background-color: #2541B2;
+  }
+  
+  .navbar {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #FFFFFF !important;
+  }
+  
+  .navbar-custom-search {
+    border: none !important;
+  }
+  
+  .navbar-brand img {
+    max-width: 100px;
+    height: auto;
+    padding: 0;
+    margin: 10px;
+    margin-left:20px;
+  }
+  
+  .nav-link img {
+    width: 30px;
+  }
+  
+  .ml-auto,
+  .mx-auto {
+    margin-left: 0 !important;
+  }
+  
+  #image-cycler {
+    padding: 0;
+    margin: 0;
+  }
+
+  .search-input::placeholder {
+    font-size: 16px;
+  }
+  

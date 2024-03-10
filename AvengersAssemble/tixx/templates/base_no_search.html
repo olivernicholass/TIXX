@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/base_no_search.css' %}">
     <title>{% block title %}Tixx{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
     <div class="horizontal-space"></div> 
@@ -52,19 +52,19 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-sm-4"> 
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Football' %}">Football</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Basketball' %}">Basketball</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='football' %}">Football</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='basketball' %}">Basketball</a>
                                     <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='tennis' %}">Tennis</a>
                                 </div>
                                 <div class="col-sm-4"> 
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Baseball' %}">Baseball</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Soccer' %}">Soccer</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Golf' %}">Golf</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='baseball' %}">Baseball</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='soccer' %}">Soccer</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='golf' %}">Golf</a>
                                 </div>
                                 <div class="col-sm-4">
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Hockey' %}">Hockey</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Cricket' %}">Cricket</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Rugby' %}">Rugby</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='hockey' %}">Hockey</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='cricket' %}">Cricket</a>
+                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='rugby' %}">Rugby</a>
                                 </div>
                             </div>
                         </div>
@@ -74,13 +74,8 @@
                     <a class="nav-link contact" href="#">Contact</a>
                 </li>
             </ul>
+
             <ul class="navbar-nav ml-auto login-register">
-                <li class="nav-item">
-                    <div class="navbar-custom-search">
-                        <input type="text" class="search-input" placeholder="  Search by Event, Figure or Artist">
-                        <img src="{% static 'icons/search.png' %}" alt="Search Icon" class="search-icon">
-                    </div>
-                </li>
                 <li class="nav-item" style="margin-left: 30px;">
                     <a class="nav-link login-register" href="{% url 'login' %}">
                         <img src="{% static 'icons/user.png' %}" class="icon">
@@ -88,7 +83,8 @@
                     </a>
                 </li>
             </ul>
-        </div>   
+        </div>
+        
     </nav>
 
     <!-- Extend this block so the navbar is inherited for the new pages -->
