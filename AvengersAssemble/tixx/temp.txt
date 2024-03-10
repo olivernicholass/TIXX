@@ -1,8 +1,0 @@
-    def getReviews():
-        with connection.cursor() as curson:
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-
-        #sql to return:
-        #SELECT * FROM reviews WHERE userid=(this.userid)
-        
