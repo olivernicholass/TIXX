@@ -21,7 +21,12 @@ def profile(request):
     return render(request, "profile.html")
 
 def register(response):
-    form = UserCreationForm()
+    if response.method == "POST":
+        form = UserCreationForm(response.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserCreationForm()
     return render(response, "register.html", {"form":form})
 
 def search_results(request):
