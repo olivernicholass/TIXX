@@ -131,24 +131,7 @@
   margin: 0;
 }
 
-#carouselExampleIndicators {
-  width: 100%;
-}
-
 .search-input::placeholder {
   font-size: 16px;
 }
 
-.carousel-item {
-  width: 100%; 
-}
-
-.carousel-image {
-  width: 100%; 
-  height: auto; 
-}
-
-.carousel-inner {
-  position: relative;
-  width: 100%; 
-}

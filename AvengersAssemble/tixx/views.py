@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 # Create your views here.
 
 def home(request):
-    return render(request, "home.html")
+    events = Event.objects.all()  
+    return render(request, "home.html", {'events': events})
 
 def login(request):
     return render(request, "login.html")

@@ -10,6 +10,7 @@ class Event(models.Model):
     eventDescription = models.CharField(max_length=250)
     eventStatus = models.CharField(max_length=10)
     eventGenre = models.CharField(max_length=100)  
+    eventImage = models.ImageField(upload_to='event_images/', null=True, blank=True)  # Added ability to upload images.
 
     def __str__(self):
         return self.eventName
