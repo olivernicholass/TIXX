@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Tixx - Home
+{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/filtered_events.css' %}">
+
+<!-- TEST FUNCTIONALITY FOR EVENTS SORTED BY GENRE -->
+<div class="content-container">
+    <h1>Events by Genre</h1>
+    <ul>
+        {% for event in filtered_events %}
+            <li>
+                <h2>{{ event.eventName }}</h2>
+                <p>Genre: {{ event.eventGenre }}</p>
+                <p>Date: {{ event.eventDate}}</p>
+                <p>Description: {{ event.eventDescription }}</p>
+            </li>
+        {% empty %}
+            <li>No events found.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from tixx.models import Event
 
 class ViewTests(TestCase):
     
@@ -44,16 +45,42 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('checkout'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
-
-    # Browser Test for Filtered Events
-    def test_filtered_events_view(self):
-        response = self.client.get(reverse('filtered_events'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'filtered_events.html')
                 
     # Browser Test for Figure
     def test_figure(self):
         response = self.client.get(reverse('figure'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'figure.html')
+        
+# Filtered Events Test 
 
+class FilteredEventsTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.event1 = Event.objects.create(
+            eventName="Event 1",
+            eventDate="2024-03-10",
+            eventId=1,
+            eventLocation="Location 1",
+            eventDescription="Description 1",
+            eventStatus="Upcoming",
+            eventGenre="Genre 1"
+        )
+        self.event2 = Event.objects.create(
+            eventName="Event 2",
+            eventDate="2024-03-11",
+            eventId=2,
+            eventLocation="Location 2",
+            eventDescription="Description 2",
+            eventStatus="Upcoming",
+            eventGenre="Genre 2"
+        )
+
+    def test_filtered_events_view(self):
+        url = reverse('filtered_events', kwargs={'eventGenre': 'Genre 1'})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'filtered_events.html')
+        filtered_events = response.context['filtered_events']
+        self.assertEqual(len(filtered_events), 1)
+        self.assertEqual(filtered_events[0], self.event1)
