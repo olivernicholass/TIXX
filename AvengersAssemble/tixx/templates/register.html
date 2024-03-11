@@ -1,0 +1,21 @@
+{% extends "base.html" %} 
+{% load static %}
+
+
+{% block title%} Register Page {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/register-styles.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<form method="POST" class="form-group">
+	{% csrf_token %}
+	{{ form|crispy }}
+	<button type="submit" class="btn btn-success">Register</button>
+    </form>
+{% endblock %}
+
+

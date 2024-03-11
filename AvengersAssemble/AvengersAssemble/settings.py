@@ -5,6 +5,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-tc*_7_+8o3y0h3(84xc-x_1lu(cwgqiusgdp&vre@f!l9@3z4h'
 
+CRISPY_TEMPLATE_PACK='bootstrap4'
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -17,6 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tixx',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
