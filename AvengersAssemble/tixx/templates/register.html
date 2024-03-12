@@ -1,21 +1,50 @@
-{% extends "base.html" %} 
 {% load static %}
 
-
-{% block title%} Register Page {% endblock %}
+<head>
+	<title>
+		{% block title%} Tixx - Register {% endblock %}
+	</title>
 {% load crispy_forms_tags %}
-
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'css/register-styles.css' %}">
-{% endblock %}
+</head>
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <div class="main">
+            <div class="logo">
+                <img src="{% static 'images/tixx.png' %}">
+            </div>
 
-<form method="POST" class="form-group">
-	{% csrf_token %}
-	{{ form|crispy }}
-	<button type="submit" class="btn btn-success">Register</button>
-    </form>
+            <div class="register">
+                    <div class="reg-header">
+                        Sign Up
+                    </div>
+                    <div class="form-container">
+                    <form class="form">
+                        <div class="input-field">
+                            <input type="text" name="email" id="email" class="input-box-email" placeholder="Email" required/>
+    
+                        </div>
+                        <div class="input-field">
+                            <input type="text" name="username" id="user" class="input-box-user" placeholder="Username" required/>
+    
+                        </div>
+                        <div class="input-field">
+                            <input type="text" name="password" id="pass" class="input-box-pass" placeholder="Password" required/>
+    
+                        </div>
+                        <div class="submit-box">
+                            <input type="submit" value="Create an account"/>
+                        </div>
+                        <div class="login">
+                            <span>Already have an account? <a href="{% url 'login' %}"> Log In</a></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
 
 
