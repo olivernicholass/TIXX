@@ -64,7 +64,7 @@ class FilteredEventsTestCase(TestCase):
             eventLocation="Location 1",
             eventDescription="Description 1",
             eventStatus="Upcoming",
-            eventGenre="Genre 1"
+            eventGenre="Genre-1"
         )
         self.event2 = Event.objects.create(
             eventName="Event 2",
@@ -73,11 +73,11 @@ class FilteredEventsTestCase(TestCase):
             eventLocation="Location 2",
             eventDescription="Description 2",
             eventStatus="Upcoming",
-            eventGenre="Genre 2"
+            eventGenre="Genre-2"
         )
 
     def test_filtered_events_view(self):
-        url = reverse('filtered_events', kwargs={'eventGenre': 'Genre 1'})
+        url = reverse('filtered_events', kwargs={'eventGenre': 'Genre-1'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'filtered_events.html')
