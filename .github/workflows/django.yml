@@ -27,6 +27,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Change to Django Project Directory
-      run: cd AvengersAssemble
+      run: cd Avengers-Assemble/AvengersAssemble
+
     - name: Run Tests
       run: python manage.py test
