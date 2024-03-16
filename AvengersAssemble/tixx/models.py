@@ -93,6 +93,8 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.adminName
+    
+    
 
 
 
