@@ -4,8 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import admin
 from django.urls import path, include
 from tixx import views as v
-from .models import Event
+from .models import Event, Ticket
 from django.shortcuts import redirect
+
 # Create your views here.
 
 def home(request):
@@ -35,7 +36,10 @@ def search_results(request):
     return render(request, "search_results.html")
 
 def ticket_selection(request):
-    return render(request, "ticket_selection.html")
+    row_range = range(50)
+    col_range = range(50)
+    tickets = Ticket.objects.all()
+    return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
 
 def checkout(request):
     return render(request, "checkout.html")
@@ -46,3 +50,4 @@ def filtered_events(request, eventGenre):
 
 def figure(request):
     return render(request, "figure.html")
+

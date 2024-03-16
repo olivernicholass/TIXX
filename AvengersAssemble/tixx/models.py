@@ -22,6 +22,12 @@ class Ticket(models.Model):
     ticketQR = models.CharField(max_length=250)
     ticketPrice = models.IntegerField()
     ticketType = models.CharField(max_length=10)
+    zone = models.IntegerField(default=1) #1 to 8
+    available = models.BooleanField(default=True)
+
+    def get_available_tickets(self):
+        total_available = self.objects.filter(sold=True).count()
+        total_unavailable = self.objects.filter(sold=False).count()
 
     def __str__(self):
         return self.seatNum 

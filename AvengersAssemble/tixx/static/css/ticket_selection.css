@@ -1,0 +1,16 @@
+table {
+    border-collapse: collapse;
+}
+td {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #000;
+}
+h1{
+    color: green;
+}
+
+.seat-icon{
+    width:10px;
+    height:10px;
+}

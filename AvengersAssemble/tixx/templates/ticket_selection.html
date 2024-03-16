@@ -1,6 +1,28 @@
 {% extends "base.html" %}
 {% load static %} 
+<head>
+    <title>
+        {% block title%} Tixx - Ticket Selection {% endblock %}
+    </title>
+    {% load crispy_forms_tags %}
+</head>
+
 
 {% block content %}
-            
+<link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}">
+    <h1>Ticket Selection</h1>
+    <table>
+        <!-- Rows -->
+        {% for ticket in row_range %}
+        <tr>
+            <!-- Columns -->
+            {% for col in col_range %}
+            <td>
+                <img class="seat-icon" src="{% static 'images/circle.png' %}" alt="">
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    
 {% endblock %}
