@@ -2,6 +2,15 @@ from django.db import models
 
 # Create your models here
 
+class Arena(models.Model):
+    arenaId = models.CharField(primary_key=True, max_length=5)
+    arenaName = models.CharField(max_length=20)
+    arenaCapacity = models.IntegerField()
+
+    def __str__(self):
+        return self.arenaName
+
+
 class Event(models.Model):
     eventName = models.CharField(max_length=100)
     eventDate = models.DateField()
@@ -9,6 +18,8 @@ class Event(models.Model):
     eventLocation = models.CharField(max_length=100)
     eventDescription = models.CharField(max_length=250)
     eventStatus = models.CharField(max_length=10)
+    arenaId = models.ForeignKey(Arena,on_delete=models.SET_NULL, null=True)
+
 
     def __str__(self):
         return self.eventName  # Needed to return correct attribute
@@ -17,6 +28,7 @@ class Ticket(models.Model):
     ticketId = models.AutoField(primary_key=True)  #  IntegerField to AutoField
     eventId = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)  # null=True
     seatNum = models.CharField(max_length=5)
+    arenaId = models.ForeignKey(Arena,on_delete=models.SET_NULL, null=True)
     ticketQR = models.CharField(max_length=250)
     ticketPrice = models.IntegerField()
     ticketType = models.CharField(max_length=10)
@@ -61,6 +73,7 @@ class Seat(models.Model):
     seatId = models.AutoField(primary_key=True)
     ticketId = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True)
     seatNumber = models.IntegerField()
+    arenaId = models.ForeignKey(Arena,on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.seatNumber 
@@ -80,6 +93,7 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.adminName
+
 
 
 
