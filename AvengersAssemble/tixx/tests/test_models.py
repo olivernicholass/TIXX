@@ -48,20 +48,9 @@ class ModelTestCase(TestCase):
             eventID=self.event,
             reviewDate="2024-03-09"
         )
-        self.seat = Seat.objects.create(
-            ticketId=self.ticket,
-            seatNumber=23,
-            arenaId="A1234"
-        )
-        self.figure = Figure.objects.create(
-            figureName="ABCD",
-            figureGenre="ABCD"
-        )
-        self.admin = Admin.objects.create(
-            adminName="Test Name",
-            adminEmail="test@gmail.com",
-            adminPassword="testpass"
-        )
+
+    def test_arena_str(self):
+        self.assertEqual(str(self.arena), "Test Arena")
 
     def test_event_str(self):
         self.assertEqual(str(self.event), "Test Event")
@@ -77,4 +66,6 @@ class ModelTestCase(TestCase):
 
     def test_review_str(self):
         self.assertEqual(str(self.review), "Great Event")
-
+    
+    
+    
