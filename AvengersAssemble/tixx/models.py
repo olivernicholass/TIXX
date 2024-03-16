@@ -27,6 +27,7 @@ class Ticket(models.Model):
 class User(models.Model):
     userId = models.CharField(max_length=10, primary_key=True)
     username = models.CharField(max_length=20)
+    userPassword = models.CharField(max_length=20, default='temp_password')
     userEmail = models.EmailField()
     userPhoneNumber = models.CharField(max_length=10)  # IntegerField to CharField
     userAddress = models.CharField(max_length=100)
@@ -63,4 +64,22 @@ class Seat(models.Model):
 
     def __str__(self):
         return self.seatNumber 
+class Figure(models.Model):
+    figureName = models.CharField(max_length=100)
+    figureGenre = models.CharField(max_length=100)
+    figurePicture = models.ImageField(upload_to='figure_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.figureName
+
+class Admin(models.Model):
+    adminId = models.AutoField(primary_key=True)
+    adminName = models.CharField(max_length=20)
+    adminEmail = models.EmailField()
+    adminPassword = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.adminName
+
+
 
