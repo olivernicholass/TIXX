@@ -18,6 +18,8 @@ class Event(models.Model):
     eventLocation = models.CharField(max_length=100)
     eventDescription = models.CharField(max_length=250)
     eventStatus = models.CharField(max_length=10)
+    eventGenre = models.CharField(max_length=100)  
+    eventImage = models.ImageField(upload_to='event_images/', null=True, blank=True)  
     arenaId = models.ForeignKey(Arena,on_delete=models.SET_NULL, null=True)
 
 
