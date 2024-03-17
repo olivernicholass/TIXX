@@ -5,11 +5,20 @@
         {% block title%} Tixx - Ticket Selection {% endblock %}
     </title>
     {% load crispy_forms_tags %}
+    <script src="{% static 'js/seat_section.js' %}"></script>
 </head>
 
 
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}">
+
+<button id="section1">1</button>
+<button id="section2">2</button>
+<button id="section3">3</button>
+<button id="section4">4</button>
+
+
     <h1>Ticket Selection</h1>
 
     <form method="post" action="{% url 'ticket_selection'%}">
@@ -24,7 +33,7 @@
     </form>
 
 
-    <table>
+    <table id="section1table" style="display: none;">
         <!-- Rows -->
         {% for ticket in row_range %}
         <tr>
@@ -37,5 +46,79 @@
         </tr>
         {% endfor %}
     </table>
+    <table id="section2table" style="display: none;">
+        <!-- Rows -->
+        {% for ticket in row_range %}
+        <tr>
+            <!-- Columns -->
+            {% for col in col_range %}
+            <td>
+                <img class="seat-icon" src="{% static 'images/circle.png' %}" alt="">
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    <table id="section3table" style="display: none;">
+        <!-- Rows -->
+        {% for ticket in row_range %}
+        <tr>
+            <!-- Columns -->
+            {% for col in col_range %}
+            <td>
+                <img class="seat-icon" src="{% static 'images/circle.png' %}" alt="">
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    <table id="section4table" style="display: none;">
+        <!-- Rows -->
+        {% for ticket in row_range %}
+        <tr>
+            <!-- Columns -->
+            {% for col in col_range %}
+            <td>
+                <img class="seat-icon" src="{% static 'images/circle.png' %}" alt="">
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <script>
+        document.getElementById("section1").addEventListener("click", function() {
+            var table = document.getElementById("section1table");
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        });
+        document.getElementById("section2").addEventListener("click", function() {
+            var table = document.getElementById("section2table");
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        });
+        document.getElementById("section3").addEventListener("click", function() {
+            var table = document.getElementById("section3table");
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        });
+        document.getElementById("section4").addEventListener("click", function() {
+            var table = document.getElementById("section4table");
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        });
+    </script>
     
 {% endblock %}

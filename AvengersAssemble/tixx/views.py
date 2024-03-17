@@ -40,8 +40,8 @@ def search_results(request):
 
 
 def ticket_selection(request):
-    row_range = range(50)
-    col_range = range(50)
+    row_range = range(10)
+    col_range = range(20)
     tickets = Ticket.objects.all()
     
     return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
