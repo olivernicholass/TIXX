@@ -1,21 +1,27 @@
 from django.test import TestCase
-from tixx.models import Event, Ticket, User, Payment, Review
+from tixx.models import Arena, Event, Ticket, User, Payment, Review, Seat, Figure, Admin
 
 # Tests for each model
 
 class ModelTestCase(TestCase):
     def setUp(self):
+        self.arena = Arena.objects.create(
+            arenaName="Test Arena",
+            arenaCapacity=2
+        )
         self.event = Event.objects.create(
             eventName="Test Event",
             eventDate="2024-03-10",
             eventLocation="Test Location",
             eventDescription="Test Description",
             eventStatus="Upcoming",
-            eventGenre="Test Genre"
+            eventGenre="Test Genre",
+            arenaId = self.arena
         )
         self.ticket = Ticket.objects.create(
             eventId=self.event,
             seatNum="A1",
+            arenaId = self.arena,
             ticketQR="test_qr_code",
             ticketPrice=50,
             ticketType="Regular"
