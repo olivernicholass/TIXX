@@ -35,11 +35,18 @@ def register(response):
 def search_results(request):
     return render(request, "search_results.html")
 
+
+
+
+
 def ticket_selection(request):
     row_range = range(50)
     col_range = range(50)
     tickets = Ticket.objects.all()
+    
     return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
+
+
 
 def checkout(request):
     return render(request, "checkout.html")

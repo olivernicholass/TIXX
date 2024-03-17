@@ -11,6 +11,19 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}">
     <h1>Ticket Selection</h1>
+
+    <form method="post" action="{% url 'ticket_selection'%}">
+        {% csrf_token %}
+        <label for="tickets">Select Ticket Section:</label>
+        <select name="tickets" id="tickets">
+            {% for ticket in tickets %}
+                <option value="{{ ticket.id }}">{{ ticket.ticket_type }} - ${{ ticket.price }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Purchase Tickets">
+    </form>
+
+
     <table>
         <!-- Rows -->
         {% for ticket in row_range %}
