@@ -1,6 +1,93 @@
 {% extends "base.html" %}
-{% load static %} 
-
 {% block content %}
-            
+{% load static %} 
+<link rel="stylesheet" href="{% static 'css/figure.css' %}">
+<script src="{% static 'js/figure.js' %}"></script>
+<div class="container">
+    <div class="info">
+        <div class="pfp">
+            <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+        </div>
+        <h1>{{ figure.figureName }} Tickets</h1>
+        <p>{{ figure.figureGenre }}</p>
+    </div>
+    <div class="pfp-background">
+        <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+    </div>
+</div>
+<div class="white-bar navbar navbar-expand">
+    <ul class="navbar-nav">
+        <li class="nav-item mr-3"> 
+            <a class="nav-link events-button" href="#events-section">EVENTS</a>
+        </li>
+        <li class="nav-item mr-3"> 
+            <a class="nav-link gallery-button" href="#">PHOTOS</a>
+        </li>
+        <li class="nav-item mr-3"> 
+            <a class="nav-link about-button" href="#about-section">ABOUT</a>
+        </li>
+        <li class="nav-item"> 
+            <a class="nav-link reviews-button" href="#">REVIEWS</a>
+        </li>
+    </ul>
+</div>
+<div class="events-countdown-container">
+    <div id="events-section" class="events-container">
+        <div id="events-title">
+            <p><strong>EVENTS</strong> • {{ events|length }}</p>
+        </div>
+        {% for event in events %}
+            <div class="event">
+                <div class="event-info">
+                    <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                    <div class="event-date">
+                        <p id="eventDate">{{ event.eventDate }}</p>
+                    </div>
+                    <div class="event-details">
+                        <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                        <p><span class="bold">{{ event.arenaId }}</span></p>
+                        <p>{{ figure.figureName }}</p>
+                    </div>
+                    <a href="" class="btn btn-primary">Find Tickets</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No events available</p>
+        {% endfor %}
+    </div>
+    <div class="countdown-container">
+        <div id="countdown" class="countdown">
+            <div class="countdown-item" id="days">
+                <span class="countdown-label">DAYS</span><br>
+                <span class="cv" id="daysValue">01</span>
+            </div>
+            <div class="countdown-item" id="hours">
+                <span class="countdown-label">HOURS</span><br>
+                <span class="cv" id="hoursValue">06</span>
+            </div>
+            <div class="countdown-item" id="minutes">
+                <span class="countdown-label">MINUTES</span><br>
+                <span class="cv" id="minutesValue">39</span>
+            </div>
+            <div class="countdown-item" id="seconds">
+                <span class="countdown-label">SECONDS</span><br>
+                <span class="cv" id="secondsValue">12</span>
+            </div>
+            <div class="countdown-item" id="figure">
+                <span class="countdown-label">FOR:</span><br>
+                <span id="figureName">{{ figure.figureName }}</span> <span class="at-label">@</span> 
+                {% if events %}
+                    {{ events.0.arenaId }} 
+                {% else %}
+                    No arena available
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="about-section" class="about-container">
+    <h2>About {{ figure.figureName }}</h2>
+    <p>{{ figure.figureAbout }}</p>
+</div>
 {% endblock %}

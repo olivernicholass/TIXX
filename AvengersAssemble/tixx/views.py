@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponse
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, get_object_or_404
+from .models import Event, Figure
+from django.utils import timezone
 from django.contrib import admin
 from django.urls import path, include
 from tixx import views as v
@@ -13,10 +15,6 @@ from django.http import JsonResponse
 def home(request):
     events = Event.objects.all()  
     return render(request, "home.html", {'events': events})
-
-def events(request):
-    events = Event.objects.all()
-    return render(request, 'events.html', {'events': events})
 
 def login(request):
     return render(request, "login.html")
