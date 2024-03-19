@@ -5,6 +5,10 @@
     --light: #06BEE1;
 }
 
+*{
+    font-family: Arial;
+}
+
 html {
     height: 100%;
     width: 100%;
@@ -37,7 +41,7 @@ html {
     padding-right: 1em;
 }
 
-.input-box-email {
+.input_box_email {
     background: transparent;
     padding: 10px 0px 10px 15px;
     font-size: larger;
@@ -50,7 +54,7 @@ html {
     color: white;
 }
 
-.input-box-user {
+.textinput {
     background: transparent;
     padding: 10px 0px 10px 15px;
     font-size: larger;
@@ -64,7 +68,7 @@ html {
     margin-top: 1em;
 }
 
-.input-box-pass {
+.passwordinput {
     background: transparent;
     padding: 10px 0px 10px 15px;
     font-size: larger;
@@ -79,7 +83,6 @@ html {
 }
 
 .input-field {
-    color: white;
     font-size: 1em;
 }
 
@@ -97,7 +100,7 @@ html {
     padding-bottom: 10px;
 }
 
-.form {
+.form-group {
     width: 100%;
     height: 100%;
     padding-bottom: 2em;
@@ -123,7 +126,7 @@ body {
     font-weight: 500;
 }
 
-.submit-box input{
+.submit-box button{
     margin-top: 2.5em;
     margin-bottom: 2.5em;
     font-size: 1em;
@@ -138,7 +141,7 @@ body {
     transition: all .15s ease-out;
 }
 
-.submit-box input:hover{
+.submit-box button:hover{
     color: white;
     background: var(--reg);
     box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.5), 
@@ -146,19 +149,60 @@ body {
     border: 3px solid var(--reg);
 }
 
-.input-box-user:focus, .input-box-user:valid {
+.textinput:focus, .textinput:valid {
     background: #1768AC;
 }
 
-.input-box-pass:focus, .input-box-pass:valid {
+.passwordinput:focus, .passwordinput:valid {
     background: #1768AC;
 }
 
-.input-box-email:focus, .input-box-email:valid {
+.input_box_email:focus, .input_box_email:valid {
     background: #1768AC;
 }
 
 
 .logo {
     margin-bottom: 1em;
+}
+
+#div_id_password1 {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#div_id_password2 {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#div_id_username {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+div:has(> #div_id_password2) {
+    height: max-content;
+    padding: 0;
+}
+
+div:has(> #div_id_password1) {
+    height: max-content;
+    padding: 0;
+}
+
+div:has(> #div_id_username) {
+    height: max-content;
+    padding: 0;
+}
+
+label {
+    display: none;
+}
+
+small {
+    display: none;
 }
