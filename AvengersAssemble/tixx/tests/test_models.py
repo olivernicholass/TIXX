@@ -89,7 +89,7 @@ class ModelTestCase(TestCase):
         self.assertEqual(str(self.figure), "Test Figure")
 
     def test_review_image_str(self):
-        self.assertEqual(str(self.review_image), "Image for Review '{self.review.reviewTitle}' - ID: {self.review.reviewId}")
+        self.assertEqual(str(self.review_image), f"Image for Review '{self.review.reviewTitle}' - ID: {self.review.reviewId}")
         
     def test_seat_str(self):
         self.assertEqual(str(self.seat), "1")
