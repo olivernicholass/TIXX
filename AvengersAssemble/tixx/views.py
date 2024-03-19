@@ -55,6 +55,9 @@ def filtered_events(request, eventGenre):
     filtered_events = Event.objects.filter(eventGenre=eventGenre)
     return render(request, 'filtered_events.html', {'filtered_events': filtered_events})
 
-def figure(request):
-    return render(request, "figure.html")
+def figure(request, figure_name):
+    figureCase = figure_name.lower()
+    figure = get_object_or_404(Figure, figureName__iexact=figureCase)
+    events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
 
+    return render(request, 'figure.html', {'figure': figure, 'events': events})
