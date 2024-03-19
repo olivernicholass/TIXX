@@ -48,9 +48,10 @@ class ViewTests(TestCase):
                 
     # Browser Test for Figure
     def test_figure(self):
-        response = self.client.get(reverse('figure'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'figure.html')
+        figure_name = "Test Figure"
+        url = reverse('figure', kwargs={'figure_name': figure_name})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
         
 # Filtered Events Test 
 
