@@ -46,8 +46,6 @@ def ticket_selection(request):
     
     return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
 
-
-
 def checkout(request):
     return render(request, "checkout.html")
 
@@ -61,3 +59,12 @@ def figure(request, figure_name):
     events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
 
     return render(request, 'figure.html', {'figure': figure, 'events': events})
+
+def guest_organiser(request):
+    if request.method == 'POST':
+        form = GuestOrganiserForm(request.POST)
+        if form.is_valid():
+            return redirect('some_view_name')  
+    else:
+        form = GuestOrganiserForm()  
+    return render(request, 'guest_organiser.html', {'form': form})
