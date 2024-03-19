@@ -15,6 +15,8 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('filtered_events/<slug:eventGenre>/', views.filtered_events, name='filtered_events'),
     path('figure/<str:figure_name>/', views.figure, name='figure'),
+    path('guest_organiser/', views.guest_organiser, name='guest_organiser'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

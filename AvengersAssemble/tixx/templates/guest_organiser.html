@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %} 
+<link rel="stylesheet" href="{% static 'css/figure.css' %}">  
+
+<div class="full-navbar">
+</div>
+
+<div class="container">
+    <h1>Create Your Event</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_company_name">Company Name</label>
+            <input type="text" class="form-control" id="id_company_name" name="company_name" required>
+        </div>
+        <div class="form-group">
+            <label for="id_number_of_tickets">Number of Tickets</label>
+            <input type="number" class="form-control" id="id_number_of_tickets" name="number_of_tickets" required>
+        </div>
+        <div class="form-group">
+            <label for="id_event_location">Event Location (Province, City)</label>
+            <input type="text" class="form-control" id="id_event_location" name="event_location" required>
+        </div>
+        <div class="form-group">
+            <label for="id_ticket_price">Ticket Price</label>
+            <input type="text" class="form-control" id="id_ticket_price" name="ticket_price" required>
+        </div>
+        <div class="form-group">
+            <label for="id_date_of_event">Date of Event</label>
+            <input type="date" class="form-control" id="id_date_of_event" name="date_of_event" required>
+        </div>
+        <div class="form-group">
+            <label for="id_venue_name">Venue Name</label>
+            <input type="text" class="form-control" id ="id_venue_name" name="venue_name" required>
+        </div>
+        <div class="form-group">
+            <label for="id_genre">Genre</label>
+            <input type="text" class="form-control" id="id_genre" name="genre" required>
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            <textarea class="form-control" id="id_description" name="description" rows="3" required></textarea>
+        </div>
+    <button type="submit" class="btn btn-primary">Submit Event</button>
+</form>
+</div>
+<footer>
+</footer>
+{% endblock %}
