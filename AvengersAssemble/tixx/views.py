@@ -6,6 +6,7 @@ from django.urls import path, include
 from tixx import views as v
 from .models import Event, Ticket
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -37,7 +38,9 @@ def search_results(request):
 
 
 
-
+def get_ticket_data(request):
+    tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
+    return JsonResponse({'tickets': list(tickets)})
 
 def ticket_selection(request):
     row_range = range(10)

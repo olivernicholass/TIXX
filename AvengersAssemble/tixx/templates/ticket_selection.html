@@ -14,10 +14,10 @@
 <main>
 <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}">
 <div class="section_container">
-    <button class="button top" id="section1" onclick="showSection1AvailableSeats()">1</button>
-    <button class="button bottom" id="section2">2</button>
-    <button class="button left" id="section3">3</button>
-    <button class="button right" id="section4">4</button>
+    <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+    <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+    <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+    <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
     <img src="{% static 'images/footballfield.png' %}" class="image" alt="Your Image">
 </div>
     <h1>Ticket Selection</h1>
@@ -38,7 +38,7 @@
     <ul class="showcase">
         <li>
           <div class="seat"></div>
-          <small>N/A</small>
+          <small>N/A</small> 
         </li>
   
         <li>
@@ -52,45 +52,11 @@
         </li>
       </ul>
 
-    <div class="seatcontainer hidden" id="gridContainer"></div>
+    <div class="seatcontainer" id="gridContainer"></div>
 
 
     <script src="{% static 'js/seat_section.js' %}"></script>
     </main>
-    
-    <script>
-        {% comment %} document.getElementById("section1").addEventListener("click", function() {
-            var table = document.getElementById("section1div");
-            if (table.style.display === "none") {
-                table.style.display = "block";
-            } else {
-                table.style.display = "none";
-            }
-        });
-        document.getElementById("section2").addEventListener("click", function() {
-            var table = document.getElementById("section2table");
-            if (table.style.display === "none") {
-                table.style.display = "block";
-            } else {
-                table.style.display = "none";
-            }
-        });
-        document.getElementById("section3").addEventListener("click", function() {
-            var table = document.getElementById("section3table");
-            if (table.style.display === "none") {
-                table.style.display = "block";
-            } else {
-                table.style.display = "none";
-            }
-        });
-        document.getElementById("section4").addEventListener("click", function() {
-            var table = document.getElementById("section4table");
-            if (table.style.display === "none") {
-                table.style.display = "block";
-            } else {
-                table.style.display = "none";
-            }
-        }); {% endcomment %}
-    </script>
+
     
 {% endblock %}

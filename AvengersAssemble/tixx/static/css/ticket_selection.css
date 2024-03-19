@@ -48,7 +48,7 @@ main {
   appearance: none;
 }
 
-.seatcontainer {
+#gridContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -56,7 +56,9 @@ main {
   perspective: 1000px;
   margin-bottom: 30px;
   width: 70em;
+  border: 2px solid white;
 }
+
 
 .seat {
   background-color: #444451;

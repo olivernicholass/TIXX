@@ -37,10 +37,6 @@ class Ticket(models.Model):
     zone = models.IntegerField(default=1) #1 to 8
     available = models.BooleanField(default=True)
 
-    def get_available_tickets(self):
-        total_available = self.objects.filter(sold=True).count()
-        total_unavailable = self.objects.filter(sold=False).count()
-
     def __str__(self):
         return self.seatNum # Needed to return correct attribute
 
