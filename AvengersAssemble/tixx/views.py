@@ -1,6 +1,5 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, get_object_or_404
 from .models import Event, Figure
 from django.utils import timezone
 from django.contrib import admin
