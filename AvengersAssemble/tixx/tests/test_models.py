@@ -1,5 +1,5 @@
 from django.test import TestCase
-from tixx.models import Arena, Event, Ticket, User, Payment, Review, Seat, Figure, Admin
+from tixx.models import Arena, Event, Ticket, User, Payment, Review, Seat, Figure, Admin, ReviewImage
 
 # Tests for each model
 
@@ -48,7 +48,26 @@ class ModelTestCase(TestCase):
             eventID=self.event,
             reviewDate="2024-03-09"
         )
-
+        self.figure = Figure.objects.create(
+            figureName="Test Figure",
+            figureGenre="Test Genre",
+            figureAbout="Test Description"
+        )
+        self.review_image = ReviewImage.objects.create(
+            review=self.review,
+            reviewImage="test_image.jpg"
+        )
+        self.seat = Seat.objects.create(
+            ticketId=self.ticket,
+            seatNumber="1",
+            arenaId=self.arena
+        )
+        self.admin = Admin.objects.create(
+            adminName="Test Admin",
+            adminEmail="admin@example.com",
+            adminPassword="admin123"
+        )
+        
     def test_event_str(self):
         self.assertEqual(str(self.event), "Test Event")
 
@@ -63,4 +82,16 @@ class ModelTestCase(TestCase):
 
     def test_review_str(self):
         self.assertEqual(str(self.review), "Great Event")
+        
+    def test_figure_str(self):
+        self.assertEqual(str(self.figure), "Test Figure")
+
+    def test_review_image_str(self):
+        self.assertEqual(str(self.review_image), f"Image for Review '{self.review.reviewTitle}' - ID: {self.review.reviewId}")
+        
+    def test_seat_str(self):
+        self.assertEqual(str(self.seat), "1")
+
+    def test_admin_str(self):
+        self.assertEqual(str(self.admin), "Test Admin")
 

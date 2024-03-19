@@ -1,20 +1,13 @@
 from django.shortcuts import render, HttpResponse
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib import admin
-from django.urls import path, include
-from tixx import views as v
-from .models import Event
-from django.shortcuts import redirect
+from django.shortcuts import render, get_object_or_404
+from .models import Event, Figure
+from django.utils import timezone
 # Create your views here.
 
 def home(request):
     events = Event.objects.all()  
     return render(request, "home.html", {'events': events})
-
-def events(request):
-    events = Event.objects.all()
-    return render(request, 'events.html', {'events': events})
 
 def login(request):
     return render(request, "login.html")
@@ -44,5 +37,9 @@ def filtered_events(request, eventGenre):
     filtered_events = Event.objects.filter(eventGenre=eventGenre)
     return render(request, 'filtered_events.html', {'filtered_events': filtered_events})
 
-def figure(request):
-    return render(request, "figure.html")
+def figure(request, figure_name):
+    figureCase = figure_name.lower()
+    figure = get_object_or_404(Figure, figureName__iexact=figureCase)
+    events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
+
+    return render(request, 'figure.html', {'figure': figure, 'events': events})
