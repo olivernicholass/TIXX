@@ -24,7 +24,9 @@ class ModelTestCase(TestCase):
             arenaId = self.arena,
             ticketQR="test_qr_code",
             ticketPrice=50,
-            ticketType="Regular"
+            ticketType="Regular",
+            zone=1,
+            available=True
         )
         self.user = User.objects.create(
             userId="test_user",

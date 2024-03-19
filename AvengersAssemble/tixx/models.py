@@ -45,6 +45,8 @@ class Ticket(models.Model):
     ticketQR = models.CharField(max_length=250)
     ticketPrice = models.IntegerField()
     ticketType = models.CharField(max_length=10)
+    zone = models.IntegerField(default=1) #1 to 8
+    available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.seatNum 

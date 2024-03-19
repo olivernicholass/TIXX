@@ -1,8 +1,14 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, get_object_or_404
 from .models import Event, Figure
 from django.utils import timezone
+from django.contrib import admin
+from django.urls import path, include
+from tixx import views as v
+from .models import Event, Ticket
+from django.shortcuts import redirect
+from django.http import JsonResponse
+
 # Create your views here.
 
 def home(request):
@@ -27,8 +33,20 @@ def register(response):
 def search_results(request):
     return render(request, "search_results.html")
 
+
+
+def get_ticket_data(request):
+    tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
+    return JsonResponse({'tickets': list(tickets)})
+
 def ticket_selection(request):
-    return render(request, "ticket_selection.html")
+    row_range = range(10)
+    col_range = range(20)
+    tickets = Ticket.objects.all()
+    
+    return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
+
+
 
 def checkout(request):
     return render(request, "checkout.html")
