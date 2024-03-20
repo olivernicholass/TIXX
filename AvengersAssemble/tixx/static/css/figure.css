@@ -20,6 +20,11 @@
     position: relative; 
 }
 
+.average-rating{
+    margin-left: 47%;
+    margin-top:0;
+}
+
 .events-container img{
     height:50px;
     width:50px;
@@ -250,6 +255,10 @@
     padding-top: 0;
 }
 
+.info p{
+    margin-bottom:3px;
+}
+
 .review {
     position: relative;
     width: 32.3%; 
@@ -287,7 +296,6 @@
 .fas.fa-star-half-alt.filled, .fas.fa-star.filled {
     color: #2541B2; 
 }
-
 
 .fas.fa-star {
     color: #ccc; 
