@@ -1,0 +1,58 @@
+
+.form-fields {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: stretch;
+    margin-top:2%;
+}
+
+.star-rating .fa-star {
+    font-size: 30px; 
+    cursor: pointer; 
+}
+
+.form-container {
+    width: 50%; 
+    margin: 0 auto; 
+}
+
+.star-rating .fa-star.half {
+    color: #03256C; 
+}
+.form-fields div {
+    margin-bottom: 10px; 
+}
+
+.form-fields p{
+    font-size: 15px; 
+    font-weight:400;
+}
+
+.form-fields input[type="text"],
+.form-fields input[type="number"],
+.form-fields input[type="date"],
+.form-fields textarea {
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+
+.form-fields button {
+    width: 25%; 
+    padding: 10px 20px; 
+    background-color: #03256C;
+    color: white;
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+
+.form-fields button:hover {
+    background-color: #0056b3; 
+}
