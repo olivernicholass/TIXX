@@ -1,13 +1,17 @@
 from django.test import TestCase
 from tixx.models import Arena, Event, Ticket, User, Payment, Review, Seat, Figure, Admin, ReviewImage
 
-# Tests for each model
-
 class ModelTestCase(TestCase):
     def setUp(self):
         self.arena = Arena.objects.create(
+            arenaId="test_arena",
             arenaName="Test Arena",
             arenaCapacity=2
+        )
+        self.figure = Figure.objects.create(
+            figureName="Test Figure",
+            figureGenre="Test Genre",
+            figureAbout="Test Description"
         )
         self.event = Event.objects.create(
             eventName="Test Event",
@@ -16,12 +20,13 @@ class ModelTestCase(TestCase):
             eventDescription="Test Description",
             eventStatus="Upcoming",
             eventGenre="Test Genre",
-            arenaId = self.arena
+            arenaId=self.arena,
+            figureId=self.figure
         )
         self.ticket = Ticket.objects.create(
             eventId=self.event,
             seatNum="A1",
-            arenaId = self.arena,
+            arenaId=self.arena,
             ticketQR="test_qr_code",
             ticketPrice=50,
             ticketType="Regular",
@@ -47,13 +52,8 @@ class ModelTestCase(TestCase):
             reviewRating=5,
             reviewTitle="Great Event",
             reviewText="Drake was great!!!",
-            eventID=self.event,
+            reviewFigure=self.figure,
             reviewDate="2024-03-09"
-        )
-        self.figure = Figure.objects.create(
-            figureName="Test Figure",
-            figureGenre="Test Genre",
-            figureAbout="Test Description"
         )
         self.review_image = ReviewImage.objects.create(
             review=self.review,
@@ -96,4 +96,3 @@ class ModelTestCase(TestCase):
 
     def test_admin_str(self):
         self.assertEqual(str(self.admin), "Test Admin")
-

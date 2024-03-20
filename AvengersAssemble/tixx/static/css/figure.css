@@ -212,6 +212,9 @@
     margin-left:100px; 
 }
 
+.review h3{
+    font-size:18px;
+}
 .events-countdown-container {
     display: flex;
     align-items: center;
@@ -238,3 +241,55 @@
 .countdown-value {
     font-size: 1.2em; 
 }
+
+.reviews-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10%;
+    padding-top: 0;
+}
+
+.review {
+    position: relative;
+    width: 32.3%; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid #03256C;
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.reviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#reviews-title{
+    letter-spacing: 0.2em;
+    font-size: 25px;
+}
+.review h3 {
+    margin-top: 0;
+}
+
+.review img {
+    margin-top: auto; 
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.fas.fa-star-half-alt.filled, .fas.fa-star.filled {
+    color: #2541B2; 
+}
+
+
+.fas.fa-star {
+    color: #ccc; 
+}
+
