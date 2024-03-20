@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib import admin
 from django.urls import path, include
 from tixx import views as v
+from django.db.models import Avg
 from .models import Event, Ticket, Review
 from django.shortcuts import redirect
 from django.http import JsonResponse
@@ -67,11 +68,16 @@ def figure(request, figure_name):
         else:
             reviewNoImage.append(review)
 
+    avgRating = reviews.aggregate(Avg('reviewRating'))['reviewRating__avg']
+    if avgRating is not None:
+        avgRating = round(avgRating, 1)
+
     return render(request, 'figure.html', {
         'figure': figure,
         'events': events,
-        'allReviews': reviewWithImage  + reviewNoImage,
+        'allReviews': reviewWithImage + reviewNoImage,
         'reviewCount': len(reviewWithImage) + len(reviewNoImage),
+        'averageRating': avgRating,
     })
 
 def guest_organiser(request):
