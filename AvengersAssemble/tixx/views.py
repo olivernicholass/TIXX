@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.contrib import admin
 from django.urls import path, include
 from tixx import views as v
-from .models import Event, Ticket
+from .models import Event, Ticket, Review
 from django.shortcuts import redirect
 from django.http import JsonResponse
 
@@ -34,7 +34,6 @@ def search_results(request):
     return render(request, "search_results.html")
 
 
-
 def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
     return JsonResponse({'tickets': list(tickets)})
@@ -54,11 +53,26 @@ def filtered_events(request, eventGenre):
     return render(request, 'filtered_events.html', {'filtered_events': filtered_events})
 
 def figure(request, figure_name):
-    figureCase = figure_name.lower()
-    figure = get_object_or_404(Figure, figureName__iexact=figureCase)
+    figure_case = figure_name.lower()
+    figure = get_object_or_404(Figure, figureName__iexact=figure_case)
+    
     events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
+    reviews = Review.objects.filter(reviewFigure=figure)
+    
+    reviewWithImage = []
+    reviewNoImage = []
+    for review in reviews:
+        if review.reviewimage_set.exists():
+            reviewWithImage.append(review)
+        else:
+            reviewNoImage.append(review)
 
-    return render(request, 'figure.html', {'figure': figure, 'events': events})
+    return render(request, 'figure.html', {
+        'figure': figure,
+        'events': events,
+        'allReviews': reviewWithImage  + reviewNoImage,
+        'reviewCount': len(reviewWithImage) + len(reviewNoImage),
+    })
 
 def guest_organiser(request):
     if request.method == 'POST':

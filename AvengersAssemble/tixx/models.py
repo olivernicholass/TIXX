@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here
 
@@ -18,8 +19,6 @@ class Figure(models.Model):
 
     def __str__(self):
         return self.figureName
-
-
 
 class Event(models.Model):
     eventName = models.CharField(max_length=100)
@@ -75,10 +74,14 @@ class Payment(models.Model):
 
 class Review(models.Model):
     reviewId = models.AutoField(primary_key=True)
-    reviewRating = models.IntegerField()
+    reviewRating = models.DecimalField(
+        max_digits=3, 
+        decimal_places=1, 
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
     reviewTitle = models.CharField(max_length=100)
     reviewText = models.CharField(max_length=500)
-    eventID = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)
+    reviewFigure = models.ForeignKey(Figure, on_delete=models.CASCADE, default=None)  
     reviewDate = models.DateField()
 
     def __str__(self):
