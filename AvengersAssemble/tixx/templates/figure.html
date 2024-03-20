@@ -16,6 +16,10 @@
         </div>
         <h1>{{ figure.figureName }} Tickets</h1>
         <p>{{ figure.figureGenre }}</p>
+        <div class="average-rating">
+            <i class="fas fa-star filled"></i>
+            <span>{{ averageRating|default_if_none:"N/A" }}</span>
+        </div>
     </div>
     <div class="pfp-background">
         {% if figure.figurePicture %}
