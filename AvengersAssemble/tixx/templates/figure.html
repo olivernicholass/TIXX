@@ -104,7 +104,7 @@
 </div>
 
 <div id="review-section" class="reviews-container">
-    <div id="reviews-title">
+    <div id="reviews-title" class="d-flex justify-content-between align-items-center">
         <p><strong>REVIEWS</strong> • {{ reviewCount }}</p>
     </div>
     <div class="reviews">
@@ -146,4 +146,8 @@
             </div>
         {% endfor %}
     </div>
+    <div class="write-review-button-container">
+        <a href="{% url 'review' figure.figureName %}" class="btn btn-primary">Write a Review</a>
+    </div>
+</div>
 {% endblock %}

@@ -48,7 +48,8 @@
     background-color: #03256C;
     color: white;
     border: none; 
-    border-radius: 4px; 
+    border-radius: 4px;
+    margin-bottom:10%; 
     cursor: pointer; 
 }
 
