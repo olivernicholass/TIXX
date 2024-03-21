@@ -28,11 +28,11 @@ class ReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ['reviewRating','reviewTitle', 'reviewText', 'reviewDate', 'reviewImage']
+        fields = ['reviewRating', 'reviewTitle', 'reviewText', 'reviewDate', 'reviewImage']
         widgets = {
             'reviewTitle': forms.TextInput(attrs={'placeholder': 'Enter review title'}),
             'reviewText': forms.Textarea(attrs={'placeholder': 'A brief summary of your experience.'}),
-            'reviewDate': forms.DateInput(attrs={'type': 'date', 'placeholder': 'Enter date'}),
+            'reviewDate': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):

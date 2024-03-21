@@ -45,20 +45,34 @@
         </div>
         <div>
             {% for field in reviewForm %}
-                <div>
-                    {% if field.name == 'reviewTitle' %}
-                        <input type="text" name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                    {% elif field.name == 'reviewText' %}
-                        <textarea name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}"></textarea>
-                    {% elif field.name == 'reviewDate' %}
-                        <input type="date" name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                    {% elif field.name == 'reviewImage' %}
-                        <input type="file" name="{{ field.name }}" accept="image/*" placeholder="{{ field.field.widget.attrs.placeholder }}">
-                    {% endif %}
-                </div>
+            <div>
+                {% if field.name == 'reviewTitle' %}
+                    <input type="text" name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}" required>
+                {% elif field.name == 'reviewText' %}
+                    <textarea name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}" required></textarea>
+                {% elif field.name == 'reviewDate' %}
+                    <p>Select a date</p>
+                    <input type="date" name="{{ field.name }}" id="date-placeholder" required>
+                {% elif field.name == 'reviewImage' %}
+                    <div class="file-upload-container">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-camera"></i> SHARE YOUR MOMENT
+                        </label>
+                        <input type="file" id="file-upload" name="reviewImage" accept="image/*" style="display: none;">
+                    </div>
+                {% endif %}
+            </div>
             {% endfor %}
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" onclick="return validateRating()">SUBMIT</button>
     </div>
 </form>
+{% if formValidity %}
+<div id="popup-modal" class="modal">
+  <div class="modal-content">
+    <p>Thank's' for taking the time to review.. {{ figure.figureName }}! 😊</p>
+    <button id="home">Home</button>
+  </div>
+</div>
+{% endif %}
 {% endblock %}

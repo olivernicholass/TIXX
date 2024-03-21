@@ -1,6 +1,5 @@
-
-
 document.addEventListener('DOMContentLoaded', function() {
+
     const stars = document.querySelectorAll('.fa-star');
 
     stars.forEach(function(star) {
@@ -14,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('rating-value').value = rating;
             highlight(rating);
         });
+        
 
         star.addEventListener('mouseleave', function() {
             const selectedRating = document.getElementById('rating-value').value;
@@ -34,4 +34,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    var modal = document.getElementById('popup-modal');
+    var homeButton = document.getElementById("home");
+
+    // Redirection back to the home page POST review
+
+    homeButton.addEventListener('click', function() {
+        modal.style.display = 'none'; 
+        window.location.href = "/";
+    });
+
+    // Function to ensure that the user leaves a star rating before submitting their review.
+
+    function validateRating() {
+        console.log("Validating rating...");
+        const ratingValue = parseInt(document.getElementById("rating-value").value);
+        if (ratingValue <= 0) {
+            alert("Please select a rating.");
+            return false;
+        }
+        return true;
+    }
+
 });

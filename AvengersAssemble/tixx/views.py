@@ -14,7 +14,7 @@ from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
 # Create your views here.
 
 def home(request):
-    events = Event.objects.all()  
+    events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
     return render(request, "home.html", {'events': events})
 
 def login(request):
@@ -79,6 +79,7 @@ def figure(request, figure_name):
         'allReviews': reviewWithImage + reviewNoImage,
         'reviewCount': len(reviewWithImage) + len(reviewNoImage),
         'averageRating': avgRating,
+        'figureName': figure.figureName
     })
 
 def review(request, figure_name):
@@ -90,6 +91,8 @@ def review(request, figure_name):
     if avgRating is not None:
         avgRating = round(avgRating, 1)
 
+    formValidity = False
+
     if request.method == 'POST':
         reviewForm = ReviewForm(request.POST)
         imageForm = ReviewImageForm(request.POST, request.FILES)
@@ -97,10 +100,19 @@ def review(request, figure_name):
             review = reviewForm.save(commit=False)
             review.reviewFigure = figure
             review.save()
-            
             for image in request.FILES.getlist('reviewImage'):
                 ReviewImage.objects.create(review=review, reviewImage=image)
-            return redirect('review', figure_name=figure_name)
+                
+            formValidity = True
+            
+            return render(request, 'review.html', {
+                'figure': figure,
+                'averageRating': avgRating,
+                'reviewForm': reviewForm,
+                'imageForm': imageForm,
+                'formValidity': formValidity,
+                'figureName': figure.figureName
+            })
     else:
         reviewForm = ReviewForm()
         imageForm = ReviewImageForm()  
@@ -110,6 +122,8 @@ def review(request, figure_name):
         'averageRating': avgRating,
         'reviewForm': reviewForm,
         'imageForm': imageForm,
+        'formValidity': formValidity,
+        'figureName': figure.figureName 
     })
     
 def guest_organiser(request):
