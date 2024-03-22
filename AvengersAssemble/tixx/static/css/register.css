@@ -6,10 +6,11 @@
 }
 
 *{
-    font-family: Arial;
+    font-family: "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html {
+    overflow: hidden;
     height: 100%;
     width: 100%;
   }
@@ -29,9 +30,8 @@ html {
 
 
 .register {
+    width: 420px;
     background: white;
-    height: 50%;
-    width: 25%;
     border-radius: 10%;
     box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.05), 
     5px 5px 15px rgba(0, 0, 0, 0.5), inset 2px 2px 5px rgba(32, 32, 32, 0.5), 

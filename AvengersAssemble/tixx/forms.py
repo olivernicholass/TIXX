@@ -5,7 +5,10 @@ from .models import Review, ReviewImage
 
 
 class RegisterForm(UnboundLocalError):
-      email = forms.EmailField()
+      username = forms.CharField(widget=forms.TextInput)
+      email = forms.EmailField(widget=forms.EmailInput)
+      password1 = forms.CharField(widget=forms.PasswordInput)
+      password2 = forms.CharField(widget=forms.PasswordInput)
 
       class Meta:
             model = User
