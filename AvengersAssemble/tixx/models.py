@@ -12,7 +12,7 @@ class Arena(models.Model):
      return self.arenaName
  
 class Figure(models.Model):
-    figureName = models.CharField(max_length=100)
+    figureName = models.CharField(max_length=100, unique=True)
     figureGenre = models.CharField(max_length=100)
     figurePicture = models.ImageField(upload_to='figure_images/', null=True, blank=True)
     figureAbout = models.CharField(max_length=2000, blank=True)

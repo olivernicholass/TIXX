@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
-from .models import Event, Figure
+from .models import Event, Figure, ReviewImage, Review
 from django.utils import timezone
 from django.contrib import admin
 from django.urls import path, include
@@ -9,11 +9,12 @@ from django.db.models import Avg
 from .models import Event, Ticket, Review
 from django.shortcuts import redirect
 from django.http import JsonResponse
+from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
 
 # Create your views here.
 
 def home(request):
-    events = Event.objects.all()  
+    events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
     return render(request, "home.html", {'events': events})
 
 def login(request):
@@ -78,8 +79,53 @@ def figure(request, figure_name):
         'allReviews': reviewWithImage + reviewNoImage,
         'reviewCount': len(reviewWithImage) + len(reviewNoImage),
         'averageRating': avgRating,
+        'figureName': figure.figureName
     })
 
+def review(request, figure_name):
+    figure_case = figure_name.lower()
+    figure = get_object_or_404(Figure, figureName__iexact=figure_case)
+    reviews = Review.objects.filter(reviewFigure=figure)
+    
+    avgRating = reviews.aggregate(Avg('reviewRating'))['reviewRating__avg']
+    if avgRating is not None:
+        avgRating = round(avgRating, 1)
+
+    formValidity = False
+
+    if request.method == 'POST':
+        reviewForm = ReviewForm(request.POST)
+        imageForm = ReviewImageForm(request.POST, request.FILES)
+        if reviewForm.is_valid() and imageForm.is_valid():
+            review = reviewForm.save(commit=False)
+            review.reviewFigure = figure
+            review.save()
+            for image in request.FILES.getlist('reviewImage'):
+                ReviewImage.objects.create(review=review, reviewImage=image)
+                
+            formValidity = True
+            
+            return render(request, 'review.html', {
+                'figure': figure,
+                'averageRating': avgRating,
+                'reviewForm': reviewForm,
+                'imageForm': imageForm,
+                'formValidity': formValidity,
+                'figureName': figure.figureName
+            })
+    else:
+        reviewForm = ReviewForm()
+        imageForm = ReviewImageForm()  
+    
+    return render(request, 'review.html', {
+        'figure': figure,
+        'averageRating': avgRating,
+        'reviewForm': reviewForm,
+        'imageForm': imageForm,
+        'formValidity': formValidity,
+        'figureName': figure.figureName 
+    })
+    
 def guest_organiser(request):
     if request.method == 'POST':
         form = GuestOrganiserForm(request.POST)

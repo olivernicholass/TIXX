@@ -1,0 +1,160 @@
+
+.form-fields {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: stretch;
+    margin-top:2%;
+}
+
+.star-rating .fa-star {
+    font-size: 30px; 
+    cursor: pointer; 
+}
+
+.form-container {
+    width: 50%; 
+    margin: 0 auto; 
+}
+
+.star-rating .fa-star.half {
+    color: #03256C; 
+}
+.form-fields div {
+    margin-bottom: 10px; 
+}
+
+.form-fields p{
+    font-size: 15px; 
+    font-weight:400;
+}
+
+.form-fields input[type="text"],
+.form-fields input[type="number"],
+.form-fields input[type="date"],
+.form-fields textarea {
+    width: 100%; 
+    padding: 8px; 
+    border: 1px solid #ccc;
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+
+.form-fields button {
+    width: 25%; 
+    padding: 10px 20px; 
+    background-color: #03256C;
+    color: white;
+    border: none; 
+    border-radius: 4px;
+    margin-bottom:10%; 
+    cursor: pointer; 
+    font-weight:500;
+}
+
+.file-upload-label .fas.fa-camera {
+    color: #0056b3;
+    margin-right:5px;
+}
+
+.form-fields button:hover {
+    background-color: #0056b3; 
+}
+
+.file-upload-container {
+    display: flex;
+    align-items: center; 
+}
+
+
+.file-upload-label {
+    width: auto;
+    padding: 10px;
+    background-color: white;
+    color: #03256C;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    margin-top:10px;
+    font-weight:500;
+}
+
+.form-fields p {
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 5px; 
+}
+
+.file-upload-label {
+    transition: transform 0.3s ease;
+}
+
+.file-upload-label:hover {
+    transform: scale(1.1);
+}
+
+#popup-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-content {
+    width: 50%; 
+    max-width: 400px; 
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+#return-button {
+    padding: 10px 20px;
+    background-color: #03256C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width:50%;
+    margin: 0 auto; 
+    margin-bottom:2%;
+    display: block; 
+}
+
+#home {
+    padding: 10px 20px;
+    background-color: #03256C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width:50%;
+    margin: 0 auto;
+    display: block; 
+}
+
+
+#home:hover, #return-button:hover {
+    background-color: #0056b3;
+}
+

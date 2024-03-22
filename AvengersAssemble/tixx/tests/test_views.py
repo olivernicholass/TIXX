@@ -1,8 +1,12 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 from tixx.models import Figure, Event, Review, ReviewImage, Arena
 from django.utils.text import slugify
+from django.test import TestCase
+from tixx.views import review
+from tixx.forms import ReviewForm, ReviewImageForm
+import datetime
 
 class ViewTests(TestCase):
     
@@ -135,3 +139,67 @@ class FigureViewTestCase(TestCase):
 
         # Correct Template
         self.assertTemplateUsed(response, 'figure.html')
+
+# Review View Test (100% Coverage)
+
+class ReviewViewTest(TestCase):
+    def setUp(self):
+        
+        # Sample figure 
+        self.figure = Figure.objects.create(
+            figureName='Test Figure',
+            figureGenre='Test Genre',
+            figureAbout='Test About'
+        )
+
+        # Sample review 
+        self.review = Review.objects.create(
+            reviewRating=4.5,
+            reviewTitle='Test Review',
+            reviewText='Test Review Text',
+            reviewFigure=self.figure,
+            reviewDate=datetime.date.today()
+        )
+
+        self.client = Client()
+
+    # Handling a GET request PRE submission
+    
+    def test_review_view_get(self):
+        url = reverse('review', kwargs={'figure_name': self.figure.figureName})
+        response = self.client.get(url)
+        
+        # Asserting various responses on context
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'review.html')
+        self.assertIn('reviewForm', response.context)
+        self.assertIn('imageForm', response.context)
+        self.assertIn('figure', response.context)
+        self.assertIn('averageRating', response.context)
+        self.assertIn('formValidity', response.context)
+        self.assertEqual(response.context['figure'], self.figure)
+        self.assertEqual(response.context['averageRating'], 4.5)
+        self.assertFalse(response.context['formValidity'])
+
+    # Handling a POST request after submitting a review
+    
+    def test_review_view_post(self):
+        url = reverse('review', kwargs={'figure_name': self.figure.figureName})
+        response = self.client.post(url, {
+            'reviewRating': 4.0,
+            'reviewTitle': 'Test Review',
+            'reviewText': 'Test Review Text',
+            'reviewDate': datetime.date.today()
+        }, format='multipart')  
+        
+        # Asserting various responses on context
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'review.html')
+        self.assertIn('reviewForm', response.context)
+        self.assertIn('imageForm', response.context)
+        self.assertIn('figure', response.context)
+        self.assertIn('averageRating', response.context)
+        self.assertIn('formValidity', response.context)
+        self.assertEqual(response.context['figure'], self.figure)
+        self.assertIsNotNone(response.context['averageRating'])
+        self.assertTrue(response.context['formValidity'])

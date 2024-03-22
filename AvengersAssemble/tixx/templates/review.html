@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %} 
+{% load figuretag %}
+<link rel="stylesheet" href="{% static 'css/figure.css' %}">
+<link rel="stylesheet" href="{% static 'css/review.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="{% static 'js/figure.js' %}"></script>
+<script src="{% static 'js/review.js' %}"></script> 
+<div class="container">
+    <div class="info">
+        <div class="pfp">
+            {% if figure.figurePicture %}
+                <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+            {% else %}
+                <p>No Image Available</p>
+            {% endif %}
+        </div>
+        <h1>{{ figure.figureName }} Review</h1>
+        <p>{{ figure.figureGenre }}</p>
+        <div class="average-rating">
+            <i class="fas fa-star filled"></i>
+            <span>{{ averageRating|default_if_none:"N/A" }}</span>
+        </div>
+    </div>
+    <div class="pfp-background">
+        {% if figure.figurePicture %}
+            <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+        {% endif %}
+    </div>
+</div> 
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-fields">
+        <div>
+            <div id="star-rating" class="star-rating">
+                <span class="fa fa-star" data-rating="1"></span>
+                <span class="fa fa-star" data-rating="2"></span>
+                <span class="fa fa-star" data-rating="3"></span>
+                <span class="fa fa-star" data-rating="4"></span>
+                <span class="fa fa-star" data-rating="5"></span>
+                <input type="hidden" name="reviewRating" id="rating-value" value="0"> 
+            </div>
+            <p>Select a rating</p>
+        </div>
+        <div>
+            {% for field in reviewForm %}
+            <div>
+                {% if field.name == 'reviewTitle' %}
+                    <input type="text" name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}" required>
+                {% elif field.name == 'reviewText' %}
+                    <textarea name="{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}" required></textarea>
+                {% elif field.name == 'reviewDate' %}
+                    <p>Select a date</p>
+                    <input type="date" name="{{ field.name }}" id="date-placeholder" required>
+                {% elif field.name == 'reviewImage' %}
+                    <div class="file-upload-container">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-camera"></i> SHARE YOUR MOMENT
+                        </label>
+                        <input type="file" id="file-upload" name="reviewImage" accept="image/*" style="display: none;">
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" onclick="return validateRating()">SUBMIT</button>
+    </div>
+</form>
+{% if formValidity %}
+<div id="popup-modal" class="modal">
+  <div class="modal-content">
+    <p>Thank's' for taking the time to review.. {{ figure.figureName }}! 😊</p>
+    <button id="home">Home</button>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

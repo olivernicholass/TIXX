@@ -5,7 +5,7 @@
 #search-container {
     padding: 5px;
     width: fit-content;
-    border:2.5px solid #2541B2;
+    border:2.5px solid #03256C;
     border-radius:8px;
 }
 
@@ -30,10 +30,14 @@
 
 #search-container .btn-primary{
     border-radius:8px;
-    background-color: #2541B2;
-    border-color: #2541B2;
+    background-color: #03256C;
+    border-color: #03256C;
 }
 
+.btn-primary {
+  background-color: #03256C;
+  border-color: #03256C;
+}
 
 .container{
     display: flex !important;
