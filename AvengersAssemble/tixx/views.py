@@ -95,13 +95,16 @@ def figure(request, figure_name):
     if avgRating is not None:
         avgRating = round(avgRating, 1)
 
+    galleryCount = sum(1 for review in reviewWithImage)
+
     return render(request, 'figure.html', {
         'figure': figure,
         'events': events,
         'allReviews': reviewWithImage + reviewNoImage,
         'reviewCount': len(reviewWithImage) + len(reviewNoImage),
         'averageRating': avgRating,
-        'figureName': figure.figureName
+        'figureName': figure.figureName,
+        'galleryCount': galleryCount,  
     })
 
 def review(request, figure_name):
