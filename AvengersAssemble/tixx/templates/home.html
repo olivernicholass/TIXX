@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <div id="search-container" class="container mt-3 text-center">
-    <form class="form-inline">
+    <form class="form-inline" method="GET" action="{% url 'search_results' %}">
         <div class="form-group">
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -24,17 +24,17 @@
                         <img src="{% static 'icons/date.png' %}" alt="Date Icon" class="small-icon">
                     </span>
                 </div>
-                <input placeholder="All Dates" style="width: 150px;" class="form-control mr-2" type="text" onfocus="(this.type='date')" onblur="(this.type='text')"id="date" />
+                <input placeholder="All Dates" style="width: 150px;" class="form-control mr-2" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="date">
             </div>
             <div class="input-group">
-                <input type="text" class="form-control lg-search-input" placeholder="Search by Figure, Event, or Artist" style="width: 400px;"> 
+                <input type="text" class="form-control lg-search-input" placeholder="Search by Figure, Event, or Artist" style="width: 400px;" name="searchQuery"> 
                 <div class="input-group-append">
                     <button type="submit" class="btn btn-primary">Search</button>
                 </div>
             </div>
         </div>
     </form>
-</div> 
+</div>
 
 <!-- TEMP IMAGE CYCLER EVENTS / ADDING FUNCTIONALITY TO PULL FROM EVENTS MODEL -->
 
