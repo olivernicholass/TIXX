@@ -74,3 +74,78 @@
     margin-bottom: 20px;
     border-radius: 8px;
 }
+
+.events-container {
+    position: relative;
+    top: 20px;
+    width: 100%; 
+    background-color: transparent;
+    overflow-y: auto; 
+    max-height: 500px; 
+    margin-bottom:5%;
+}
+
+.events-container p {
+    font-size: 25px;
+    margin:0;
+}
+
+.event {
+    border: 2px solid #03256C;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.initialFigure {
+    font-weight:500;
+    color:#03256C;
+}
+
+.event-info {
+    display: flex;
+    align-items: center;
+}
+
+.event-icon {
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 50px; 
+    height: auto; 
+}
+
+.event-date {
+    margin-right: 3%;
+    margin-left: 1%;
+}
+
+.event-details p,
+.event-date p {
+    letter-spacing: 0em;
+    font-size: 16px;
+}
+
+.event p {
+    margin: 5px 0;
+}
+
+.bold {
+    font-weight: 600; 
+}
+
+#eventDate {
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    margin-left: auto;
+    background-color: #03256C;
+    border: none;
+}
+
+.events-container .events-count {
+    font-size: 14px !important; 
+    color: black;
+    margin-bottom:1%;
+}

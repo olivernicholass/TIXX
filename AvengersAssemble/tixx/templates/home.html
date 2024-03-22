@@ -16,7 +16,7 @@
                         <img src="{% static 'icons/location.png' %}" alt="Location Icon" class="small-icon">
                     </span>
                 </div>
-                <input type="text" class="form-control mr-2" placeholder="City/Postal Code" style="width: 150px;"> 
+                <input type="text" class="form-control mr-2" placeholder="City/Postal Code" style="width: 150px;" name="city"> 
             </div>
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -24,7 +24,7 @@
                         <img src="{% static 'icons/date.png' %}" alt="Date Icon" class="small-icon">
                     </span>
                 </div>
-                <input placeholder="All Dates" style="width: 150px;" class="form-control mr-2" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="date">
+                <input placeholder="All Dates" style="width: 150px;" class="form-control mr-2" type="text" onfocus="(this.type='date')" onblur="(this.type='text')" id="date" name="date">
             </div>
             <div class="input-group">
                 <input type="text" class="form-control lg-search-input" placeholder="Search by Figure, Event, or Artist" style="width: 400px;" name="searchQuery"> 

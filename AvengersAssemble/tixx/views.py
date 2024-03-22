@@ -11,8 +11,9 @@ from .models import Event, Ticket, Review
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
-import difflib
 from django.db.models import Q
+from django.utils.dateparse import parse_date
+
 # Create your views here.
 
 def home(request):
@@ -63,8 +64,11 @@ def register(response):
         form = UserCreationForm()
     return render(response, "register.html", {"form":form})
 
+
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
+    city = request.GET.get('city')
+    date = request.GET.get('date')
     
     figures = Figure.objects.filter(figureName__icontains=query)
     exactFigures = figures.filter(figureName__iexact=query)
@@ -73,13 +77,37 @@ def search_results(request):
     searchedFigures = exactFigures | partialFigures 
     
     relatedFigures = []
-    if searchedFigures :
-        initialFigure = searchedFigures[0]
-        relatedFigures = Figure.objects.filter(figureGenre__iexact=initialFigure.figureGenre).exclude(id=initialFigure.id)
-    else:
-        relatedFigures = Figure.objects.all()
+    relatedEvents = Event.objects.none()  
     
-    return render(request, "search_results.html", {'searchedFigures': searchedFigures , 'relatedFigures': relatedFigures})
+    
+    #HANDLE CASE FOR JUST SEARCH BOX
+    #HANDLE CASE FOR JUST DATE
+    #HANDLE CASE FOR JUST CITY
+    
+    if searchedFigures:
+        initialFigure = searchedFigures[0]
+        relatedEvents = Event.objects.filter(figureId=initialFigure)
+        
+    # User searches for events solely based on city keyword
+    if city:
+        relatedEvents = Event.objects.filter(eventLocation__icontains=city)
+        
+        # Remove all searched figures (Search box empty?)
+        if not query:
+            searchedFigures = []
+        
+    if date:
+        pd = parse_date(date)
+        if pd:
+            relatedEvents = relatedEvents.filter(eventDate=pd)
+    
+
+    figureID = relatedEvents.values_list('figureId', flat=True).distinct()
+    relatedFigures = Figure.objects.filter(id__in=figureID).distinct()
+    
+    return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
+                                                   'relatedFigures': relatedFigures, 
+                                                   'relatedEvents': relatedEvents})
 
 
 def ticket_selection(request):
