@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login as auth_login, logout
 from .models import Event, Figure, ReviewImage, Review
 from django.utils import timezone
 from django.contrib import admin
@@ -18,7 +19,28 @@ def home(request):
     return render(request, "home.html", {'events': events})
 
 def login(request):
+    if request.user.is_authenticated:
+        messages.warning(request, "you are already logged in")
+        return redirect("/")
+    else: 
+
+        if request.method == "POST":
+            name = request.POST.get("username")
+            passwd = request.POST.get("password")
+            user = authenticate(request, username=name, password=passwd)
+            if user is not None:
+                auth_login(request, user)
+                return redirect("/")
+            else:
+                messages.error(request, "Invalid username or password")
+                return redirect("/login")
+      
     return render(request, "login.html")
+
+def logoutpage(request):
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect("/login")
 
 def profile(request):
     return render(request, "profile.html")

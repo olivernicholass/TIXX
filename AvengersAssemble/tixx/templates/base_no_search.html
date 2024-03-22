@@ -76,12 +76,21 @@
             </ul>
 
             <ul class="navbar-nav ml-auto login-register">
-                <li class="nav-item" style="margin-left: 30px;">
-                    <a class="nav-link login-register" href="{% url 'login' %}">
-                        <img src="{% static 'icons/user.png' %}" class="icon">
-                        Login/Register
-                    </a>
-                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item" style="margin-left: 30px;">
+                        <a class="nav-link login-register" href="{% url 'logout' %}">
+                            <img src="{% static 'icons/user.png' %}" class="icon">
+                            Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item" style="margin-left: 30px;">
+                        <a class="nav-link login-register" href="{% url 'login' %}">
+                            <img src="{% static 'icons/user.png' %}" class="icon">
+                            Login/Register
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         
