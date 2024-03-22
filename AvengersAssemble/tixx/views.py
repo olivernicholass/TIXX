@@ -11,11 +11,20 @@ from .models import Event, Ticket, Review
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
-
+import difflib
+from django.db.models import Q
 # Create your views here.
 
 def home(request):
-    events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
+    searchQuery = None
+    if request.method == 'GET' and 'searchQuery' in request.GET:
+        searchQuery = request.GET.get('searchQuery').lower()
+    
+    if searchQuery:
+        events = Event.objects.filter(eventName__icontains=searchQuery).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
+    else:
+        events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
+    
     return render(request, "home.html", {'events': events})
 
 def login(request):
@@ -55,12 +64,23 @@ def register(response):
     return render(response, "register.html", {"form":form})
 
 def search_results(request):
-    return render(request, "search_results.html")
+    query = request.GET.get('searchQuery', '').strip()
+    
+    figures = Figure.objects.filter(figureName__icontains=query)
+    exactFigures = figures.filter(figureName__iexact=query)
+    partialFigures = figures.exclude(figureName__iexact=query)
+    
+    searchedFigures = exactFigures | partialFigures 
+    
+    relatedFigures = []
+    if searchedFigures :
+        initialFigure = searchedFigures[0]
+        relatedFigures = Figure.objects.filter(figureGenre__iexact=initialFigure.figureGenre).exclude(id=initialFigure.id)
+    else:
+        relatedFigures = Figure.objects.all()
+    
+    return render(request, "search_results.html", {'searchedFigures': searchedFigures , 'relatedFigures': relatedFigures})
 
-
-def get_ticket_data(request):
-    tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
-    return JsonResponse({'tickets': list(tickets)})
 
 def ticket_selection(request):
     row_range = range(10)

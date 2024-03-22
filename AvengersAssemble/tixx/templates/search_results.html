@@ -1,6 +1,61 @@
 {% extends "base.html" %}
-{% load static %} 
+{% load static %}
 
 {% block content %}
-            
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'css/search_results.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{% static 'js/search_results.js' %}"></script> 
+<div class="container mt-3">
+
+    <!-- CONTAINER FOR SEARCHED FIGURES -->
+
+    {% if searchedFigures %}
+        <div class="sf-container">
+            <h2><span class="underline">SEARCHED</span> FIGURES</h2>
+            <div class="figure-grid">
+                {% for figure in searchedFigures %}
+                <div class="figure-card">
+                    <a href="{% url 'figure' figure.figureName %}"> 
+                        <img src="{{ figure.figurePicture.url }}" class="figure-image" alt="{{ figure.figureName }}">
+                        <div class="caption">
+                            <h5 class="figure-title">{{ figure.figureName }}</h5>
+                            <p class="figure-genre">{{ figure.figureGenre }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <p>No searched figures found.</p>
+    {% endif %}
+
+    <!-- CONTAINER FOR RELATED FIGURES -->
+
+    {% if relatedFigures %}
+        <div class="rf-container">
+            <h2><span class="underline">RELATED</span> FIGURES</h2>
+            <div class="figure-grid-scrollable">
+                <div class="figure-grid">
+                    {% for related_figure in relatedFigures %}
+                        <div class="figure-card">
+                            <a href="{% url 'figure' related_figure.figureName %}"> 
+                                <img src="{{ related_figure.figurePicture.url }}" class="figure-image" alt="{{ related_figure.figureName }}">
+                                <div class="caption">
+                                    <h5 class="figure-title">{{ related_figure.figureName }}</h5>
+                                    <p class="figure-genre">{{ related_figure.figureGenre }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p>No related figures found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>No related figures found.</p>
+    {% endif %}
+</div>
 {% endblock %}
