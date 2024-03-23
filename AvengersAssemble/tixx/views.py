@@ -26,8 +26,18 @@ def home(request):
         events = Event.objects.filter(eventName__icontains=searchQuery).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
     else:
         events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
-    
-    return render(request, "home.html", {'events': events})
+
+    carouselFigures = Figure.objects.filter(figureName__in=['Queen', 'Ye', 'Frank Ocean'])
+
+    hipHopFigures = Figure.objects.filter(figureGenre='Hip-Hop')
+    popFigures = Figure.objects.filter(figureGenre='Pop')
+    basketballFigures = Figure.objects.filter(figureGenre='Basketball')
+
+    return render(request, "home.html", {'events': events, 
+                                         'carouselFigures': carouselFigures,
+                                         'hipHopFigures': hipHopFigures,
+                                         'popFigures': popFigures,
+                                         'basketballFigures': basketballFigures})
 
 def login(request):
     if request.user.is_authenticated:
