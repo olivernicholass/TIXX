@@ -1,60 +1,64 @@
-{% extends "base.html" %}
-{% load static %} 
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
 <head>
-    <title>
-        {% block title%} Tixx - Ticket Selection {% endblock %}
-    </title>
-    {% load crispy_forms_tags %}
-    
+  <title>
+    {% block title %}
+      Tixx - Ticket Selection
+    {% endblock %}
+  </title>
+  {% load crispy_forms_tags %}
 </head>
 
+<div class="container">
 
-{% block content %}
 
-<main>
-<link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}">
-<div class="section_container">
-    <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
-    <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
-    <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
-    <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-    <img src="{% static 'images/footballfield.png' %}" class="image" alt="Your Image">
-</div>
+  <div class="main">
+    <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
+    <div class="section_container">
+      <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+      <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+      <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+      <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+      <img src="{% static 'images/footballfield.png' %}" class="image" alt="Your Image" />
+    </div>
     <h1>Ticket Selection</h1>
 
-    <form method="post" action="{% url 'ticket_selection'%}">
-        {% csrf_token %}
-        <label for="tickets">Select Ticket Section:</label>
-        <select name="tickets" id="tickets">
-
-        </select>
-        <input type="submit" value="Purchase Tickets">
+    <form method="post" action="{% url 'ticket_selection' %}">
+      {% csrf_token %}
+      <label for="tickets">Select Ticket Section:</label>
+      <select name="tickets" id="tickets"></select>
+      <input type="submit" value="Purchase Tickets" />
     </form>
 
-
-
     <ul class="showcase">
-        <li>
-          <div class="seat"></div>
-          <small>N/A</small> 
-        </li>
-  
-        <li>
-          <div class="seat selectgted"></div>
-          <small>Selected</small>
-        </li>
-  
-        <li>
-          <div class="seat occupied"></div>
-          <small>Occupied</small>
-        </li>
-      </ul>
+      <li>
+        <div class="seat"></div>
+        <small>N/A</small>
+      </li>
+
+      <li>
+        <div class="seat selectgted"></div>
+        <small>Selected</small>
+      </li>
+
+      <li>
+        <div class="seat occupied"></div>
+        <small>Occupied</small>
+      </li>
+    </ul>
 
     <div class="seatcontainer" id="gridContainer"></div>
-
-
-    <script src="{% static 'js/seat_section.js' %}"></script>
-    </main>
-
     
+
+  </div>
+  <div class="sidebar">
+    <h1>Selected Seats</h1>
+    <ul id="seleted-seats"></ul>
+  </div>
+</div>
+
+
+
+  <script src="{% static 'js/seat_section.js' %}"></script>
 {% endblock %}

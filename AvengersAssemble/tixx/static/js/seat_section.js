@@ -42,25 +42,50 @@ function showSection1AvailableSeats(zone){
 };
 
 function createGrid(zone, rowsize, colsize) {
+
   const zoneNumber = document.createElement('p');
   zoneNumber.textContent = "Section " + zone + " seats:";
   gridContainer.appendChild(zoneNumber);
-  for (let i = 0; i < rowsize; i++) {
-    const row = document.createElement('div');
-    row.classList.add('row');
-    row.classList.add('seatcontainer');
-    gridContainer.appendChild(row);
-    for (let j = 0; j < colsize; j++) {
+
+  for (let row = 0; row < rowsize; row++) {
+
+    // Create a row for the seats
+    const rowElement = document.createElement('div');
+    rowElement.classList.add('row', 'seatcontainer');
+    gridContainer.appendChild(rowElement);
+
+    // Add seats to the row
+    for (let col = 0; col < colsize; col++) {
       const seat = document.createElement('div');
       seat.classList.add('seat');
-      row.appendChild(seat);
+      rowElement.appendChild(seat);
+
+      // seat.addEventListener('click', function(){
+      //   seat.classList.toggle('selected');
+      //   updateSelectedSeats();
+      // })
     }
   }
+}
+
+function updateSelectedSeats(){
+  const selectedSeatsList = document.getElementById('selected-seats');
+  selectedSeatsList.innerHTML = ''; // Clear previous selection
+  
+  // Get all selected seats
+  const selectedSeats = document.querySelectorAll('.seat.selected');
+  
+  // Create list items for selected seats
+  selectedSeats.forEach(function(seat) {
+    const listItem = document.createElement('li');
+    listItem.textContent = 'Row ' + (seat.parentElement.rowIndex + 1) + ', Seat ' + (seat.cellIndex + 1);
+    selectedSeatsList.appendChild(listItem);
+  });
 }
 
 gridContainer.addEventListener('click', (e) => {
   if(e.target.classList.contains('seat') && !e.target.classList.contains('occupied')){
     e.target.classList.toggle('selected');
-    
+    alert('hello');
   }
 });
