@@ -9,8 +9,7 @@
 <div class="container mt-3">
 
     <!-- CONTAINER FOR SEARCHED FIGURES -->
-
-    {% if searchedFigures %}
+        {% if searchedFigures and searchedFigures|length > 0 %}
         <div class="sf-container">
             <h2><span class="underline">SEARCHED</span> FIGURES</h2>
             <div class="figure-grid">
@@ -27,12 +26,9 @@
                 {% endfor %}
             </div>
         </div>
-    {% else %}
-        <p>No searched figures found.</p>
-    {% endif %}
+        {% endif %}
 
     <!-- CONTAINER FOR RELATED FIGURES -->
-
     {% if relatedFigures %}
         <div class="rf-container">
             <h2><span class="underline">RELATED</span> FIGURES</h2>
@@ -54,8 +50,75 @@
                 </div>
             </div>
         </div>
-    {% else %}
-        <p>No related figures found.</p>
     {% endif %}
-</div>
+
+    <!-- SEARCHING FOR EVENTS -->
+    {% if searchedFigures %}
+        <div id="events-section" class="events-container">
+            <div class="events-heading">
+                <p>SHOWING EVENTS FOR: 
+                    {% if searchedFigures %}
+                        {% for figure in searchedFigures %}
+                            <span class="figure-name">{{ figure.figureName|upper }}</span>
+                            {% if not forloop.last %} and {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        No Searched Figures
+                    {% endif %}
+                </p>
+                <p class="events-count">Available Events • {{ relatedEvents|length }}</p>
+            </div>
+        
+            {% for event in relatedEvents %}
+                <div class="event">
+                    <div class="event-info">
+                        <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                        <div class="event-date">
+                            <p id="eventDate">{{ event.eventDate }}</p>
+                        </div>
+                        <div class="event-details">
+                            <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                            <p><span class="bold">{{ event.arenaId }}</span></p>
+                            <p>{% if event.figure in searchedFigures %}<span class="figure-name">{{ event.figure.figureName }}</span>{% else %}{{ event.figure.figureName }}{% endif %}</p>
+                        </div>
+                        <a href="" class="btn btn-primary">Find Tickets</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No Events Available</p>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div id="events-section" class="events-container">
+            <div class="events-heading">
+                <p>SHOWING EVENTS FOR: 
+                    {% for figure in relatedFigures %}
+                        <span class="figure-name">{{ figure.figureName|upper }}</span>
+                        {% if not forloop.last %} and {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="events-count">Available Events • {{ relatedEvents|length }}</p>
+            </div>
+        
+            {% for event in relatedEvents %}
+                <div class="event">
+                    <div class="event-info">
+                        <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                        <div class="event-date">
+                            <p id="eventDate">{{ event.eventDate }}</p>
+                        </div>
+                        <div class="event-details">
+                            <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                            <p><span class="bold">{{ event.arenaId }}</span></p>
+                            <p>{{ event.figure.figureName }}</p>
+                        </div>
+                        <a href="" class="btn btn-primary">Find Tickets</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No Events Available</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
 {% endblock %}
