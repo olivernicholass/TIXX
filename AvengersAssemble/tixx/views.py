@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
 from django.db.models import Q
+from datetime import datetime
 from django.utils.dateparse import parse_date
 
 # Create your views here.
@@ -64,7 +65,6 @@ def register(response):
         form = UserCreationForm()
     return render(response, "register.html", {"form":form})
 
-
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
     city = request.GET.get('city')
@@ -74,42 +74,89 @@ def search_results(request):
     exactFigures = figures.filter(figureName__iexact=query)
     partialFigures = figures.exclude(figureName__iexact=query)
     
-    searchedFigures = exactFigures | partialFigures 
-    
+    searchedFigures = []
     relatedFigures = []
     relatedEvents = Event.objects.none()  
     
+    # Search Functionality: Handle City + Date + Keyword 
+    # - Display EXACT Events for the EXACT Date for the EXACT Figure
+    # - i.e City: Vancouver Date: 2024-05-30 Keyword: Drake
+    # - Displays events for this exact city, date, and person
+    # - Will display other events for other figures if they are also on the same date
     
-    #HANDLE CASE FOR JUST SEARCH BOX
-    #HANDLE CASE FOR JUST DATE
-    #HANDLE CASE FOR JUST CITY
-    
-    if searchedFigures:
-        initialFigure = searchedFigures[0]
-        relatedEvents = Event.objects.filter(figureId=initialFigure)
-        
-    # User searches for events solely based on city keyword
-    if city:
-        relatedEvents = Event.objects.filter(eventLocation__icontains=city)
-        
-        # Remove all searched figures (Search box empty?)
-        if not query:
-            searchedFigures = []
-        
-    if date:
-        pd = parse_date(date)
-        if pd:
-            relatedEvents = relatedEvents.filter(eventDate=pd)
-    
+    if city and date and query:
+        dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
+        cityEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped, figureId__figureName__iexact=query)
+        relatedFigures = Figure.objects.filter(event__in=cityEvents).distinct()
+        relatedEvents = cityEvents
+        searchedFigures = []  
 
-    figureID = relatedEvents.values_list('figureId', flat=True).distinct()
-    relatedFigures = Figure.objects.filter(id__in=figureID).distinct()
+    # Search Functionality: Handle City + Date 
+    # - Display events only on the EXACT DATE INPUT + Related Figures for those exact events
     
+    elif city and date:
+        dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
+        relatedEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped)
+        relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
+
+    # Search Functionality: Handle City + Keyword
+    # - Display events ONLY related to the specific CITY and the Related Figures to these events.
+    # - Empty Searched Figure to only show the related figures to the events.
+    
+    elif city and query:
+        cityEvents = Event.objects.filter(eventLocation__iexact=city, figureId__figureName__iexact=query)
+        relatedFigures = Figure.objects.filter(event__in=cityEvents).distinct()
+        relatedEvents = cityEvents
+        searchedFigures = []  
+        
+    # Search Functionality: Handle Date + Keyword
+    # - Display events only on the EXACT DATE INPUT for the Figure Searched
+    # - i.e User puts in 2024-05-30 "Drake", ONLY Drake Concerts show for this date
+    # - Empty Searched Figure to only show specific EVENT for specific FIGURE
+
+    elif date and query:
+        dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
+        relatedEvents = Event.objects.filter(eventDate=dateStripped, figureId__figureName__iexact=query)
+        relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
+
+    # Search Functionality: Handling Only City 
+    # - Display events based on Event Location, Display Related Figures to these events.
+    
+    elif city:
+        relatedEvents = Event.objects.filter(eventLocation__iexact=city)
+        relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
+
+    # Search Functionality: Handling ONLY DATE 
+    # - User searches by only date: Displays events on that date + Related Figures for the events 
+    
+    elif date:
+        dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
+        relatedEvents = Event.objects.filter(eventDate=dateStripped)
+        relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
+
+    # Search Functionality: Handling ONLY KEYWORD 
+    # - User searches by keyword: Example, we have two figures "Frank Ocean" and "Frank Sinatraa"
+    # - Display both figures in "Searched Figure" section as they both contain "Frank" 
+    # - Related Figures will display based on initialFigure's Genre, so in this case Frank Ocean is first and genre=Pop so other "Pop" Artists
+    # - ONLY Search by keyword should show searched figures, rest should display related figures.
+
+    elif query:
+        searchedFigures = figures
+        if exactFigures:
+            initialFigure = exactFigures[0]
+            relatedEvents = Event.objects.filter(figureId=initialFigure)
+            relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+            searchedFigures = exactFigures | partialFigures
+        else:
+            searchedFigures = figures.distinct()
+            if searchedFigures.exists():
+                initialFigure = searchedFigures.first()
+                relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+                relatedEvents = Event.objects.filter(figureId=initialFigure)
+
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
-                                                   'relatedFigures': relatedFigures, 
-                                                   'relatedEvents': relatedEvents})
-
-
+                                                'relatedFigures': relatedFigures, 
+                                                'relatedEvents': relatedEvents})
 def ticket_selection(request):
     row_range = range(10)
     col_range = range(20)
