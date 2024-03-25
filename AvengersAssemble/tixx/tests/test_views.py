@@ -378,3 +378,40 @@ class SearchResultsViewTest(TestCase):
             for figure in relatedFigures:
                 self.assertIn(figure, response.context['relatedFigures'])
                 
+    # TEST: Handle ONLY KEYWORD (Genre)
+    def test_search_results_query_only_genre(self):
+
+        Genre = 'Pop'
+
+        response = self.client.get(reverse('search_results'), {'searchQuery': Genre})
+        self.assertEqual(response.status_code, 200)
+
+        # Find if Related events with the given Genre exist
+        expectedEvents = Event.objects.filter(figureId__figureGenre__iexact=Genre)
+        self.assertQuerysetEqual(response.context['relatedEvents'], expectedEvents)
+
+        # Find if Related Figures with the found events exist
+        expectedFigures = Figure.objects.filter(event__in=expectedEvents).distinct()
+        self.assertQuerysetEqual(response.context['relatedFigures'], expectedFigures)
+
+        # LEAVE SEARCH FIGURE EMPTY
+        self.assertFalse(response.context['searchedFigures'])
+        
+    # TEST: Handle ONLY KEYWORD (MAPPING Genre - rap -> Hip-Hop)
+    def test_search_results_query_mapped_genre(self):
+        # Define the user input and the mapped genre
+        Query = 'rap'
+        genreMap = {'rap': 'Hip-Hop'}
+
+        # Find out if the users input will match the genre map
+        if Query.lower() in genreMap:
+            genreMap = genreMap[Query.lower()]  
+            genreFigures = Figure.objects.filter(figureGenre__icontains=genreMap)
+
+            response = self.client.get(reverse('search_results'), {'searchQuery': Query})
+            self.assertEqual(response.status_code, 200)
+
+            # See if the figure displayed is the one corresponding to the genre map
+            # Should display a rap artist as Hip-Hop is mapped to "rap"
+            for figure in genreFigures:
+                self.assertIn(figure, response.context['relatedFigures'])
