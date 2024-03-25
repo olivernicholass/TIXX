@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from django.test import TestCase
 from tixx.views import review
 from tixx.forms import ReviewForm, ReviewImageForm
+from django.core.files.uploadedfile import SimpleUploadedFile
 import datetime
 
 class ViewTests(TestCase):
@@ -203,3 +204,177 @@ class ReviewViewTest(TestCase):
         self.assertEqual(response.context['figure'], self.figure)
         self.assertIsNotNone(response.context['averageRating'])
         self.assertTrue(response.context['formValidity'])
+        
+# Search Results View Test (0.967 -> 97% Coverage)
+
+class SearchResultsViewTest(TestCase):
+    
+    # SET UP LOCAL IMAGE UPLOAD
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.testJPG= cls.testImage()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+
+    @staticmethod
+    def testImage():
+        return SimpleUploadedFile("test.jpg", b"file_content", content_type="image/jpeg")
+
+    def setUp(self):
+        # TEST FIGURES
+        self.figure1 = Figure.objects.create(figureName='Drake', figureGenre='Hip-Hop', figurePicture=self.testJPG)
+        self.figure2 = Figure.objects.create(figureName='Adele', figureGenre='Pop', figurePicture=self.testJPG)
+
+        # TEST EVENTS/ARENA
+        self.arena = Arena.objects.create(arenaId='12345', arenaName='Test Arena', arenaCapacity=10000)
+        self.event1 = Event.objects.create(eventName='Drake Concert', eventDate='2024-05-30', eventTime='20:00',
+                                            eventLocation='Vancouver', eventDescription='Concert', eventStatus='Active',
+                                            arenaId=self.arena, figureId=self.figure1)
+        self.event2 = Event.objects.create(eventName='Adele Concert', eventDate='2024-05-30', eventTime='19:00',
+                                            eventLocation='Vancouver', eventDescription='Concert', eventStatus='Active',
+                                            arenaId=self.arena, figureId=self.figure2)
+        super().setUp()
+
+    # TAKE DOWN IMAGES
+    def tearDown(self):
+        super().tearDown()
+        self.figure1.figurePicture.delete()
+        self.figure2.figurePicture.delete()
+
+    # TEST: Handle City + Date + Keyword 
+    def test_search_results_exact_city_date_query(self):
+
+        Query = {
+            'searchQuery': 'Drake',
+            'city': 'Vancouver',
+            'date': '2024-05-30'
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+
+        # Locate Drake Event in Related Events
+        self.assertIn(self.event1, response.context['relatedEvents'])
+
+        # See if SearchedFigures is Empty
+        self.assertEqual(len(response.context['searchedFigures']), 0)
+
+    # TEST: Handle City
+    def test_search_results_only_city(self):
+
+        Query = {
+            'city': 'Vancouver'
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+
+        # See if Both Events/Figures are in Related Events/Figures
+        self.assertIn(self.event1, response.context['relatedEvents'])
+        self.assertIn(self.event2, response.context['relatedEvents'])
+        self.assertIn(self.figure1, response.context['relatedFigures'])
+        self.assertIn(self.figure2, response.context['relatedFigures'])
+        
+     # TEST: Handle Date + Keyword
+    def test_search_results_date_and_query(self):
+        # Prepare query parameters
+        Query = {
+            'date': '2024-05-30',
+            'searchQuery': 'Drake'
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+
+
+    # TEST: Handle City + Date
+    def test_search_results_city_and_date(self):
+
+        Query = {
+            'city': 'Vancouver',
+            'date': '2024-05-30'
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)  
+        
+    # TEST: Handle City + Keyword
+    def test_search_results_city_and_query(self):
+        Query = {
+            'city': 'Vancouver',
+            'searchQuery': 'Drake'
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+        
+    #TEST: Handle all EMPTY VALUES
+    def test_search_results_empty_case(self):
+
+        Query = {}
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+        
+    #TEST: Handle ONLY DATE
+    def test_search_results_date_only(self):
+        
+        # Create a TIME in the future and set the event to this date
+        timeAhead = (timezone.now() + timezone.timedelta(days=7)).date()
+        eventAhead = Event.objects.create(eventName='Test Event', eventDate=timeAhead, eventTime='20:00',
+                                            eventLocation='Test Location', eventDescription='Test Description',
+                                            eventStatus='Active', arenaId=self.arena, figureId=self.figure1)
+
+        Query = {
+            'date': timeAhead.strftime('%Y-%m-%d')
+        }
+
+        response = self.client.get(reverse('search_results'), Query)
+        self.assertEqual(response.status_code, 200)
+
+        # See if this created event is in the Related Events.
+        self.assertIn(eventAhead, response.context['relatedEvents'])
+    
+    #TEST : Handle ONLY KEYWORD
+    def test_search_results_query_only(self):
+
+        Query = 'NoFigure'
+
+        response = self.client.get(reverse('search_results'), {'searchQuery': Query})
+        self.assertEqual(response.status_code, 200)
+
+        # See if ALL are empty
+        self.assertFalse(response.context['searchedFigures'])
+        self.assertFalse(response.context['relatedEvents'])
+        self.assertFalse(response.context['relatedFigures'])
+        
+    #TEST : Handle EXACT KEYWORD
+    def test_search_results_query_exact(self):
+        
+        Query = 'Drake'
+
+        response = self.client.get(reverse('search_results'), {'searchQuery': Query})
+        self.assertEqual(response.status_code, 200)
+
+        # See if searchedFigures contains DRAKE
+        figures = Figure.objects.filter(figureName__icontains=Query)
+        for figure in figures:
+            self.assertIn(figure, response.context['searchedFigures'])
+
+        # Searched Figure to only show the related figures to the events.
+        if figures:
+            initialFigure = figures.first()
+            relatedEvents = Event.objects.filter(figureId=initialFigure)
+            for event in relatedEvents:
+                self.assertIn(event, response.context['relatedEvents'])
+
+        # The relatedFigures should only be based on the initialFigures GENRE
+        if figures:
+            initialFigure = figures.first()
+            relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+            for figure in relatedFigures:
+                self.assertIn(figure, response.context['relatedFigures'])
+                

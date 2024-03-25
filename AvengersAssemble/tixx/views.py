@@ -167,6 +167,7 @@ def search_results(request):
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
                                                 'relatedFigures': relatedFigures, 
                                                 'relatedEvents': relatedEvents})
+    
 def ticket_selection(request):
     row_range = range(10)
     col_range = range(20)
