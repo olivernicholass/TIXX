@@ -1,64 +1,85 @@
 {% extends 'base.html' %}
 {% block content %}
-{% load static %}
-<head>
-  <title>
-    {% block title %}
-      Tixx - Ticket Selection
-    {% endblock %}
-  </title>
-  {% load crispy_forms_tags %}
-</head>
+  {% load static %}
+  <head>
+    <title>
+      {% block title %}
+        Tixx - Ticket Selection
+      {% endblock %}
+    </title>
+    {% load crispy_forms_tags %}
+  </head>
 
-<div class="container">
+  <div class="container">
+    <div class="main">
+      <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
+      <div class="section_container">
+        {% for event in event %}
+          {% if event.eventGenre == 'Rock' %}
+            <!-- Hockey specific layout -->
+            <!-- Replace the following buttons and image with hockey-specific content -->
+            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+            <img src="{% static 'images/hockeyrink.png' %}" class="image" alt="Hockey Rink" />
+          {% elif event.eventGenre == 'basketball' %}
+            <!-- Basketball specific layout -->
+            <!-- Replace the following buttons and image with basketball-specific content -->
+            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+            <img src="{% static 'images/basketballcourt.png' %}" class="image" alt="Basketball Court" />
+          {% elif event.eventGenre == 'concert' %}
+            <!-- Concert specific layout -->
+            <!-- Replace the following buttons and image with concert-specific content -->
+            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+            <img src="{% static 'images/concertvenue.png' %}" class="image" alt="Concert Venue" />
+          {% else %}
+            <!-- Default layout if event type is unknown or not specified -->
+            <p>No specific layout available for this event type.</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <h1>Ticket Selection</h1>
 
 
-  <div class="main">
-    <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
-    <div class="section_container">
-      <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
-      <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
-      <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
-      <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-      <img src="{% static 'images/footballfield.png' %}" class="image" alt="Your Image" />
+
+      <ul class="showcase">
+        <li>
+          <div class="seat"></div>
+          <small>N/A</small>
+        </li>
+
+        <li>
+          <div class="seat selected"></div>
+          <small>Selected</small>
+        </li>
+
+        <li>
+          <div class="seat occupied"></div>
+          <small>Occupied</small>
+        </li>
+      </ul>
+
+      <div class="seatcontainer" id="gridContainer"></div>
     </div>
-    <h1>Ticket Selection</h1>
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3>Your Tickets</h3>
+      </div>
 
-    <form method="post" action="{% url 'ticket_selection' %}">
-      {% csrf_token %}
-      <label for="tickets">Select Ticket Section:</label>
-      <select name="tickets" id="tickets"></select>
-      <input type="submit" value="Purchase Tickets" />
-    </form>
+      <ul id="selected-seats"></ul>
 
-    <ul class="showcase">
-      <li>
-        <div class="seat"></div>
-        <small>N/A</small>
-      </li>
-
-      <li>
-        <div class="seat selectgted"></div>
-        <small>Selected</small>
-      </li>
-
-      <li>
-        <div class="seat occupied"></div>
-        <small>Occupied</small>
-      </li>
-    </ul>
-
-    <div class="seatcontainer" id="gridContainer"></div>
-    
-
+      <div class="sidebar-footer">
+        <input type="Submit" class="btn btn-primary" value="Checkout" />
+      </div>
+    </div>
   </div>
-  <div class="sidebar">
-    <h1>Selected Seats</h1>
-    <ul id="seleted-seats"></ul>
-  </div>
-</div>
-
-
 
   <script src="{% static 'js/seat_section.js' %}"></script>
 {% endblock %}

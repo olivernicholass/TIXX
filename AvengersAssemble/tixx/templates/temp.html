@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<head>
+  <title>
+    {% block title %}
+      Tixx - Ticket Selection
+    {% endblock %}
+  </title>
+  {% load crispy_forms_tags %}
+</head>
+
+<main>
+    <a href="{% url 'ticket_selection' eventGenre='Rock'%}">Go to eventid = 1 -foo fighters-</a>
+</main>
+{% endblock %}

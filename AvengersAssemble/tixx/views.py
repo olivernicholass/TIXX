@@ -168,12 +168,21 @@ def search_results(request):
                                                 'relatedFigures': relatedFigures, 
                                                 'relatedEvents': relatedEvents})
     
-def ticket_selection(request):
-    row_range = range(10)
-    col_range = range(20)
+def ticket_selection(request, eventGenre):
     tickets = Ticket.objects.all()
     
-    return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
+    event = Event.objects.filter(eventGenre=eventGenre)
+    
+    
+    context = {
+        'event' : event,
+        'tickets': tickets
+    }
+    
+    return render(request, "ticket_selection.html", context)
+
+def temp(request):
+    return render(request, "temp.html")
 
 def checkout(request):
     return render(request, "checkout.html")
