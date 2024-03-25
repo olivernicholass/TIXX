@@ -86,7 +86,7 @@ def search_results(request):
     
     searchedFigures = []
     relatedFigures = []
-    relatedEvents = Event.objects.none()  
+    relatedEvents = Event.objects.none()    
     
     # Search Functionality: Handle City + Date + Keyword 
     # - Display EXACT Events for the EXACT Date for the EXACT Figure
@@ -144,6 +144,7 @@ def search_results(request):
         relatedEvents = Event.objects.filter(eventDate=dateStripped)
         relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
 
+
     # Search Functionality: Handling ONLY KEYWORD 
     # - User searches by keyword: Example, we have two figures "Frank Ocean" and "Frank Sinatraa"
     # - Display both figures in "Searched Figure" section as they both contain "Frank" 
@@ -151,23 +152,49 @@ def search_results(request):
     # - ONLY Search by keyword should show searched figures, rest should display related figures.
 
     elif query:
-        searchedFigures = figures
-        if exactFigures:
-            initialFigure = exactFigures[0]
-            relatedEvents = Event.objects.filter(figureId=initialFigure)
-            relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
-            searchedFigures = exactFigures | partialFigures
+  
+        # If a user searches only by genre, i.e "Pop" then we retrieve the query 
+        # and display the events corresponding to Pop, and then we display
+        # the Related Figures that correspond with these events
+        # We only display Pop artists that HAVE ACTIVE Events
+        # Handle case where user enters Rap, we can receive it from "Hip-Hop/Rap"
+   
+        genreMap = {
+            'rap': 'Hip-Hop',
+        }
+
+        # Find if the users input matches our genre mapping, i.e if they enter "rap", it should return "Hip-Hop"
+        if query.lower() in genreMap:
+            genreMap = genreMap[query.lower()]
+            genreFigures = Figure.objects.filter(figureGenre__icontains=genreMap)
         else:
-            searchedFigures = figures.distinct()
-            if searchedFigures.exists():
-                initialFigure = searchedFigures.first()
-                relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+            genreFigures = Figure.objects.filter(figureGenre__icontains=query)
+
+        if genreFigures.exists():
+            relatedEvents = Event.objects.filter(figureId__in=genreFigures)
+            relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
+            searchedFigures = []
+
+            return render(request, "search_results.html", {'searchedFigures': searchedFigures,
+                                                        'relatedFigures': relatedFigures,
+                                                        'relatedEvents': relatedEvents})
+        else:
+            searchedFigures = figures
+            if exactFigures:
+                initialFigure = exactFigures[0]
                 relatedEvents = Event.objects.filter(figureId=initialFigure)
+                relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+                searchedFigures = exactFigures | partialFigures
+            else:
+                searchedFigures = figures.distinct()
+                if searchedFigures.exists():
+                    initialFigure = searchedFigures.first()
+                    relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
+                    relatedEvents = Event.objects.filter(figureId=initialFigure)
 
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
-                                                'relatedFigures': relatedFigures, 
-                                                'relatedEvents': relatedEvents})
-    
+                                                            'relatedFigures': relatedFigures, 
+                                                            'relatedEvents': relatedEvents})
 def ticket_selection(request):
     row_range = range(10)
     col_range = range(20)
