@@ -457,3 +457,10 @@ class SearchResultsViewTest(TestCase):
             self.assertNotIn('_auth_user_id', self.client.session)
             # Assert that the user is redirected to the login page
             self.assertRedirects(response, '/login/')
+class ConfirmationPageViewTest(TestCase):
+    def test_confirmation_GET(self):
+    
+        response = self.client.get(self.confirmation_url)
+        
+        self.assertNotEqual(response.status_code, 200)
+

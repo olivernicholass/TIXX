@@ -204,6 +204,30 @@ def ticket_selection(request):
 def checkout(request):
     return render(request, "checkout.html")
 
+def confirmation(request):
+    context = {}
+    if request.method == 'POST':
+        paymentId = request.POST.get('paymentId')
+        username = request.POST.get('username')
+        paymentAmount = request.POST.get('paymentAmount')
+        paymentMethod = request.POST.get('paymentMethod')
+        paymentDate = request.POST.get('paymentDate')
+        transactionId = request.POST.get('transactionId')
+        ticketId = request.POST.get('ticketId')
+        seatNum = request.POST.get('seatNum')
+
+    context = {
+        'paymentId':paymentId,
+        'username':username,
+        'paymentAmount':paymentAmount,
+        'paymentMethod':paymentMethod,
+        'paymentDate':paymentDate,
+        'transactionId':transactionId,
+        'ticketId': ticketId,
+        'seatNum': seatNum,
+    }
+    return render(request, "confirmation.html",context)
+
 def filtered_events(request, eventGenre):
     filtered_events = Event.objects.filter(eventGenre=eventGenre)
     return render(request, 'filtered_events.html', {'filtered_events': filtered_events})
