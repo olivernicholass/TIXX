@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-
+#register form 
 class RegisterForm(UnboundLocalError):
       email = forms.EmailField()
 
@@ -10,8 +10,7 @@ class RegisterForm(UnboundLocalError):
             model = User
             fields = ["username", "email", "password1", "password2"]
 
-# all form classes
-
+#guest organiser form
 class GuestOrganiserForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100, required=True)
     number_of_tickets = forms.IntegerField(label='Number of Tickets', required=True)

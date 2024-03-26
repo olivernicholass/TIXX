@@ -8,6 +8,7 @@ from tixx import views as v
 from .models import Event, Ticket
 from django.shortcuts import redirect
 from django.http import JsonResponse
+from .forms import GuestOrganiserForm 
 
 # Create your views here.
 
@@ -32,8 +33,6 @@ def register(response):
 
 def search_results(request):
     return render(request, "search_results.html")
-
-
 
 def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
@@ -64,7 +63,7 @@ def guest_organiser(request):
     if request.method == 'POST':
         form = GuestOrganiserForm(request.POST)
         if form.is_valid():
-            return redirect('some_view_name')  
+            form.save()
     else:
         form = GuestOrganiserForm()  
     return render(request, 'guest_organiser.html', {'form': form})

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %} 
-<link rel="stylesheet" href="{% static 'css/figure.css' %}">  
+<link rel="stylesheet" href="{% static 'css/guest_organiser.css' %}">  
 
 <div class="full-navbar">
 </div>
 
 <div class="container">
     <h1>Create Your Event</h1>
-    <form method="post">
+    <form class = "event-form" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label for="id_company_name">Company Name</label>
@@ -43,7 +43,7 @@
             <textarea class="form-control" id="id_description" name="description" rows="3" required></textarea>
         </div>
     <button type="submit" class="btn btn-primary">Submit Event</button>
-</form>
+    </form>
 </div>
 <footer>
 </footer>
