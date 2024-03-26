@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Review, ReviewImage
 
-
+#register form 
 class RegisterForm(UnboundLocalError):
       username = forms.CharField(widget=forms.TextInput)
       email = forms.EmailField(widget=forms.EmailInput)
@@ -14,6 +14,7 @@ class RegisterForm(UnboundLocalError):
             model = User
             fields = ["username", "email", "password1", "password2"]
 
+#guest organiser form
 
 class GuestOrganiserForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100, required=True)

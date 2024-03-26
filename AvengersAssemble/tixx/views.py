@@ -149,6 +149,7 @@ def search_results(request):
     # - Related Figures will display based on initialFigure's Genre, so in this case Frank Ocean is first and genre=Pop so other "Pop" Artists
     # - ONLY Search by keyword should show searched figures, rest should display related figures.
 
+
     elif query:
   
         # If a user searches only by genre, i.e "Pop" then we retrieve the query 
@@ -286,7 +287,11 @@ def guest_organiser(request):
     if request.method == 'POST':
         form = GuestOrganiserForm(request.POST)
         if form.is_valid():
-            return redirect('some_view_name')  
+            form.save()
     else:
         form = GuestOrganiserForm()  
     return render(request, 'guest_organiser.html', {'form': form})
+
+def get_ticket_data(request):
+    tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
+    return JsonResponse({'tickets': list(tickets)})
