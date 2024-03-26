@@ -18,7 +18,7 @@ html {
     background-image: url('../images/loginBackground.png');
     background-repeat: no-repeat;
     width: 100%;
-    background-color: var(--reg);
+    background-color: var(--darkest);
     height: 100vh;
     margin: 0px;
 }
@@ -26,13 +26,12 @@ html {
 
 .login {
     background: white;
-    height: 480px;
     width: 420px;
     border-radius: 10%;
     box-shadow: -5px -5px 10px rgba(255, 255, 255, 0.05), 
     5px 5px 15px rgba(0, 0, 0, 0.5), inset 2px 2px 5px rgba(32, 32, 32, 0.5), 
     inset -2px -2px 5px rgba(95, 95, 95, 0.1);
-    border: 15px solid var(--reg);
+    border: 12px solid var(--darkest);
     padding-left: 1em;
     padding-right: 1em;
 }
@@ -40,26 +39,26 @@ html {
 .input-box-user {
     background: transparent;
     padding: 10px 0px 10px 15px;
-    font-size: larger;
+    font-weight: 300;
+    font-size: 18;
     border-radius: 15px;
     width: 100%;
     height: 2.5em;
-    border: 5px solid var(--reg);
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5), 
-    inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    border: 2.5px solid var(--darkest);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
     color: white;
 }
 
 .input-box-pass {
     background: transparent;
     padding: 10px 0px 10px 15px;
-    font-size: larger;
+    font-weight: 300;
     border-radius: 15px;
     width: 100%;
+    font-size: 18;
     height: 2.5em;
-    border: 5px solid var(--reg);
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5), 
-    inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    border: 2.5px solid var(--darkest);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
     color: white;
     margin-top: 1em;
 }
@@ -71,15 +70,16 @@ html {
 
 .login-header {
     color: white;
-    background-color: #1768AC;
+    background-color: #03256C;
     margin-bottom: 1em;
     text-align: center;
     font-size: 2em;
-    font-weight: 700;
-    margin-left: 33%;
+    font-weight: 500;
+    margin-left: auto;
+    margin-right:auto;
     width: 30%;
-    border-bottom-right-radius: 25px;
-    border-bottom-left-radius: 25px;
+    margin-top:3%;
+    border-radius:15px;
     padding-bottom: 10px;
 }
 
@@ -87,6 +87,7 @@ html {
     width: 100%;
     height: 100%;
     padding-bottom: 2em;
+    margin-top: 5%;
 }
 
 body {
@@ -110,7 +111,7 @@ body {
 }
 
 .remember-me {
-    color: #1768AC;
+    color: #03256C;
     font-weight: 500;
 }
 
@@ -118,19 +119,19 @@ body {
 
 .register {
     text-align: center;
-    color: #2541B2;
+    color: #03256C;
     margin-bottom: 10px;
     font-weight: 500;
 }
 
 .submit-box input{
-    margin-top: 2.5em;
-    margin-bottom: 2.5em;
+    margin-top: 2em;
+    margin-bottom: 2em;
     font-size: 1em;
     font-weight: bold;
-    background: var(--reg);
+    background: var(--darkest);
     color: white;
-    border: 3px solid var(--reg);
+    border: 3px solid var(--darkest);
     border-radius: 20px;
     padding: 10px;
     position: center;
@@ -140,18 +141,18 @@ body {
 
 .submit-box input:hover{
     color: white;
-    background: var(--reg);
+    background: var(--darkest);
     box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.5), 
     inset -3px -3px 5px rgba(255, 255, 255, 0.1);
-    border: 3px solid var(--reg);
+    border: 3px solid var(--darkest);
 }
 
 .input-box-user:focus, .input-box-user:valid {
-    background: #1768AC;
+    background: #03256C;
 }
 
 .input-box-pass:focus, .input-box-pass:valid {
-    background: #1768AC;
+    background: #3256CC;
 }
 
 .logo {

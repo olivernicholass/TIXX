@@ -16,9 +16,6 @@
     </div>
 
     <div class="login">
-            <div class="login-header">
-                Login
-            </div>
             <div class="form-container">
             <form class="form" action="" method="POST">
                 {% csrf_token %}
@@ -44,6 +41,9 @@
                 </div>
                 <div class="register">
                     <span>Don't have an account? <a href="{% url 'register' %}"> Register</a></span>
+                    <div class="organiser-link">
+                        <p>Are you an organiser? <a href="{% url 'organiser_login' %}">Login as organiser</a></p>
+                    </div>
                 </div>
             </form>
         </div>

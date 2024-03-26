@@ -19,7 +19,7 @@ urlpatterns = [
     path('figure/<str:figure_name>/', views.figure, name='figure'),
     path('guest_organiser/', views.guest_organiser, name='guest_organiser'),
     path('confirmation/', views.confirmation, name='confirmation'),
-
+    path('organiser_login/', views.organiser_login, name='organiser_login'),
 
 ]
 
