@@ -14,8 +14,14 @@ from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
 from django.db.models import Q
 from datetime import datetime
 from django.utils.dateparse import parse_date
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+
+def organiser_login(request):
+    return render(request, 'organiser_login.html')
 
 def home(request):
     searchQuery = None

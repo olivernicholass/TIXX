@@ -58,9 +58,10 @@ class User(models.Model):
     userEmail = models.EmailField()
     userPhoneNumber = models.CharField(max_length=10) 
     userAddress = models.CharField(max_length=100)
+    isOrganiser = models.BooleanField(default=False) 
 
     def __str__(self):
-     return self.username #
+        return self.username
 
 class Payment(models.Model):
     paymentId = models.CharField(max_length=10, primary_key=True)
