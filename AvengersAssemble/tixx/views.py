@@ -41,7 +41,6 @@ def home(request):
 
 def login(request):
     if request.user.is_authenticated:
-        messages.warning(request, "you are already logged in")
         return redirect("/")
     else: 
 
@@ -53,7 +52,6 @@ def login(request):
                 auth_login(request, user)
                 return redirect("/")
             else:
-                messages.error(request, "Invalid username or password")
                 return redirect("/login")
       
     return render(request, "login.html")
