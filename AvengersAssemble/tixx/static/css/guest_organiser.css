@@ -1,0 +1,37 @@
+.event-form {
+    background-color: #ffffff; /* Example: a white background for the form */
+    padding: 20px; /* Add some padding around the form */
+    border-radius: 10px; /* Match the border-radius from .container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Same box-shadow as .container for consistency */
+    margin-top: 20px; /* Add margin on top */
+}
+
+/* Style for the form elements */
+.event-form .form-group {
+    margin-bottom: 15px; /* Space out the form groups */
+}
+
+.event-form label {
+    font-weight: 600; /* Make the labels bold, similar to .bold class */
+}
+
+.event-form input[type="text"],
+.event-form input[type="number"],
+.event-form input[type="date"],
+.event-form textarea {
+    width: 100%; /* Make form elements full-width */
+    padding: 10px; /* Add padding for input fields */
+    border: 1px solid #03256C; /* Use a border color similar to other elements */
+    border-radius: 5px; /* Rounded borders for inputs */
+}
+
+/* Adjustments to the submit button to match other buttons on your site */
+.event-form button.btn-primary {
+    background-color: #03256C; /* Button color to match your theme */
+    color: white; /* Text color for the button */
+    padding: 10px 20px; /* Padding inside the button */
+    border: none; /* No border for the button */
+    border-radius: 5px; /* Rounded corners for the button */
+    cursor: pointer; /* Cursor to indicate clickable */
+    margin-top: 10px; /* Margin on top of the button */
+}
