@@ -18,11 +18,11 @@
           {% if event.eventGenre == 'Rock' %}
             <!-- Hockey specific layout -->
             <!-- Replace the following buttons and image with hockey-specific content -->
-            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+      
             <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
             <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
             <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-            <img src="{% static 'images/hockeyrink.png' %}" class="image" alt="Hockey Rink" />
+            <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image"/>
           {% elif event.eventGenre == 'basketball' %}
             <!-- Basketball specific layout -->
             <!-- Replace the following buttons and image with basketball-specific content -->

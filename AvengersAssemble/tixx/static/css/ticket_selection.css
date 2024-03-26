@@ -49,7 +49,10 @@ h1{
 }
 
 
-
+.image {
+  width: 200px;
+  height: 200px;
+}
 
 
 .section_container {

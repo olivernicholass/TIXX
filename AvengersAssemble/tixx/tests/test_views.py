@@ -42,12 +42,25 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('search_results'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'search_results.html')
-
-    # Browser Test for Ticket Selection
-    def test_ticket_selection_view(self):
-        response = self.client.get(reverse('ticket_selection'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'ticket_selection.html')
+    class TicketSelectionTestCase(TestCase):
+        def setup(self):
+            self.event = Event.objects.create(            
+                eventName="Event 1",
+                eventDate=timezone.now().date(),
+                eventTime=timezone.now().time(),
+                eventId=1,
+                eventLocation="Location 1",
+                eventDescription="Description 1",
+                eventStatus="Upcoming",
+                eventGenre="Genre-1",
+                arenaId=self.arena,
+                figureId=self.figure
+            )
+        # Browser Test for Ticket Selection
+        def test_ticket_selection_view(self):
+            response = self.client.get(reverse('ticket_selection',  kwargs={'eventGenre': 'Genre-1'}))
+            self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, 'ticket_selection.html')
 
     # Browser Test for Checkout
     def test_checkout_view(self):
