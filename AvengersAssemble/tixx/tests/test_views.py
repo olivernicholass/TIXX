@@ -7,6 +7,8 @@ from django.test import TestCase
 from tixx.views import review
 from tixx.forms import ReviewForm, ReviewImageForm
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
 import datetime
 
 class ViewTests(TestCase):
@@ -415,3 +417,43 @@ class SearchResultsViewTest(TestCase):
             # Should display a rap artist as Hip-Hop is mapped to "rap"
             for figure in genreFigures:
                 self.assertIn(figure, response.context['relatedFigures'])
+        
+    # Login view test
+    class LoginViewTest(TestCase):
+        def setUp(self):
+            # Create a test user
+            self.user = User.objects.create_user(username='testuser', password='testpassword')
+            self.client = Client()
+
+        def test_authenticated_user_redirected(self):
+            # Log in the user
+            self.client.login(self.user)
+            response = self.client.get('/login/')
+            self.assertRedirects(response, '/', fetch_redirect_response=False)
+
+        def test_login_success(self):
+            # Test login with correct credentials
+            response = self.client.post('/login/', {'username': 'testuser', 'password': 'testpassword'})
+            assert response.wsgi_request.user.is_authenticated()
+
+        def test_login_failure(self):
+            # Test login with incorrect credentials
+            response = self.client.post('/login/', {'username': 'testuser', 'password': 'wrongpassword'})
+            assert response.wsgi_request.user.is_authenticated()
+
+    class LogoutPageViewTest(TestCase):
+
+        def setUp(self):
+            # Create a test user
+            self.user = User.objects.create_user(username='testuser', password='testpassword')
+            self.client = Client()
+
+        def test_logged_in_user_logs_out(self):
+            # Log in the user
+            self.client.force_login(self.user)
+            # Make a GET request to the logout page
+            response = self.client.get('/logout/')
+            # Assert that the user is logged out
+            self.assertNotIn('_auth_user_id', self.client.session)
+            # Assert that the user is redirected to the login page
+            self.assertRedirects(response, '/login/')
