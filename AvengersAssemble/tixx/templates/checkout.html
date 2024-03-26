@@ -11,7 +11,7 @@
                 <div class="card-body">
                     <h6>Details</h6>
                     <hr>
-                        <form method="post" action="">
+                        <form method="post" action="{% url 'confirmation' %}">
                             {% csrf_token %}
                             <!-- Personal Information -->
                             <div class="row">
