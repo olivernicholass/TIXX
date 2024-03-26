@@ -19,6 +19,8 @@ urlpatterns = [
     path('figure/<str:figure_name>/', views.figure, name='figure'),
     path('guest_organiser/', views.guest_organiser, name='guest_organiser'),
     path('temp/', views.temp, name='temp')
+    path('confirmation/', views.confirmation, name='confirmation'),
+    path('organiser_login/', views.organiser_login, name='organiser_login'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

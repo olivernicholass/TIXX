@@ -14,8 +14,14 @@ from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
 from django.db.models import Q
 from datetime import datetime
 from django.utils.dateparse import parse_date
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+
+def organiser_login(request):
+    return render(request, 'organiser_login.html')
 
 def home(request):
     searchQuery = None
@@ -308,3 +314,29 @@ def guest_organiser(request):
 def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
     return JsonResponse({'tickets': list(tickets)})
+
+def confirmation(request):
+    context = {}
+    # if request.method == 'POST':
+    #     paymentId = request.POST.get('paymentId')
+    #     username = request.POST.get('username')
+    #     paymentAmount = request.POST.get('paymentAmount')
+    #     paymentMethod = request.POST.get('paymentMethod')
+    #     paymentDate = request.POST.get('paymentDate')
+    #     transactionId = request.POST.get('transactionId')
+    #     ticketId = request.POST.get('ticketId')
+    #     seatNum = request.POST.get('seatNum')
+
+
+
+    # context = {
+    #     'paymentId':paymentId,
+    #     'username':username,
+    #     'paymentAmount':paymentAmount,
+    #     'paymentMethod':paymentMethod,
+    #     'paymentDate':paymentDate,
+    #     'transactionId':transactionId,
+    #     'ticketId': ticketId,
+    #     'seatNum': seatNum,
+    # }
+    return render(request, "confirmation.html",context)
