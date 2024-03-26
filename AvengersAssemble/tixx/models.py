@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here
 
@@ -11,15 +12,14 @@ class Arena(models.Model):
      return self.arenaName
  
 class Figure(models.Model):
-    figureName = models.CharField(max_length=100)
+    figureName = models.CharField(max_length=100, unique=True)
     figureGenre = models.CharField(max_length=100)
     figurePicture = models.ImageField(upload_to='figure_images/', null=True, blank=True)
+    carouselImage = models.ImageField(upload_to='carousel_images/', null=True, blank=True)
     figureAbout = models.CharField(max_length=2000, blank=True)
 
     def __str__(self):
         return self.figureName
-
-
 
 class Event(models.Model):
     eventName = models.CharField(max_length=100)
@@ -75,10 +75,14 @@ class Payment(models.Model):
 
 class Review(models.Model):
     reviewId = models.AutoField(primary_key=True)
-    reviewRating = models.IntegerField()
+    reviewRating = models.DecimalField(
+        max_digits=3, 
+        decimal_places=1, 
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
     reviewTitle = models.CharField(max_length=100)
     reviewText = models.CharField(max_length=500)
-    eventID = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)
+    reviewFigure = models.ForeignKey(Figure, on_delete=models.CASCADE, default=None)  
     reviewDate = models.DateField()
 
     def __str__(self):

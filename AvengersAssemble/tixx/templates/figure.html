@@ -1,18 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %} 
+{% load figuretag %}
 <link rel="stylesheet" href="{% static 'css/figure.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <script src="{% static 'js/figure.js' %}"></script>
 <div class="container">
     <div class="info">
         <div class="pfp">
-            <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+            {% if figure.figurePicture %}
+                <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+            {% else %}
+                <p>No Image Available</p>
+            {% endif %}
         </div>
         <h1>{{ figure.figureName }} Tickets</h1>
         <p>{{ figure.figureGenre }}</p>
+        <div class="average-rating">
+            <i class="fas fa-star filled"></i>
+            <span>{{ averageRating|default_if_none:"N/A" }}</span>
+        </div>
     </div>
     <div class="pfp-background">
-        <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+        {% if figure.figurePicture %}
+            <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
+        {% endif %}
     </div>
 </div>
 <div class="white-bar navbar navbar-expand">
@@ -52,7 +64,7 @@
                 </div>
             </div>
         {% empty %}
-            <p>No events available</p>
+            <p>No Events Available</p>
         {% endfor %}
     </div>
     <div class="countdown-container">
@@ -90,4 +102,60 @@
     <h2>About {{ figure.figureName }}</h2>
     <p>{{ figure.figureAbout }}</p>
 </div>
+
+<div id="review-section" class="reviews-container">
+    <div id="reviews-title" class="d-flex justify-content-between align-items-center">
+        <p><strong>REVIEWS</strong> • {{ reviewCount }}</p>
+    </div>
+    <div class="reviews">
+        {% for review in allReviews|slice:":6" %}
+            <div class="review {% if forloop.counter0 < 3 and review.reviewimage_set.exists %}with-image{% endif %}">
+                <h3>{{ review.reviewTitle }}</h3>
+                <div class="rating">
+                    {% for star in review.reviewRating|starRange %}
+                        {% if star == 1 %}
+                            <i class="fas fa-star filled"></i>
+                        {% elif star == 0.5 %}
+                            <i class="fas fa-star-half-alt filled"></i>
+                        {% else %}
+                            <i class="fas fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p>{{ review.reviewText }}</p>
+    
+                {% if forloop.counter0 < 3 and review.reviewimage_set.exists %}
+                    <img src="{{ review.reviewimage_set.first.reviewImage.url }}" alt="Review Image">
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="write-review-button-container">
+        <a href="{% url 'review' figure.figureName %}" class="btn btn-primary">Write a Review</a>
+        <div class="review-gallery-container">
+            <h3 id="gallery-h3">PHOTO GALLERY • {{ galleryCount }}</h3>
+            <div class="photo-gallery-wrapper">
+                <div id="photo-gallery" class="photo-gallery-container">
+                    <div class="gallery-container">
+                        <div class="gallery" id="gallery">
+                            {% for review in allReviews %}
+                                {% for image in review.reviewimage_set.all %}
+                                    {% if forloop.counter <= 5 %}
+                                        <div class="gallery-item">
+                                            <img src="{{ image.reviewImage.url }}" alt="Review Image">
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="image-overlay">
+                <img id="expanded-image" src="" alt="Expanded Image">
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

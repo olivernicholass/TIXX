@@ -20,13 +20,14 @@
                 Login
             </div>
             <div class="form-container">
-            <form class="form">
+            <form class="form" action="" method="POST">
+                {% csrf_token %}
                 <div class="input-field">
                     <input type="text" name="username" id="user" class="input-box-user" placeholder="Username" required/>
 
                 </div>
                 <div class="input-field">
-                    <input type="text" name="password" id="pass" class="input-box-pass" placeholder="Password" required/>
+                    <input type="password" name="password" id="pass" class="input-box-pass" placeholder="Password" required/>
 
                 </div>
                 <div class="remember-forgot">

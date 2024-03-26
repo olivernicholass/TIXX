@@ -60,7 +60,10 @@ function countdown() {
     document.getElementById('seconds').querySelector('.cv').textContent = seconds.toString().padStart(2, '0');
 }
 
-countdown();
+    countdown();
 
-setInterval(countdown, 1000);
+    setInterval(countdown, 1000);
+
 });
+
+   

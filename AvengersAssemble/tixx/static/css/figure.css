@@ -20,6 +20,11 @@
     position: relative; 
 }
 
+.average-rating{
+    margin-left: 47%;
+    margin-top:0;
+}
+
 .events-container img{
     height:50px;
     width:50px;
@@ -212,6 +217,9 @@
     margin-left:100px; 
 }
 
+.review h3{
+    font-size:18px;
+}
 .events-countdown-container {
     display: flex;
     align-items: center;
@@ -237,4 +245,135 @@
 
 .countdown-value {
     font-size: 1.2em; 
+}
+
+.reviews-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10%;
+    padding-top: 0;
+}
+
+.info p{
+    margin-bottom:3px;
+}
+
+.review {
+    position: relative;
+    width: 32.3%; 
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 2px solid #03256C;
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.reviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#reviews-title{
+    letter-spacing: 0.2em;
+    font-size: 25px;
+}
+.review h3 {
+    margin-top: 0;
+}
+
+.review img {
+    margin-top: auto; 
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.fas.fa-star-half-alt.filled, .fas.fa-star.filled {
+    color: #2541B2; 
+}
+
+.fas.fa-star {
+    color: #ccc; 
+}
+
+.photo-gallery-container {
+    text-align: center;
+    white-space: nowrap; 
+    overflow-x: auto; 
+}
+
+.photo-gallery-container h2 {
+    margin-bottom: 20px;
+}
+
+
+.gallery-container {
+    width: 100%; 
+    overflow-x: auto; 
+}
+
+.gallery {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start; 
+}
+
+#gallery-h3{
+    margin-top:2%;
+    letter-spacing: 0.2em;
+    font-size: 25px;
+    font-weight: bolder;
+}
+
+.gallery-item {
+    margin-right: 10px; 
+}
+
+.gallery-item:last-child {
+    margin-right: 0;
+}
+
+.gallery-item {
+    margin-right: 10px;
+    overflow: hidden;
+    width: 30%; 
+    height: auto; 
+    max-width: 300px;
+}
+
+.gallery-item img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    transition: transform 0.3s ease; 
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1); 
+}
+
+#image-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+    overflow: hidden; 
+}
+
+#expanded-image {
+    max-width: 100%; 
+    max-height: 100%;
 }
