@@ -9,12 +9,23 @@
     </title>
     {% load crispy_forms_tags %}
   </head>
-
+  <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
   <div class="container">
     <div class="main">
-      <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
+      <h1>Event: {{ event.eventName }}</h1>
+    <p>Arena ID: {{ event.arenaId }}</p>
+    <p>Figure ID: {{ event.figureId }}</p>
+
+    <h2>Arena Information</h2>
+    <p>Name: {{ arena.arenaName }}</p>
+    <p>Location: {{ arena.arenaCapacity }}</p>
+    <!-- Add more fields as needed -->
+
+    <h2>Figure Information</h2>
+    <p>Name: {{ figure.figureName }}</p>
+    <p>Description: {{ figure.figureAbout }}</p>
       <div class="section_container">
-        {% for event in event %}
+        
           {% if event.eventGenre == 'Rock' %}
             <!-- Hockey specific layout -->
             <!-- Replace the following buttons and image with hockey-specific content -->
@@ -43,7 +54,7 @@
             <!-- Default layout if event type is unknown or not specified -->
             <p>No specific layout available for this event type.</p>
           {% endif %}
-        {% endfor %}
+        
       </div>
       <h1>Ticket Selection</h1>
 

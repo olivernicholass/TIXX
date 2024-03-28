@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .models import Event, Figure, ReviewImage, Review
+from .models import Event, Figure, ReviewImage, Review, Arena
 from django.utils import timezone
 from django.contrib import admin
 from django.urls import path, include
@@ -202,16 +202,17 @@ def search_results(request):
                                                 'relatedEvents': relatedEvents})
     
 
-def ticket_selection(request, eventGenre):
-    row_range = range(10)
-    col_range = range(20)
+def ticket_selection(request, eventid):
     tickets = Ticket.objects.all()
     
-    event = Event.objects.filter(eventGenre=eventGenre)
-    
+    event = get_object_or_404(Event, pk=eventid)
+    arena = Arena.objects.get(arenaName=event.arenaId)
+    figure = Figure.objects.get(figureName=event.figureId)
     
     context = {
         'event' : event,
+        'arena' : arena,
+        'figure': figure,
         'tickets': tickets
     }
     
