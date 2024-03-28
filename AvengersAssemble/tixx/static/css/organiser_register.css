@@ -1,0 +1,192 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.info img {
+    width: 30px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.info h1 {
+    margin: 0;
+    font-size: 30px;
+    color: #03256C;
+}
+
+.errorlist {
+    color: #03256C;
+    font-weight: 400;
+    margin-top: 9px;
+}
+
+.form-container {
+    width: 100%;
+}
+
+.form-fields {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-content: center;
+    align-items: stretch;
+    margin-top: 2%;
+}
+
+.form-fields div {
+    margin-bottom: 10px;
+}
+
+.form-fields p {
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.terms-and-conditions {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.terms-and-conditions label {
+    font-size: 14px;
+}
+
+.terms-and-conditions a {
+    color: #03256C;
+    text-decoration: none;
+}
+
+.terms-and-conditions a:hover {
+    text-decoration: underline;
+}
+
+.modal {
+    display: none;
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+}
+
+.terms-and-conditions label {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+label{
+    margin:0;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.form-fields input[type="text"],
+.form-fields input[type="password"],
+.form-fields input[type="email"],
+.form-fields input[type="key"],
+.form-fields input[type="user"],
+.form-fields input[type="phone"],
+.form-fields input[type="address"]{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-fields input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.form-fields button {
+    width: 20%;
+    padding: 10px 20px;
+    background-color: #03256C;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 10%;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top:1%;
+}
+
+.form-fields button:hover {
+    background-color: #0056b3;
+}
+
+.form-fields div:nth-child(7) {
+    margin-bottom: 20px; 
+}
+
+.contact-info {
+    font-size: smaller; 
+}
+
+.contact-info .tixx-events {
+    color: #03256C; 
+    font-weight:500;
+}
+
+.contact-info .access{
+    color: #03256C; 
+    font-weight:500;
+}
+
+.contains-icon {
+    position: relative;
+}
+
+.contains-icon .icon {
+    position: absolute;
+    left: 5px; 
+    top: 50%;
+    transform: translateY(-50%);
+    height: 25px;
+}
+
+.contains-icon input[type="text"],
+.contains-icon input[type="password"],
+.contains-icon input[type="key"],
+.contains-icon input[type="email"],
+.contains-icon input[type="user"],
+.contains-icon input[type="phone"],
+.contains-icon input[type="address"] {
+    padding-left: 35px;
+}
