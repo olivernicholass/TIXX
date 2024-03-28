@@ -1,14 +1,15 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User
 from django.utils.text import slugify
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from tixx.views import review
-from tixx.forms import ReviewForm, ReviewImageForm
+from tixx.forms import ReviewForm, ReviewImageForm, OrganiserRegistrationForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
 import datetime
 
 class ViewTests(TestCase):
@@ -457,3 +458,88 @@ class SearchResultsViewTest(TestCase):
             self.assertNotIn('_auth_user_id', self.client.session)
             # Assert that the user is redirected to the login page
             self.assertRedirects(response, '/login/')
+            
+# ORGANISER LOGIN + REGISTER TEST CASES (~97% COVERAGE 1 LINE NOT COVERED)
+
+class OrganiserViewsTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.username = 'testuser'
+        self.password = 'testpassword'
+        self.email = 'test@example.com'
+        self.phone_number = '1234567890'
+        self.address = '123 Test St'
+        self.user = User.objects.create_user(
+            username=self.username,
+            password=self.password,
+            email=self.email,
+            userPhoneNumber=self.phone_number,
+            userAddress=self.address,
+            isOrganiser=True
+        )
+
+    # TEST: Organiser can login w/ correct details and gets redirected to the organiser dashboard. This also confirms
+    # that the user is recognised as an organiser when logged in.
+
+    def test_organiser_login(self):
+        response = self.client.post(reverse('organiser_login'), {'username': self.username, 'password': self.password})
+        self.assertRedirects(response, reverse('organiser_dashboard'))
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+        self.assertTrue(response.wsgi_request.user.isOrganiser)
+
+    # TEST: This checks that a user with invalid details cannot login and it displays the error meesage, also confirming
+    # that they are not authenticated.
+
+    def test_organiser_login_invalid_credentials(self):
+        response = self.client.post(reverse('organiser_login'), {'username': 'invaliduser', 'password': 'invalidpassword'})
+        self.assertContains(response, 'Invalid username or password.')
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    # TEST: This test check that a new organiser can register successfully with all correct details, once registered they are
+    # redirected to the organiser login page and this check that the organiser is also register with organiser status.
+
+    def test_organiser_register(self):
+        username = 'newuser'
+        password = 'newpassword'
+        secretKEY = "tixxEVENTORGANISER"
+        response = self.client.post(reverse('organiser_register'), {
+            'username': username,
+            'password': password,
+            'isOrganiser': True,
+            'organiserCredentials': secretKEY,
+            'email': 'newuser@example.com',
+            'userPhoneNumber': '1234567890',
+            'userAddress': '123 Test St',
+            'secretKeyword': secretKEY
+        })
+        self.assertRedirects(response, reverse('organiser_login'))
+        self.assertTrue(User.objects.filter(username=username).exists())
+        newUSER = User.objects.get(username=username)
+        self.assertTrue(newUSER.isOrganiser)
+
+    # ------------------------------------- MOSTLY EDGE CASES ------------------------------------- #
+    # TEST: Asserts that the organiser form is instantiated when the regristration page is opened.
+
+    def test_organiser_register_form_instantiation(self):
+        response = self.client.get(reverse('organiser_register'))
+        self.assertIsInstance(response.context['form'], OrganiserRegistrationForm)
+
+    # TEST: Checks and confirms that the we are using the correct html template for organiser registration
+
+    def test_organiser_register_render_template(self):
+        response = self.client.get(reverse('organiser_register'))
+        self.assertTemplateUsed(response, 'organiser_register.html')
+
+    # TEST: Checks that attempting to register with an already existing username/password displays the error message we have in the view
+
+    def test_organiser_register_existing_user_message(self):
+        existingUSER = 'existinguser'
+        User.objects.create_user(username=existingUSER, email='existing@example.com', password='password', userPhoneNumber='1234567890', userAddress='123 Test St')
+        response = self.client.post(reverse('organiser_register'), {'username': existingUSER, 'password': 'password'})
+        self.assertContains(response, 'A user with that username already exists.')
+
+    # TEST: Checks that attempting to register with a form that is not filled out, will display the error message we set in the view.
+
+    def test_organiser_register_invalid_form_message(self):
+        response = self.client.post(reverse('organiser_register'), {})
+        self.assertContains(response, 'This field is required.')
