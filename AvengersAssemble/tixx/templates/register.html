@@ -1,58 +1,69 @@
-
 {% load static %}
+
 <head>
-    <title>{% block title%} Tixx | Register {% endblock %}</title>
+    <title>{% block title %}Tixx - Register{% endblock %}</title>
     {% load crispy_forms_tags %}
-    
-    {% block styles %}
-        <link rel="stylesheet" href="{% static 'css/register.css' %}">
-    {% endblock %}
 </head>
 
 {% block content %}
-<html>
-    <body>
-        <div class="main">
-            <div class="logo">
-                <img src="{% static 'images/tixx.png' %}">
-            </div>
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<div class="container">
+    <div class="background-image"></div>
+    <div class="logo">
+        <img src="{% static 'images/tixx.png' %}">
+    </div>
 
-            <div class="register">
-                    <div class="reg-header">
-                        Sign Up
-                    </div>
-                    <div class="form-container">
-                    <form method="POST" class="form-group">
-                        {% csrf_token %}
-                        <div class="input-field">
-                            {{ form.username|as_crispy_field }}
-    
-                        </div>
-                        <div class="input-field">
-                            {{ form.password1|as_crispy_field }}
-    
-                        </div>
-                        <div class="input-field">
-                            {{ form.password2|as_crispy_field }}
-    
-                        </div>
-                        <div class="submit-box">
-                            <button type="submit" class="btn btn-success">Register</button>
-                        </div>
-                        <div class="login">
-                            <span>Already have an account? <a href="{% url 'login' %}"> Log In</a></span>
-                        </div>
-                    </form>
+    <div class="login">
+        <div class="form-container">
+            <form class="form" method="post">
+                {% csrf_token %}
+                <div class="input-field">
+                    <input type="text" name="username" id="user" class="input-box-user" placeholder="Username" required/>
+                    {% if form.errors.username %}
+                        <div class="error">{{ form.errors.username }}</div>
+                    {% endif %}
                 </div>
-            </div>
+                <div class="input-field">
+                    <input type="email" name="email" id="email" class="input-box-email" placeholder="Email" required/>
+                    {% if form.errors.email %}
+                        <div class="error">{{ form.errors.email }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-field">
+                    <input type="password" name="password1" id="pass1" class="input-box-pass" placeholder="Password" required/>
+                    {% if form.errors.password1 %}
+                        <div class="error">{{ form.errors.password1 }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-field">
+                    <input type="password" name="password2" id="pass2" class="input-box-pass" placeholder="Confirm Password" required/>
+                    {% if form.errors.password2 %}
+                        <div class="error">{{ form.errors.password2 }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-field">
+                    <input type="text" name="userPhoneNumber" id="userPhoneNumber" class="input-box-phone" placeholder="User Phone Number" required/>
+                    {% if form.errors.userPhoneNumber %}
+                        <div class="error">{{ form.errors.userPhoneNumber }}</div>
+                    {% endif %}
+                </div>
+                <div class="input-field">
+                    <input type="text" name="userAddress" id="userAddress" class="input-box-address" placeholder="User Address" required/>
+                    {% if form.errors.userAddress %}
+                        <div class="error">{{ form.errors.userAddress }}</div>
+                    {% endif %}
+                </div>
+                <div class="submit-box">
+                    <input type="submit" value="Register"/>
+                </div>
+                <div class="login" style="width: 100%">
+                    <span>Already have an account? <a href="{% url 'login' %}"> Log In</a></span>
+                </div>
+            </form>
         </div>
-
-        <script>
-            document.getElementById("id_username").placeholder = "Username";
-            document.getElementById("id_password1").placeholder = "Password";
-            document.getElementById("id_password2").placeholder = "Confirm Password";
-        </script>
-    </body>
-</html>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
-

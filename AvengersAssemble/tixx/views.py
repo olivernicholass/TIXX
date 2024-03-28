@@ -4,24 +4,21 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from .models import Event, Figure, ReviewImage, Review
 from django.utils import timezone
 from django.contrib import admin
+from django.contrib.auth.hashers import make_password
 from django.urls import path, include
 from tixx import views as v
 from django.db.models import Avg
-from .models import Event, Ticket, Review
+from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm
+from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
+from django.contrib import messages
 from datetime import datetime
 from django.utils.dateparse import parse_date
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-
-
-
-def organiser_login(request):
-    return render(request, 'organiser_login.html')
 
 def home(request):
     searchQuery = None
@@ -45,11 +42,54 @@ def home(request):
                                          'popFigures': popFigures,
                                          'basketballFigures': basketballFigures})
 
+def organiser_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None and user.is_authenticated and user.isOrganiser:
+            auth_login(request, user)
+            return redirect('organiser_dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'organiser_login.html')
+
+def organiser_register(request):
+    if request.method == 'POST':
+        organiserForm = OrganiserRegistrationForm(request.POST)
+        if organiserForm.is_valid():
+            username = organiserForm.cleaned_data.get('username')
+            password = organiserForm.cleaned_data.get('password')
+            hashPASS = make_password(password)
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'A user with that username already exists.')
+            else:
+                organiser = organiserForm.save(commit=False)
+                organiser.password = hashPASS
+                organiser.is_organiser = True
+                organiser.save()
+                messages.success(request, 'Organiser registered successfully. Please login.')
+                return redirect('organiser_login')
+        else:
+            messages.error(request, 'Invalid form submission. Please check the form data.')
+    else:
+        organiserForm = OrganiserRegistrationForm()
+    return render(request, 'organiser_register.html', {'form': organiserForm })
+
+@login_required
+def organiser_dashboard(request):
+    if request.method == 'POST':
+        form = GuestOrganiserForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = GuestOrganiserForm()  
+    return render(request, 'organiser_dashboard.html', {'form': form})
+
 def login(request):
     if request.user.is_authenticated:
         return redirect("/")
     else: 
-
         if request.method == "POST":
             name = request.POST.get("username")
             passwd = request.POST.get("password")
@@ -70,15 +110,21 @@ def logoutpage(request):
 def profile(request):
     return render(request, "profile.html")
 
-def register(response):
-    if response.method == "POST":
-        form = UserCreationForm(response.POST)
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Registration successful. Please log in.')
+            return redirect('login')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    print(f"Error in field '{field}': {error}")
     else:
-        form = UserCreationForm()
-    return render(response, "register.html", {"form":form})
-
+        form = UserRegistrationForm()
+        
+    return render(request, 'register.html', {'form': form})
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
     city = request.GET.get('city')
@@ -289,14 +335,6 @@ def review(request, figure_name):
         'figureName': figure.figureName 
     })
     
-def guest_organiser(request):
-    if request.method == 'POST':
-        form = GuestOrganiserForm(request.POST)
-        if form.is_valid():
-            form.save()
-    else:
-        form = GuestOrganiserForm()  
-    return render(request, 'guest_organiser.html', {'form': form})
 
 def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
