@@ -1,21 +1,14 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import Review, ReviewImage
+from .models import Review, ReviewImage, User
 
-#register form 
-class RegisterForm(UnboundLocalError):
-      username = forms.CharField(widget=forms.TextInput)
-      email = forms.EmailField(widget=forms.EmailInput)
-      password1 = forms.CharField(widget=forms.PasswordInput)
-      password2 = forms.CharField(widget=forms.PasswordInput)
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
 
-      class Meta:
-            model = User
-            fields = ["username", "email", "password1", "password2"]
-
-#guest organiser form
-
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser')
+        
 class GuestOrganiserForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100, required=True)
     number_of_tickets = forms.IntegerField(label='Number of Tickets', required=True)
@@ -50,3 +43,22 @@ class ReviewImageForm(forms.ModelForm):
         widgets = {
             'reviewImage': forms.FileInput(attrs={'accept': 'image/*', 'placeholder': 'Upload image'}),
         }
+        
+class OrganiserRegistrationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    isOrganiser = forms.BooleanField(initial=True, required=False)
+    organiserCredentials = forms.CharField(max_length=100, required=False)
+    userPhoneNumber = forms.CharField(max_length=10) 
+    userAddress = forms.CharField(max_length=100)
+    secretKeyword = "tixxEVENTORGANISER"  
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'isOrganiser', 'organiserCredentials', 'email', 'userPhoneNumber', 'userAddress']
+
+    def clean_organiserCredentials(self):
+        organiserCredentials = self.cleaned_data.get('organiserCredentials')
+        if organiserCredentials != self.secretKeyword:
+            raise forms.ValidationError("Invalid secret keyword. Contact tixxEVENTS@gmail.com to request a secret key.")
+        return organiserCredentials
+    

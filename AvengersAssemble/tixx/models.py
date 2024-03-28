@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
 
 # Create your models here
 
@@ -51,18 +53,40 @@ class Ticket(models.Model):
     def __str__(self):
         return self.seatNum 
 
-class User(models.Model):
-    userId = models.CharField(max_length=10, primary_key=True)
-    username = models.CharField(max_length=20)
-    userPassword = models.CharField(max_length=20, default='temp_password')
-    userEmail = models.EmailField()
-    userPhoneNumber = models.CharField(max_length=10) 
-    userAddress = models.CharField(max_length=100)
-    isOrganiser = models.BooleanField(default=False) 
+
+# READJUSTED ENTIRE USER MODEL AS A CUSTOM USER MODEL (NOT DJANGO DEFAULT)
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, userPhoneNumber, userAddress, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, userPhoneNumber=userPhoneNumber, userAddress=userAddress, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, userPhoneNumber, userAddress, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        return self.create_user(email, userPhoneNumber, userAddress, password, **extra_fields)
+
+# USERS CAN BE REGULAR USERS OR ORGANISERS (isOrganiser = TRUE  + CREDENTIALS)
+class User(AbstractUser):
+    userId = models.AutoField(primary_key=True)
+    userPhoneNumber = models.CharField(max_length=10, blank=True) 
+    userAddress = models.CharField(max_length=100, blank=True)
+    isOrganiser = models.BooleanField(default=False)
+    organiserCredentials = models.CharField(max_length=100, blank=True) 
+
+    REQUIRED_FIELDS = ['email', 'userPhoneNumber', 'userAddress']
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
-
+    
 class Payment(models.Model):
     paymentId = models.CharField(max_length=10, primary_key=True)
     userId = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) 

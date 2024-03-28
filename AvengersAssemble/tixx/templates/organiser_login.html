@@ -2,5 +2,34 @@
 {% load static %} 
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/organiser_login.css' %}">
+<div class="container">
+    <div class="info">
+        <img src="{% static 'icons/lock.png' %}" >
+        <h1>ORGANISER LOGIN</h1>
+    </div>
+</div>
 
+<form method="post">
+    {% csrf_token %}
+    <div class="form-fields">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div>
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <div>
+            <p>Dont have an account? <a href="{% url 'organiser_register' %}">Register as an organiser</a></p>
+        </div>
+        <button type="submit">Login</button>
+    </div>
+</form>
 {% endblock %}

@@ -17,10 +17,12 @@ urlpatterns = [
     path('review/<str:figure_name>/', views.review, name='review'),
     path('filtered_events/<slug:eventGenre>/', views.filtered_events, name='filtered_events'),
     path('figure/<str:figure_name>/', views.figure, name='figure'),
-    path('guest_organiser/', views.guest_organiser, name='guest_organiser'),
     path('temp/', views.temp, name='temp'),
+    path('organiser/dashboard/', views.organiser_dashboard, name='organiser_dashboard'),
     path('confirmation/', views.confirmation, name='confirmation'),
-    path('organiser_login/', views.organiser_login, name='organiser_login'),
+    path('organiser/login/', views.organiser_login, name='organiser_login'),
+    path('organiser/register/', views.organiser_register, name='organiser_register'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
