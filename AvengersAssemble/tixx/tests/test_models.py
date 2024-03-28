@@ -1,5 +1,5 @@
 from django.test import TestCase
-from tixx.models import Arena, Event, Ticket, User, Payment, Review, Seat, Figure, Admin, ReviewImage
+from tixx.models import Arena, Event, Ticket, Review, Seat, Figure, Admin, ReviewImage, User
 
 class ModelTestCase(TestCase):
     def setUp(self):
@@ -33,21 +33,6 @@ class ModelTestCase(TestCase):
             zone=1,
             available=True
         )
-        self.user = User.objects.create(
-            userId="test_user",
-            username="Test User",
-            userEmail="test@example.com",
-            userPhoneNumber="1234567890",
-            userAddress="Test Address"
-        )
-        self.payment = Payment.objects.create(
-            paymentId="test_payment",
-            userId=self.user,
-            paymentAmount=100.00,
-            paymentMethod="Credit Card",
-            paymentDate="2024-03-09",
-            transactionId="1234567890"
-        )
         self.review = Review.objects.create(
             reviewRating=5,
             reviewTitle="Great Event",
@@ -76,12 +61,6 @@ class ModelTestCase(TestCase):
     def test_ticket_str(self):
         self.assertEqual(str(self.ticket), "A1")
 
-    def test_user_str(self):
-        self.assertEqual(str(self.user), "Test User")
-
-    def test_payment_str(self):
-        self.assertEqual(str(self.payment), "test_payment")
-
     def test_review_str(self):
         self.assertEqual(str(self.review), "Great Event")
         
@@ -96,3 +75,47 @@ class ModelTestCase(TestCase):
 
     def test_admin_str(self):
         self.assertEqual(str(self.admin), "Test Admin")
+
+# NEW USER MODEL TEST CASE
+
+class UserModelTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="test_user",
+            email="test@example.com",
+            userPhoneNumber="1234567890",
+            userAddress="Test Address",
+            password="test_password"
+        )
+
+    def test_user_str(self):
+        self.assertEqual(str(self.user), "test_user")
+
+    def test_user_is_regular_user_by_default(self):
+        self.assertFalse(self.user.isOrganiser)
+
+    def test_user_creation(self):
+        self.assertIsNotNone(self.user)
+        self.assertEqual(self.user.username, "test_user")
+        self.assertEqual(self.user.email, "test@example.com")
+        self.assertEqual(self.user.userPhoneNumber, "1234567890")
+        self.assertEqual(self.user.userAddress, "Test Address")
+        self.assertFalse(self.user.isOrganiser)
+        self.assertTrue(self.user.check_password("test_password"))
+
+    def test_superuser_creation(self):
+        superuser = User.objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            userPhoneNumber="0987654321",
+            userAddress="Admin Address",
+            password="admin_password"
+        )
+        self.assertIsNotNone(superuser)
+        self.assertEqual(superuser.username, "admin")
+        self.assertEqual(superuser.email, "admin@example.com")
+        self.assertEqual(superuser.userPhoneNumber, "0987654321")
+        self.assertEqual(superuser.userAddress, "Admin Address")
+        self.assertTrue(superuser.is_superuser)
+        self.assertTrue(superuser.is_staff)
+        self.assertTrue(superuser.check_password("admin_password"))
