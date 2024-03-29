@@ -113,3 +113,25 @@ gridContainer.addEventListener('click', (e) => {
     }
   }
 });
+
+
+document.getElementById('checkoutButton').addEventListener('click', function() {
+  // Send the selectedSeats array to the server using fetch API
+  fetch('/checkout/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ selectedSeats: selectedSeats }),
+  }).then(response => {
+    if (response.ok) {
+      // If the response is successful, redirect to the checkout page
+      window.location.href = '/checkout/';
+    } else {
+      // Handle error if needed
+      console.error('Error occurred while processing checkout.');
+    }
+  }).catch(error => {
+    console.error('Error occurred while processing checkout:', error);
+  });
+});
