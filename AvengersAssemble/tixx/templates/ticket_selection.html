@@ -2,6 +2,7 @@
 {% block content %}
   {% load static %}
   <head>
+    <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
     <title>
       {% block title %}
         Tixx - Ticket Selection
@@ -9,56 +10,52 @@
     </title>
     {% load crispy_forms_tags %}
   </head>
-  <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
+  
   <div class="container">
     <div class="main">
       <h1>Event: {{ event.eventName }}</h1>
-    <p>Arena ID: {{ event.arenaId }}</p>
-    <p>Figure ID: {{ event.figureId }}</p>
+      <p>Arena ID: {{ event.arenaId }}</p>
+      <p>Figure ID: {{ event.figureId }}</p>
 
-    <h2>Arena Information</h2>
-    <p>Name: {{ arena.arenaName }}</p>
-    <p>Location: {{ arena.arenaCapacity }}</p>
-    <!-- Add more fields as needed -->
+      <h2>Arena Information</h2>
+      <p>Name: {{ arena.arenaName }}</p>
+      <p>Location: {{ arena.arenaCapacity }}</p>
+      <!-- Add more fields as needed -->
 
-    <h2>Figure Information</h2>
-    <p>Name: {{ figure.figureName }}</p>
-    <p>Description: {{ figure.figureAbout }}</p>
+      <h2>Figure Information</h2>
+      <p>Name: {{ figure.figureName }}</p>
+      <p>Description: {{ figure.figureAbout }}</p>
       <div class="section_container">
-        
-          {% if event.eventGenre == 'Rock' %}
-            <!-- Hockey specific layout -->
-            <!-- Replace the following buttons and image with hockey-specific content -->
-      
-            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
-            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
-            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-            <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image"/>
-          {% elif event.eventGenre == 'basketball' %}
-            <!-- Basketball specific layout -->
-            <!-- Replace the following buttons and image with basketball-specific content -->
-            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
-            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
-            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
-            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-            <img src="{% static 'images/basketballcourt.png' %}" class="image" alt="Basketball Court" />
-          {% elif event.eventGenre == 'concert' %}
-            <!-- Concert specific layout -->
-            <!-- Replace the following buttons and image with concert-specific content -->
-            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
-            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
-            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
-            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
-            <img src="{% static 'images/concertvenue.png' %}" class="image" alt="Concert Venue" />
-          {% else %}
-            <!-- Default layout if event type is unknown or not specified -->
-            <p>No specific layout available for this event type.</p>
-          {% endif %}
-        
+        {% if event.eventGenre == 'Rock' %}
+          <!-- Hockey specific layout -->
+          <!-- Replace the following buttons and image with hockey-specific content -->
+
+          <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+          <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+          <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+          <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image" />
+        {% elif event.eventGenre == 'basketball' %}
+          <!-- Basketball specific layout -->
+          <!-- Replace the following buttons and image with basketball-specific content -->
+          <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+          <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+          <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+          <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+          <img src="{% static 'images/basketballcourt.png' %}" class="image" alt="Basketball Court" />
+        {% elif event.eventGenre == 'concert' %}
+          <!-- Concert specific layout -->
+          <!-- Replace the following buttons and image with concert-specific content -->
+          <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
+          <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
+          <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">3</button>
+          <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
+          <img src="{% static 'images/concertvenue.png' %}" class="image" alt="Concert Venue" />
+        {% else %}
+          <!-- Default layout if event type is unknown or not specified -->
+          <p>No specific layout available for this event type.</p>
+        {% endif %}
       </div>
       <h1>Ticket Selection</h1>
-
-
 
       <ul class="showcase">
         <li>
