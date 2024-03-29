@@ -55,6 +55,9 @@ class ModelTestCase(TestCase):
             adminPassword="admin123"
         )
         
+    def test_arena_str(self):
+        self.assertEqual(str(self.arena), "Test Arena")
+        
     def test_event_str(self):
         self.assertEqual(str(self.event), "Test Event")
 
