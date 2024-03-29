@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .models import Event, Figure, ReviewImage, Review
+from .models import Event, Figure, ReviewImage, Review, Arena
 from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
@@ -246,12 +246,24 @@ def search_results(request):
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
                                                             'relatedFigures': relatedFigures, 
                                                             'relatedEvents': relatedEvents})
-def ticket_selection(request):
-    row_range = range(10)
-    col_range = range(20)
+def ticket_selection(request, eventid):
     tickets = Ticket.objects.all()
     
-    return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
+    event = get_object_or_404(Event, pk=eventid)
+    arena = Arena.objects.get(arenaName=event.arenaId)
+    figure = Figure.objects.get(figureName=event.figureId)
+    
+    context = {
+        'event' : event,
+        'arena' : arena,
+        'figure': figure,
+        'tickets': tickets
+    }
+    
+    return render(request, "ticket_selection.html", context)
+
+def temp(request):
+    return render(request, "temp.html")
 
 def checkout(request):
     return render(request, "checkout.html")
