@@ -19,6 +19,7 @@ from django.utils.dateparse import parse_date
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+import json
 
 def home(request):
     searchQuery = None
@@ -265,8 +266,13 @@ def ticket_selection(request, eventid):
 def temp(request):
     return render(request, "temp.html")
 
-def checkout(request):
-    return render(request, "checkout.html")
+def checkout(request, selected_seats):
+
+    
+    selected_seats = selected_seats.split(',')
+
+    return render(request, "checkout.html", {'selected_seats': selected_seats})
+
 
 def filtered_events(request, eventGenre):
     filtered_events = Event.objects.filter(eventGenre=eventGenre)

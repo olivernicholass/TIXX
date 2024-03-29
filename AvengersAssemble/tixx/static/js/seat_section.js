@@ -117,16 +117,17 @@ gridContainer.addEventListener('click', (e) => {
 
 document.getElementById('checkoutButton').addEventListener('click', function() {
   // Send the selectedSeats array to the server using fetch API
-  fetch('/checkout/', {
+  fetch('/checkout/' + selectedSeats.join(',') + '/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'), // Include the CSRF token in the headers
     },
     body: JSON.stringify({ selectedSeats: selectedSeats }),
   }).then(response => {
     if (response.ok) {
       // If the response is successful, redirect to the checkout page
-      window.location.href = '/checkout/';
+      window.location.href = '/checkout/' + selectedSeats.join(',') + '/';
     } else {
       // Handle error if needed
       console.error('Error occurred while processing checkout.');
@@ -135,3 +136,19 @@ document.getElementById('checkoutButton').addEventListener('click', function() {
     console.error('Error occurred while processing checkout:', error);
   });
 });
+
+// Function to get CSRF token from cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
