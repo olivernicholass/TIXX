@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .models import Event, Figure, ReviewImage, Review
+from .models import Arena, Event, Figure, ReviewImage, Review
 from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
@@ -11,7 +11,7 @@ from django.db.models import Avg
 from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm, UserRegistrationForm, OrganiserRegistrationForm
+from .forms import CreateEventForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
@@ -99,17 +99,22 @@ def isOrganiser(user):
 @login_required
 @user_passes_test(isOrganiser)
 def create_event(request):
-    render(request, 'create_event.html')
-
-@login_required
-def create_event(request):
+    
+    genres = Figure.objects.values_list('figureGenre', flat=True).distinct()
+    arenas = Arena.objects.values_list('arenaName', flat=True).distinct()
+    figures = Figure.objects.all()
+          
     if request.method == 'POST':
-        form = GuestOrganiserForm(request.POST)
+        form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
     else:
-        form = GuestOrganiserForm()  
-    return render(request, 'create_event.html', {'form': form})
+        form = CreateEventForm()
+        
+    return render(request, 'create_event.html', {'form': form, 
+                                                 'genres': genres,
+                                                 'arenas': arenas,
+                                                 'figures': figures})
 
 def login(request):
     if request.user.is_authenticated:
