@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 {% load static %}
+{% load recentlytag %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/base_no_search.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
     <title>{% block title %}Tixx{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
@@ -77,31 +79,82 @@
 
             <ul class="navbar-nav ml-auto login-register">
                 {% if request.user.is_authenticated %}
-                    {% if request.user.isOrganiser %}
-                        <li class="nav-item" style="margin-left: 30px;">
-                            <a class="nav-link login-register" href="{% url 'organiser_dashboard' %}">
-                                <img src="{% static 'icons/user.png' %}" class="icon">
-                                View Dashboard
-                            </a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item" style="margin-left: 30px;">
-                            <a class="nav-link login-register" href="{% url 'logout' %}">
-                                <img src="{% static 'icons/user.png' %}" class="icon">
-                                Logout
-                            </a>
+                    {% if request.user.userProfilePicture %}
+                        <li class="nav-item">
+                            <img src="{{ request.user.userProfilePicture.url }}" class="profile-picture">
                         </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a id="accountLink" class="nav-link" href="javascript:void(0)" onclick="openSidebar()">My Account</a>
+                    </li>
+                    {% if request.user.isOrganiser %}
+                        {% if request.user.organiserProfilePicture %}
+                            <li class="nav-item">
+                                <img src="{{ request.user.organiserProfilePicture.url }}" class="profile-picture">
+                            </li>
+                        {% endif %}
+                    {% endif %}
                 {% else %}
-                    <li class="nav-item" style="margin-left: 30px;">
-                        <a class="nav-link login-register" href="{% url 'login' %}">
-                            <img src="{% static 'icons/user.png' %}" class="icon">
-                            Login/Register
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login/Register</a>
                     </li>
                 {% endif %}
             </ul>
-        </div>
+            
+
+            <div class="sidebar" id="mySidebar" style="width: 0;">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                {% if request.user.is_authenticated %}
+                    <div class="user-info">
+                        {% if request.user.userProfilePicture %}
+                        <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
+                        {% else %}
+                            <img src="{% static 'icons/user.png' %}" class="icon">
+                        {% endif %}
+                        <div class="greeting">
+                            Hey there! <span class="name-greeting">{{ request.user.firstName }}</span>
+                        </div>
+                    </div>
+                    <div class="recently-viewed">
+                        <h3>
+                            <img src="{% static 'icons/viewed.png' %}" alt="Viewed Icon" class="viewed-icon">
+                            Recently Viewed
+                        </h3>
+                        <ul>
+                            {% for figure_id in request.session.recently_viewed %}
+                            {% with figure=figure_id|getFigure %}
+                                <p>
+                                    <a href="{% url 'figure' figure.figureName %}">
+                                        <img src="{% static 'icons/star.png' %}" alt="Star Icon" class="star-icon">
+                                        {{ figure.figureName }}
+                                    </a>
+                                </p>
+                            {% endwith %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <a href="#">
+                        <img src="{% static 'icons/edit.png' %}" alt="Edit Icon" class="edit-icon">
+                        Edit Profile
+                    </a>
+                    <a href="#">
+                        <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="settings-icon">
+                        Settings
+                    </a>
+                    <a href="{% url 'logout' %}">
+                        <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="logout-icon">
+                        Sign Out
+                    </a>
+                    <div class="contact-info">
+                        <p>Contact <span style="color: #03256C;">tixxEVENTS@gmail.com</span> for requests!</p>
+                    </div>
+                    {% if request.user.isOrganiser %}
+                        <a href="{% url 'create_event' %}">Create an Event</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}">Login/Register</a>
+                {% endif %}
+            </div>
         
     </nav>
 
@@ -111,6 +164,7 @@
         
         {% endblock %}
 
+    <script src="{% static 'js/sidebar.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
