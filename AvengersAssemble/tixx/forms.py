@@ -4,10 +4,15 @@ from .models import Review, ReviewImage, User
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    firstName = forms.CharField(max_length=30, required=False)
+    lastName = forms.CharField(max_length=150, required=False)
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser')
+        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser', 'firstName', 'lastName')
+
+    def __str__(self):
+        return self.username
         
 class GuestOrganiserForm(forms.Form):
     company_name = forms.CharField(label='Company Name', max_length=100, required=True)

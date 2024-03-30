@@ -1,102 +1,222 @@
 .nav-item {
-    transition: transform 0.3s ease;
-  }
-  
-  .nav-item:hover {
-    transform: scale(1.1);
-  }
-  
-  .nav-link.concerts:hover::after {
-    display: none;
-  }
-  
-  
-  .nav-link.concerts::after {
-    display: none !important;
-  }
-  
-  .nav-link.sports::after {
-    display: none !important;
-  }
-  
-  .dropdown-menu .container .row .col-sm-4 {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .dropdown-menu .container .row .col-sm-4 .dropdown-item {
-    margin-bottom: 5px;
-  }
-  
-  .nav-link.concerts,
-  .nav-link.sports,
-  .nav-link.contact,
-  .nav-link.login-register {
-    color: #28282B !important; 
-  }
-  
-  .navbar-nav {
-    margin-top: 15px;
-    color: black;
-  }
-  
-  .nav-link {
-    color: black;
-  }
-  
-  .nav-item {
-    font-family: 'arial-bold', sans-serif;
-    font-size: larger;
-  }
-  
-  
-  .col-sm-4 {
-    padding: 10px;
-    margin-right: 50px;
-  }
-  
-  .long-search-input {
-    width: 400px;
-  }
-  
-  .horizontal-space {
-    height: 35px;
-    width: auto;
-    background-color: #2541B2;
-  }
-  
-  .navbar {
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #FFFFFF !important;
-  }
-  
-  .navbar-custom-search {
-    border: none !important;
-  }
-  
-  .navbar-brand img {
-    max-width: 100px;
-    height: auto;
-    padding: 0;
-    margin: 10px;
-    margin-left:20px;
-  }
-  
-  .nav-link img {
-    width: 30px;
-  }
-  
-  .ml-auto,
-  .mx-auto {
-    margin-left: 0 !important;
-  }
-  
-  #image-cycler {
-    padding: 0;
-    margin: 0;
-  }
+  transition: transform 0.3s ease;
+}
 
-  .search-input::placeholder {
-    font-size: 16px;
-  }
-  
+.nav-item:hover {
+  transform: scale(1.1);
+}
+
+.nav-link.concerts:hover::after {
+  display: none;
+}
+
+.profile-picture {
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%; 
+  object-fit: cover; 
+  margin-right: 5px; 
+  margin-bottom: 5%;
+}
+
+#accountLink{
+  color:black;
+}
+
+.edit-icon {
+  margin-right: 5px; 
+  height:25px;
+  width:25px;
+  vertical-align: middle; 
+}
+
+.tixx-logo{
+  width:100px;
+}
+.nav-link.concerts::after {
+  display: none !important;
+}
+
+.nav-link.sports::after {
+  display: none !important;
+}
+
+.dropdown-menu .container .row .col-sm-4 {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu .container .row .col-sm-4 .dropdown-item {
+  margin-bottom: 5px;
+}
+
+.nav-link.concerts,
+.nav-link.sports,
+.nav-link.contact,
+.nav-link.login-register {
+  color: #28282B !important; 
+}
+
+.navbar-nav {
+  margin-top: 15px;
+  color: black;
+}
+
+.nav-link {
+  color: black;
+}
+
+.nav-item {
+  font-family: 'arial-bold', sans-serif;
+  font-size: larger;
+}
+
+
+.col-sm-4 {
+  padding: 10px;
+  margin-right: 50px;
+}
+
+.long-search-input {
+  width: 400px;
+}
+
+.horizontal-space {
+  height: 35px;
+  width: auto;
+  background-color: #2541B2;
+}
+
+.navbar {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #FFFFFF !important;
+   z-index: 10000; 
+}
+
+.navbar-custom-search {
+  border: none !important;
+}
+
+.navbar-brand img {
+  max-width: 100px;
+  height: auto;
+  padding: 0;
+  margin: 10px;
+  margin-left:20px;
+}
+
+
+.ml-auto,
+.mx-auto {
+  margin-left: 0 !important;
+}
+
+#image-cycler {
+  padding: 0;
+  margin: 0;
+}
+
+.search-input::placeholder {
+  font-size: 16px;
+}
+
+.sidebar {
+  height: 100%;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.name-greeting {
+  font-weight: 500;
+  color: #03256C;
+}
+
+
+.sidebar a {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar a:hover {
+  color: #03256C;
+  transform: translateX(5px);
+  font-weight: 400; 
+  text-decoration: none;
+}
+
+.greeting{
+  margin-left: 3%;
+  margin-top:3%;
+}
+
+.sidebar a {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 20px;
+  display: block;
+  transition: 0.3s;
+  margin-left:2%;
+  color:black;
+  z-index: 10001;  
+}
+
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  font-size: 36px;
+}
+
+.recently-viewed h3{
+  display: flex;
+  justify-content: center;
+  font-size:21px;
+  font-weight:400;
+  align-items: center;
+}
+
+recently-viewed #text{
+  margin-bottom: 2%;
+}
+
+.recently-viewed img{
+  margin-right: 2%;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-left: 5%;
+  justify-content: center;
+  margin-bottom:10%;
+}
+
+.star-icon,
+.settings-icon,
+.viewed-icon,
+.logout-icon {
+  vertical-align: middle;
+  margin-right: 5px; 
+  width:20px;
+  height:20px;
+}
+
+.contact-info {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.contact-info p {
+  font-size: 16px;
+  color: #28282B;
+}
+
+.contact-info span {
+  font-weight: bold;
+}
