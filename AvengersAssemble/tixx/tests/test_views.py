@@ -44,12 +44,7 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'search_results.html')
 
-    def test_ticket_selection_view(self):
-        # Assuming 'eventid' is a valid ID for testing purposes
-        event_id = '1'  # Replace '1' with an actual event ID
-        response = self.client.get(reverse('ticket_selection', args=[event_id]))
-        #self.assertEqual(response.status_code, 404)
-        self.assertTemplateUsed(response, 'ticket_selection.html')
+
 
     def test_checkout_view(self):
         # Assuming 'selected_seats' is a valid string of selected seats for testing purposes
@@ -57,7 +52,40 @@ class ViewTests(TestCase):
         response = self.client.get(reverse('checkout', args=[selected_seats]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
-    
+class TicketSelectionViewTest(TestCase):
+    def setUp(self):
+        # Create a test Event object
+
+        self.arena = Arena.objects.create(
+            arenaId="test_arena",
+            arenaName="Test Arena",
+            arenaCapacity=2
+        )
+        self.figure = Figure.objects.create(
+            figureName="Test Figure",
+            figureGenre="Test Genre",
+            figureAbout="Test Description"
+        )
+        self.event = Event.objects.create(
+            eventName="Test Event",
+            eventId="1",
+            eventDate="2024-03-10",
+            eventLocation="Test Location",
+            eventDescription="Test Description",
+            eventStatus="Upcoming",
+            eventGenre="Test Genre",
+            arenaId=self.arena,
+            figureId=self.figure
+        )
+
+
+    def test_ticket_selection_view(self):
+        # Assuming 'eventid' is a valid ID for testing purposes
+        event_id = self.event.eventId  # Use the ID of the test event object
+        response = self.client.get(reverse('ticket_selection', args=[event_id]))
+        self.assertEqual(response.status_code, 200)  # Assuming it should return 200 for existing event
+        self.assertTemplateUsed(response, 'ticket_selection.html')
+
 # Filtered Events Test 
 
 class FilteredEventsTestCase(TestCase):

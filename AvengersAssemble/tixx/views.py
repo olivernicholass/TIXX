@@ -247,6 +247,8 @@ def search_results(request):
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
                                                             'relatedFigures': relatedFigures, 
                                                             'relatedEvents': relatedEvents})
+
+
 def ticket_selection(request, eventid):
     tickets = Ticket.objects.all()
     
@@ -263,12 +265,11 @@ def ticket_selection(request, eventid):
     
     return render(request, "ticket_selection.html", context)
 
+
 def temp(request):
     return render(request, "temp.html")
 
 def checkout(request, selected_seats):
-
-    
     selected_seats = selected_seats.split(',')
 
     return render(request, "checkout.html", {'selected_seats': selected_seats})
