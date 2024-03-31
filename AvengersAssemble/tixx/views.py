@@ -11,7 +11,7 @@ from django.db.models import Avg
 from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
 from django.http import JsonResponse
-from .forms import ReviewForm, ReviewImageForm, GuestOrganiserForm, UserRegistrationForm, OrganiserRegistrationForm
+from .forms import CreateEventForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
@@ -20,6 +20,8 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import json
+from django.contrib.sessions.models import Session
+from django.contrib.auth.decorators import user_passes_test
 
 def home(request):
     searchQuery = None
@@ -36,12 +38,26 @@ def home(request):
     hipHopFigures = Figure.objects.filter(figureGenre='Hip-Hop')
     popFigures = Figure.objects.filter(figureGenre='Pop')
     basketballFigures = Figure.objects.filter(figureGenre='Basketball')
+    viewedIDS = request.session.get('recently_viewed', [])
+    viewedEvents = Event.objects.filter(eventId__in=viewedIDS)
 
     return render(request, "home.html", {'events': events, 
                                          'carouselFigures': carouselFigures,
                                          'hipHopFigures': hipHopFigures,
                                          'popFigures': popFigures,
-                                         'basketballFigures': basketballFigures})
+                                         'basketballFigures': basketballFigures,
+                                         'recently_viewed_events': viewedEvents})
+    
+def getRecentlyViewed(request, figureId):
+    viewedList = request.session.get('recently_viewed', [])
+
+    if figureId not in viewedList:
+        viewedList.append(figureId)
+        viewedList = viewedList[-3:]  
+
+        request.session['recently_viewed'] = viewedList
+
+    return viewedList
 
 def organiser_login(request):
     if request.method == 'POST':
@@ -50,7 +66,7 @@ def organiser_login(request):
         user = authenticate(username=username, password=password)
         if user is not None and user.is_authenticated and user.isOrganiser:
             auth_login(request, user)
-            return redirect('organiser_dashboard')
+            return redirect('create_event')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'organiser_login.html')
@@ -67,7 +83,7 @@ def organiser_register(request):
             else:
                 organiser = organiserForm.save(commit=False)
                 organiser.password = hashPASS
-                organiser.is_organiser = True
+                organiser.isOrganiser = True
                 organiser.save()
                 messages.success(request, 'Organiser registered successfully. Please login.')
                 return redirect('organiser_login')
@@ -77,15 +93,29 @@ def organiser_register(request):
         organiserForm = OrganiserRegistrationForm()
     return render(request, 'organiser_register.html', {'form': organiserForm })
 
+
+def isOrganiser(user):
+    return user.is_authenticated and user.isOrganiser
+
 @login_required
-def organiser_dashboard(request):
+@user_passes_test(isOrganiser)
+def create_event(request):
+    
+    genres = Figure.objects.values_list('figureGenre', flat=True).distinct()
+    arenas = Arena.objects.values_list('arenaName', flat=True).distinct()
+    figures = Figure.objects.all()
+          
     if request.method == 'POST':
-        form = GuestOrganiserForm(request.POST)
+        form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
     else:
-        form = GuestOrganiserForm()  
-    return render(request, 'organiser_dashboard.html', {'form': form})
+        form = CreateEventForm()
+        
+    return render(request, 'create_event.html', {'form': form, 
+                                                 'genres': genres,
+                                                 'arenas': arenas,
+                                                 'figures': figures})
 
 def login(request):
     if request.user.is_authenticated:
@@ -126,6 +156,7 @@ def register(request):
         form = UserRegistrationForm()
         
     return render(request, 'register.html', {'form': form})
+
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
     city = request.GET.get('city')
@@ -285,6 +316,7 @@ def figure(request, figure_name):
     
     events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
     reviews = Review.objects.filter(reviewFigure=figure)
+    getRecentlyViewed(request, figure.id)
     
     reviewWithImage = []
     reviewNoImage = []

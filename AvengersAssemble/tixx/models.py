@@ -55,7 +55,7 @@ class Ticket(models.Model):
 
 
 # READJUSTED ENTIRE USER MODEL AS A CUSTOM USER MODEL (NOT DJANGO DEFAULT)
-
+    
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, userPhoneNumber, userAddress, password=None, **extra_fields):
         if not email:
@@ -72,13 +72,15 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, userPhoneNumber, userAddress, password, **extra_fields)
 
-# USERS CAN BE REGULAR USERS OR ORGANISERS (isOrganiser = TRUE  + CREDENTIALS)
 class User(AbstractUser):
     userId = models.AutoField(primary_key=True)
-    userPhoneNumber = models.CharField(max_length=10, blank=True) 
+    userPhoneNumber = models.CharField(max_length=10, blank=True)
     userAddress = models.CharField(max_length=100, blank=True)
     isOrganiser = models.BooleanField(default=False)
-    organiserCredentials = models.CharField(max_length=100, blank=True) 
+    organiserCredentials = models.CharField(max_length=100, blank=True)
+    userProfilePicture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    firstName = models.CharField(max_length=30, blank=True)
+    lastName = models.CharField(max_length=150, blank=True)
 
     REQUIRED_FIELDS = ['email', 'userPhoneNumber', 'userAddress']
 

@@ -24,6 +24,20 @@
                         <div class="error">{{ form.errors.username }}</div>
                     {% endif %}
                 </div>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" name="firstName" id="firstName" class="form-control" placeholder="First Name" required/>
+                        {% if form.errors.firstName %}
+                            <div class="error">{{ form.errors.firstName }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Last Name" required/>
+                        {% if form.errors.lastName %}
+                            <div class="error">{{ form.errors.lastName }}</div>
+                        {% endif %}
+                    </div>
+                </div>
                 <div class="input-field">
                     <input type="email" name="email" id="email" class="input-box-email" placeholder="Email" required/>
                     {% if form.errors.email %}

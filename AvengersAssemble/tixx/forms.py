@@ -1,23 +1,23 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Review, ReviewImage, User
+from .models import Review, ReviewImage, User, Event
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    firstName = forms.CharField(max_length=30, required=False)
+    lastName = forms.CharField(max_length=150, required=False)
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser')
+        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser', 'firstName', 'lastName')
+
+    def __str__(self):
+        return self.username
         
-class GuestOrganiserForm(forms.Form):
-    company_name = forms.CharField(label='Company Name', max_length=100, required=True)
-    number_of_tickets = forms.IntegerField(label='Number of Tickets', required=True)
-    event_location = forms.CharField(label='Event Location', max_length=100, required=True)
-    ticket_price = forms.DecimalField(label='Ticket Price', max_digits=8, decimal_places=2, required=True)
-    date_of_event = forms.DateField(label='Date of Event', required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
-    venue_name = forms.CharField(label='Venue Name', max_length=100, required=True)
-    genre = forms.CharField(label='Genre', max_length=100, required=True)
-    description = forms.CharField(label='Description', widget=forms.Textarea, required=True)
+class CreateEventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['eventName', 'eventDate', 'eventTime', 'eventLocation', 'eventDescription', 'eventStatus', 'eventGenre', 'eventImage', 'arenaId', 'figureId']
     
 
 class ReviewForm(forms.ModelForm):

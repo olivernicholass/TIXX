@@ -1,15 +1,17 @@
-from django.test import TestCase, Client
+from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
 from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
+from django.template import Context, Template
 from django.contrib.auth.hashers import check_password
 from django.test import TestCase
-from tixx.views import review
+from tixx.views import getRecentlyViewed, review
 from tixx.forms import ReviewForm, ReviewImageForm, OrganiserRegistrationForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import login, logout
+from django.contrib.auth import get_user_model
 import datetime
 
 class ViewTests(TestCase):
@@ -513,7 +515,7 @@ class OrganiserViewsTestCase(TestCase):
 
     def test_organiser_login(self):
         response = self.client.post(reverse('organiser_login'), {'username': self.username, 'password': self.password})
-        self.assertRedirects(response, reverse('organiser_dashboard'))
+        self.assertRedirects(response, reverse('create_event'))
         self.assertTrue(response.wsgi_request.user.is_authenticated)
         self.assertTrue(response.wsgi_request.user.isOrganiser)
 
@@ -573,3 +575,42 @@ class OrganiserViewsTestCase(TestCase):
     def test_organiser_register_invalid_form_message(self):
         response = self.client.post(reverse('organiser_register'), {})
         self.assertContains(response, 'This field is required.')
+
+# GET RECENTLY VIEWED TEST (~100% COVERAGE)
+
+User = get_user_model()
+
+class RecentlyViewedTestCase(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_getRecentlyViewed(self):
+        request = self.factory.get('/')
+        request.session = {}
+
+        # Add FIGURE IDS 
+        getRecentlyViewed(request, 1)
+        getRecentlyViewed(request, 2)
+        getRecentlyViewed(request, 3)
+
+        # See if the session was updated correctly
+        self.assertEqual(request.session['recently_viewed'], [1, 2, 3])
+
+        # Append another figureId which should remove the previous one.
+        getRecentlyViewed(request, 4)
+        self.assertEqual(request.session['recently_viewed'], [2, 3, 4])
+
+        # Append a duplicate figureID which should not do anything to the list
+        getRecentlyViewed(request, 3)
+        self.assertEqual(request.session['recently_viewed'], [2, 3, 4])
+        
+# GET Figure TEST (recentlytag.py) (~100% COVERAGE)
+
+class GetFigureFilterTestCase(TestCase):
+    def setUp(self):
+        self.figure = Figure.objects.create()
+
+    def test_getFigure_filter(self):
+        template = Template("{% load recentlytag %}{{ figure_id|getFigure }}")
+        render = template.render(Context({'figure_id': self.figure.id}))
+        self.assertInHTML(str(self.figure), render)
