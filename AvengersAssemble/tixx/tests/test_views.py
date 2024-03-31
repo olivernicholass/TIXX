@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena, User
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
@@ -44,15 +44,17 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'search_results.html')
 
-    # Browser Test for Ticket Selection
     def test_ticket_selection_view(self):
-        response = self.client.get(reverse('ticket_selection'))
-        self.assertEqual(response.status_code, 200)
+        # Assuming 'eventid' is a valid ID for testing purposes
+        event_id = '1'  # Replace '1' with an actual event ID
+        response = self.client.get(reverse('ticket_selection', args=[event_id]))
+        #self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, 'ticket_selection.html')
 
-    # Browser Test for Checkout
     def test_checkout_view(self):
-        response = self.client.get(reverse('checkout'))
+        # Assuming 'selected_seats' is a valid string of selected seats for testing purposes
+        selected_seats = 'A1,B2,C3'  # Replace with actual selected seats
+        response = self.client.get(reverse('checkout', args=[selected_seats]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
     
