@@ -11,7 +11,12 @@
 </div>
 
 <div class="form-container">
-    <form method="post" class="event-form">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    <form id="eventForm" method="post" class="event-form" action="{% url 'create_event' %}"> 
         {% csrf_token %}
         <div class="form-fields">
             <div>
@@ -78,11 +83,11 @@
             <div>
                 <div>
                     <span class="contains-icon">
-                        <img src="{% static 'icons/arena.png' %}" alt="Genre Icon" class="icon">
+                        <img src="{% static 'icons/arena.png' %}" alt="Arena Icon" class="icon">
                         <select id="arena-Id" name="arenaId" required>
                             <option value="" disabled selected>Select Arena</option>
                             {% for arena in arenas %}
-                                <option value="{{ arena }}">{{ arena }}</option>
+                                <option value="{{ arena.arenaId }}">{{ arena }}</option>
                             {% endfor %}
                         </select>
                     </span>
@@ -95,13 +100,13 @@
                         <select id="figure-Id" name="figureId" onchange="updateSelectedFigure()" required>
                             <option value="" disabled selected>Select Figure</option>
                             {% for figure in figures %}
-                                <option value="{{ figure.figureName }}" data-picture="{{ figure.figurePicture.url }}">{{ figure.figureName }}</option>
+                                <option value="{{ figure.pk }}" data-picture="{{ figure.figurePicture.url }}">{{ figure.figureName }}</option>
                             {% endfor %}
                         </select>
                     </span>
                 </div>
             </div>
-            <button type="submit" onclick="showSummary(event)">Submit Event</button></div>
+            <button type="submit" onclick="showSummary(event)">SHOW SUMMARY</button></div>
     </form>
     <div class="details">
         <div id="selected-figure">
@@ -118,7 +123,7 @@
             <p>Genre: <span id="eventGenre"></span></p>
             <p>Arena: <span id="arena"></span></p>
             <p>Figure: <span id="figure"></span></p>
-            <button id="send-admin" style="display: none;">Send to Administration</button>
+            <button type="submit" id="send-admin">Send to Administration</button>
         </div>
     </div>
 </div>

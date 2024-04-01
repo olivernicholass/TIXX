@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Review, ReviewImage, User, Event
+from .models import Arena, Figure, Review, ReviewImage, User, Event
 
 class UserRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -15,10 +15,12 @@ class UserRegistrationForm(UserCreationForm):
         return self.username
         
 class CreateEventForm(forms.ModelForm):
+    arenaId = forms.ModelChoiceField(queryset=Arena.objects.all(), label='Arena')
+    figureId = forms.ModelChoiceField(queryset=Figure.objects.all(), label='Figure')
+
     class Meta:
         model = Event
         fields = ['eventName', 'eventDate', 'eventTime', 'eventLocation', 'eventDescription', 'eventStatus', 'eventGenre', 'eventImage', 'arenaId', 'figureId']
-    
 
 class ReviewForm(forms.ModelForm):
     reviewImage = forms.ImageField(widget=forms.FileInput(attrs={'accept': 'image/*', 'placeholder': 'Upload image'}))
