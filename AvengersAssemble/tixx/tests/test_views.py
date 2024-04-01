@@ -1,7 +1,7 @@
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena, User
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.template import Context, Template
@@ -47,18 +47,48 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'search_results.html')
 
-    # Browser Test for Ticket Selection
-    def test_ticket_selection_view(self):
-        response = self.client.get(reverse('ticket_selection'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'ticket_selection.html')
 
-    # Browser Test for Checkout
+
     def test_checkout_view(self):
-        response = self.client.get(reverse('checkout'))
+        # Assuming 'selected_seats' is a valid string of selected seats for testing purposes
+        selected_seats = 'A1,B2,C3'  # Replace with actual selected seats
+        response = self.client.get(reverse('checkout', args=[selected_seats]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
-    
+class TicketSelectionViewTest(TestCase):
+    def setUp(self):
+        # Create a test Event object
+
+        self.arena = Arena.objects.create(
+            arenaId="test_arena",
+            arenaName="Test Arena",
+            arenaCapacity=2
+        )
+        self.figure = Figure.objects.create(
+            figureName="Test Figure",
+            figureGenre="Test Genre",
+            figureAbout="Test Description"
+        )
+        self.event = Event.objects.create(
+            eventName="Test Event",
+            eventId="1",
+            eventDate="2024-03-10",
+            eventLocation="Test Location",
+            eventDescription="Test Description",
+            eventStatus="Upcoming",
+            eventGenre="Test Genre",
+            arenaId=self.arena,
+            figureId=self.figure
+        )
+
+
+    def test_ticket_selection_view(self):
+        # Assuming 'eventid' is a valid ID for testing purposes
+        event_id = self.event.eventId  # Use the ID of the test event object
+        response = self.client.get(reverse('ticket_selection', args=[event_id]))
+        self.assertEqual(response.status_code, 200)  # Assuming it should return 200 for existing event
+        self.assertTemplateUsed(response, 'ticket_selection.html')
+
 # Filtered Events Test 
 
 class FilteredEventsTestCase(TestCase):

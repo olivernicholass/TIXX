@@ -1,17 +1,18 @@
 const showGridButton = document.getElementById('section1');
 const gridContainer = document.getElementById('gridContainer');
-let ticketData = []
+let ticketData = [];
+let selectedSeats = [];
 
-fetch('/get-ticket-data/')
-  .then(response => response.json())
-  .then(data => {
-    // Handle the received data
-    ticketData = data.tickets;
-    console.log(ticketData);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+// fetch('/get-ticket-data/')
+//   .then(response => response.json())
+//   .then(data => {
+//     // Handle the received data
+//     ticketData = data.tickets;
+//     console.log(ticketData);
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//   });
 
 function showSection1AvailableSeats(zone){
   var rowsize = 0;
@@ -42,25 +43,112 @@ function showSection1AvailableSeats(zone){
 };
 
 function createGrid(zone, rowsize, colsize) {
+
   const zoneNumber = document.createElement('p');
   zoneNumber.textContent = "Section " + zone + " seats:";
   gridContainer.appendChild(zoneNumber);
-  for (let i = 0; i < rowsize; i++) {
-    const row = document.createElement('div');
-    row.classList.add('row');
-    row.classList.add('seatcontainer');
-    gridContainer.appendChild(row);
-    for (let j = 0; j < colsize; j++) {
+
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  for (let row = 0; row < rowsize; row++) {
+
+    // Create a row for the seats
+    const rowElement = document.createElement('div');
+    rowElement.classList.add('row', 'seatcontainer');
+    gridContainer.appendChild(rowElement);
+
+    // Add seats to the row
+    for (let col = 0; col < colsize; col++) {
+
       const seat = document.createElement('div');
       seat.classList.add('seat');
-      row.appendChild(seat);
+      rowElement.appendChild(seat);
+
+      const seatLabel = alphabet.charAt(row) + (col + 1);
+      seat.setAttribute('data-seat-label', seatLabel);
     }
   }
 }
 
+function addSelectedSeats(seatLabel){
+  console.log('seat selected: ' + seatLabel);
+
+  const selectedSeatsList = document.getElementById('selected-seats');
+  
+  // Create list items for selected seats
+  const listItem = document.createElement('li');
+  listItem.textContent = 'seat selected: ' + seatLabel;
+  listItem.setAttribute('data-seat-label', seatLabel);
+  selectedSeatsList.appendChild(listItem);
+
+  selectedSeats.push(seatLabel);
+}
+
+function removeSelectedSeat(seatLabel){
+  console.log('seat deselected: ' + seatLabel);
+
+  const selectedSeatsList = document.getElementById('selected-seats');
+  const listItemToRemove = selectedSeatsList.querySelector(`li[data-seat-label="${seatLabel}"]`);
+  // Find the list item with the deselected seat label and remove it
+  if (listItemToRemove) {
+    selectedSeatsList.removeChild(listItemToRemove);
+  }
+  console.log('Seat Label:', seatLabel);
+  console.log('Selected Seats List:', selectedSeatsList);
+  console.log('List Item to Remove:', listItemToRemove);
+
+  // Remove the deselected seat label from the global array
+  selectedSeats = selectedSeats.filter(label => label !== seatLabel);
+}
+
 gridContainer.addEventListener('click', (e) => {
   if(e.target.classList.contains('seat') && !e.target.classList.contains('occupied')){
-    e.target.classList.toggle('selected');
-    
+    const seatLabel = e.target.getAttribute('data-seat-label');
+    const isSelected = e.target.classList.toggle('selected');
+
+    if(isSelected){
+      addSelectedSeats(seatLabel);
+    }else{
+      removeSelectedSeat(seatLabel);
+    }
   }
 });
+
+
+document.getElementById('checkoutButton').addEventListener('click', function() {
+  // Send the selectedSeats array to the server using fetch API
+  fetch('/checkout/' + selectedSeats.join(',') + '/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'), // Include the CSRF token in the headers
+    },
+    body: JSON.stringify({ selectedSeats: selectedSeats }),
+  }).then(response => {
+    if (response.ok) {
+      // If the response is successful, redirect to the checkout page
+      window.location.href = '/checkout/' + selectedSeats.join(',') + '/';
+    } else {
+      // Handle error if needed
+      console.error('Error occurred while processing checkout.');
+    }
+  }).catch(error => {
+    console.error('Error occurred while processing checkout:', error);
+  });
+});
+
+// Function to get CSRF token from cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}

@@ -21,6 +21,7 @@ from django.utils.dateparse import parse_date
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+import json
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
 
@@ -329,16 +330,33 @@ def search_results(request):
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
                                                             'relatedFigures': relatedFigures, 
                                                             'relatedEvents': relatedEvents})
-    
-def ticket_selection(request):
-    row_range = range(10)
-    col_range = range(20)
+
+
+def ticket_selection(request, eventid):
     tickets = Ticket.objects.all()
     
-    return render(request, "ticket_selection.html", {'tickets': tickets, 'row_range': row_range, 'col_range': col_range})
+    event = get_object_or_404(Event, pk=eventid)
+    arena = Arena.objects.get(arenaName=event.arenaId)
+    figure = Figure.objects.get(figureName=event.figureId)
+    
+    context = {
+        'event' : event,
+        'arena' : arena,
+        'figure': figure,
+        'tickets': tickets
+    }
+    
+    return render(request, "ticket_selection.html", context)
 
-def checkout(request):
-    return render(request, "checkout.html")
+
+def temp(request):
+    return render(request, "temp.html")
+
+def checkout(request, selected_seats):
+    selected_seats = selected_seats.split(',')
+
+    return render(request, "checkout.html", {'selected_seats': selected_seats})
+
 
 def filtered_events(request, eventGenre):
     filtered_events = Event.objects.filter(eventGenre=eventGenre)

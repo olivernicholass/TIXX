@@ -23,11 +23,12 @@ class UrlTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_ticket_selection_url(self):
-        response = self.client.get(reverse('ticket_selection'))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('ticket_selection', args=['1']))
+        self.assertEqual(response.status_code, 404)
 
     def test_checkout_url(self):
-        response = self.client.get(reverse('checkout'))
+        selected_seats = 'A1,C2,B5'  # Replace 'your_selected_seats_here' with actual seat selection
+        response = self.client.get(reverse('checkout', args=[selected_seats]))
         self.assertEqual(response.status_code, 200)
 
     def test_filtered_events_url(self):
