@@ -2,15 +2,17 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as auth_login, logout
 from .models import Arena, Event, Figure, ReviewImage, Review
+from django.core.exceptions import ObjectDoesNotExist
+import logging
 from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
-from django.urls import path, include
+from django.urls import path, include, reverse
 from tixx import views as v
 from django.db.models import Avg
 from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from .forms import CreateEventForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
 from django.contrib import messages
@@ -28,9 +30,9 @@ def home(request):
         searchQuery = request.GET.get('searchQuery').lower()
     
     if searchQuery:
-        events = Event.objects.filter(eventName__icontains=searchQuery).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
+        events = Event.objects.filter(eventName__icontains=searchQuery, adminCheck=True).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
     else:
-        events = Event.objects.exclude(eventImage__isnull=True).exclude(eventImage__exact='')
+        events = Event.objects.filter(adminCheck=True).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
 
     carouselFigures = Figure.objects.filter(figureName__in=['Queen', 'Ye', 'Frank Ocean'])
 
@@ -46,6 +48,45 @@ def home(request):
                                          'popFigures': popFigures,
                                          'basketballFigures': basketballFigures,
                                          'recently_viewed_events': viewedEvents})
+    
+def admin_review(request):
+    if request.method == 'POST':
+        eventId = request.POST.get('eventId')
+
+        if eventId is not None:
+            try:
+                event = Event.objects.get(pk=eventId)
+            except Event.DoesNotExist:
+                messages.error(request, f"Event with id {eventId} does not exist.")
+                return redirect('admin_review')
+
+            if 'accept' in request.POST:
+                event.adminCheck = True
+                event.isRejected = False
+                event.save()
+            elif 'reject' in request.POST:
+                event.isRejected = True
+                event.adminCheck = False
+                event.save()
+
+    # COUNTS of pending/accepted/rejected events
+    pendingCount = Event.objects.filter(adminCheck=False, isRejected=False).count()
+    acceptedCount = Event.objects.filter(adminCheck=True, isRejected=False).count()
+    rejectedCount = Event.objects.filter(adminCheck=False, isRejected=True).count()
+
+    # ALL pending/accepted/rejected events
+    pendingEvents = Event.objects.filter(adminCheck=False, isRejected=False)
+    acceptedEvents = Event.objects.filter(adminCheck=True, isRejected=False)
+    rejectedEvents = Event.objects.filter(adminCheck=False, isRejected=True)
+
+    return render(request, 'admin_review.html', {
+        'pendingEvents': pendingEvents,
+        'acceptedEvents': acceptedEvents,
+        'rejectedEvents': rejectedEvents,
+        'pendingCount': pendingCount,
+        'acceptedCount': acceptedCount,
+        'rejectedCount': rejectedCount,
+    })
     
 def getRecentlyViewed(request, figureId):
     viewedList = request.session.get('recently_viewed', [])
@@ -99,22 +140,33 @@ def isOrganiser(user):
 @login_required
 @user_passes_test(isOrganiser)
 def create_event(request):
-    
     genres = Figure.objects.values_list('figureGenre', flat=True).distinct()
-    arenas = Arena.objects.values_list('arenaName', flat=True).distinct()
+    arenas = Arena.objects.all()
     figures = Figure.objects.all()
-          
+
     if request.method == 'POST':
         form = CreateEventForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            event = form.save(commit=False)
+            event.adminCheck = False
+            arena_id = request.POST.get('arenaId')  
+            arena = Arena.objects.get(pk=arena_id) 
+            event.arenaId = arena
+            event.save()
+            messages.success(request, 'Event created successfully!')
+            return redirect('home')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error in {field}: {error}')
     else:
         form = CreateEventForm()
-        
+
     return render(request, 'create_event.html', {'form': form, 
-                                                 'genres': genres,
-                                                 'arenas': arenas,
+                                                 'genres': genres, 
+                                                 'arenas': arenas, 
                                                  'figures': figures})
+
 
 def login(request):
     if request.user.is_authenticated:
@@ -168,16 +220,16 @@ def search_results(request):
     searchedFigures = []
     relatedFigures = []
     relatedEvents = Event.objects.none()    
-    
+        
     # Search Functionality: Handle City + Date + Keyword 
     # - Display EXACT Events for the EXACT Date for the EXACT Figure
     # - i.e City: Vancouver Date: 2024-05-30 Keyword: Drake
     # - Displays events for this exact city, date, and person
     # - Will display other events for other figures if they are also on the same date
-    
+
     if city and date and query:
         dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
-        cityEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped, figureId__figureName__iexact=query)
+        cityEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped, figureId__figureName__iexact=query, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=cityEvents).distinct()
         relatedEvents = cityEvents
         searchedFigures = []  
@@ -187,7 +239,7 @@ def search_results(request):
     
     elif city and date:
         dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
-        relatedEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped)
+        relatedEvents = Event.objects.filter(eventLocation__iexact=city, eventDate=dateStripped, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
 
     # Search Functionality: Handle City + Keyword
@@ -195,7 +247,7 @@ def search_results(request):
     # - Empty Searched Figure to only show the related figures to the events.
     
     elif city and query:
-        cityEvents = Event.objects.filter(eventLocation__iexact=city, figureId__figureName__iexact=query)
+        cityEvents = Event.objects.filter(eventLocation__iexact=city, figureId__figureName__iexact=query, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=cityEvents).distinct()
         relatedEvents = cityEvents
         searchedFigures = []  
@@ -207,34 +259,35 @@ def search_results(request):
 
     elif date and query:
         dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
-        relatedEvents = Event.objects.filter(eventDate=dateStripped, figureId__figureName__iexact=query)
+        relatedEvents = Event.objects.filter(eventDate=dateStripped, figureId__figureName__iexact=query, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
 
     # Search Functionality: Handling Only City 
     # - Display events based on Event Location, Display Related Figures to these events.
     
+
     elif city:
-        relatedEvents = Event.objects.filter(eventLocation__iexact=city)
+        relatedEvents = Event.objects.filter(eventLocation__iexact=city, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
 
     # Search Functionality: Handling ONLY DATE 
     # - User searches by only date: Displays events on that date + Related Figures for the events 
     
+
     elif date:
         dateStripped = datetime.strptime(date, '%Y-%m-%d').date()
-        relatedEvents = Event.objects.filter(eventDate=dateStripped)
+        relatedEvents = Event.objects.filter(eventDate=dateStripped, adminCheck=True)
         relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
-
 
     # Search Functionality: Handling ONLY KEYWORD 
     # - User searches by keyword: Example, we have two figures "Frank Ocean" and "Frank Sinatraa"
     # - Display both figures in "Searched Figure" section as they both contain "Frank" 
     # - Related Figures will display based on initialFigure's Genre, so in this case Frank Ocean is first and genre=Pop so other "Pop" Artists
     # - ONLY Search by keyword should show searched figures, rest should display related figures.
-
+ 
 
     elif query:
-  
+    
         # If a user searches only by genre, i.e "Pop" then we retrieve the query 
         # and display the events corresponding to Pop, and then we display
         # the Related Figures that correspond with these events
@@ -245,7 +298,6 @@ def search_results(request):
             'rap': 'Hip-Hop',
         }
 
-        # Find if the users input matches our genre mapping, i.e if they enter "rap", it should return "Hip-Hop"
         if query.lower() in genreMap:
             genreMap = genreMap[query.lower()]
             genreFigures = Figure.objects.filter(figureGenre__icontains=genreMap)
@@ -253,7 +305,7 @@ def search_results(request):
             genreFigures = Figure.objects.filter(figureGenre__icontains=query)
 
         if genreFigures.exists():
-            relatedEvents = Event.objects.filter(figureId__in=genreFigures)
+            relatedEvents = Event.objects.filter(figureId__in=genreFigures, adminCheck=True)
             relatedFigures = Figure.objects.filter(event__in=relatedEvents).distinct()
             searchedFigures = []
 
@@ -264,7 +316,7 @@ def search_results(request):
             searchedFigures = figures
             if exactFigures:
                 initialFigure = exactFigures[0]
-                relatedEvents = Event.objects.filter(figureId=initialFigure)
+                relatedEvents = Event.objects.filter(figureId=initialFigure, adminCheck=True)
                 relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
                 searchedFigures = exactFigures | partialFigures
             else:
@@ -272,11 +324,12 @@ def search_results(request):
                 if searchedFigures.exists():
                     initialFigure = searchedFigures.first()
                     relatedFigures = Figure.objects.filter(figureGenre=initialFigure.figureGenre).exclude(id=initialFigure.id)
-                    relatedEvents = Event.objects.filter(figureId=initialFigure)
+                    relatedEvents = Event.objects.filter(figureId=initialFigure, adminCheck=True)
 
     return render(request, "search_results.html", {'searchedFigures': searchedFigures, 
                                                             'relatedFigures': relatedFigures, 
                                                             'relatedEvents': relatedEvents})
+    
 def ticket_selection(request):
     row_range = range(10)
     col_range = range(20)
@@ -294,8 +347,8 @@ def filtered_events(request, eventGenre):
 def figure(request, figure_name):
     figure_case = figure_name.lower()
     figure = get_object_or_404(Figure, figureName__iexact=figure_case)
+    events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now(), adminCheck=True).order_by('eventDate', 'eventTime')
     
-    events = Event.objects.filter(figureId=figure, eventDate__gte=timezone.now()).order_by('eventDate', 'eventTime')
     reviews = Review.objects.filter(reviewFigure=figure)
     getRecentlyViewed(request, figure.id)
     

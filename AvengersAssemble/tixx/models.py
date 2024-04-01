@@ -34,6 +34,8 @@ class Event(models.Model):
     eventGenre = models.CharField(max_length=100, default="none")  
     eventImage = models.ImageField(upload_to='event_images/', null=True, blank=True)  
     arenaId = models.ForeignKey(Arena,on_delete=models.SET_NULL, null=True)
+    adminCheck = models.BooleanField(default=False)
+    isRejected = models.BooleanField(default=False)
     figureId = models.ForeignKey(Figure, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):

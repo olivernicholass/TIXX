@@ -12,6 +12,7 @@ from tixx.forms import ReviewForm, ReviewImageForm, OrganiserRegistrationForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
+from datetime import date
 import datetime
 
 class ViewTests(TestCase):
@@ -230,6 +231,7 @@ class SearchResultsViewTest(TestCase):
 
     def setUp(self):
         # TEST FIGURES
+        # TEST FIGURES
         self.figure1 = Figure.objects.create(figureName='Drake', figureGenre='Hip-Hop', figurePicture=self.testJPG)
         self.figure2 = Figure.objects.create(figureName='Adele', figureGenre='Pop', figurePicture=self.testJPG)
 
@@ -237,10 +239,10 @@ class SearchResultsViewTest(TestCase):
         self.arena = Arena.objects.create(arenaId='12345', arenaName='Test Arena', arenaCapacity=10000)
         self.event1 = Event.objects.create(eventName='Drake Concert', eventDate='2024-05-30', eventTime='20:00',
                                             eventLocation='Vancouver', eventDescription='Concert', eventStatus='Active',
-                                            arenaId=self.arena, figureId=self.figure1)
+                                            arenaId=self.arena, figureId=self.figure1, adminCheck=True, isRejected=False)
         self.event2 = Event.objects.create(eventName='Adele Concert', eventDate='2024-05-30', eventTime='19:00',
                                             eventLocation='Vancouver', eventDescription='Concert', eventStatus='Active',
-                                            arenaId=self.arena, figureId=self.figure2)
+                                            arenaId=self.arena, figureId=self.figure2, adminCheck=True, isRejected=False)
         super().setUp()
 
     # TAKE DOWN IMAGES
@@ -331,7 +333,7 @@ class SearchResultsViewTest(TestCase):
         timeAhead = (timezone.now() + timezone.timedelta(days=7)).date()
         eventAhead = Event.objects.create(eventName='Test Event', eventDate=timeAhead, eventTime='20:00',
                                             eventLocation='Test Location', eventDescription='Test Description',
-                                            eventStatus='Active', arenaId=self.arena, figureId=self.figure1)
+                                            eventStatus='Active', arenaId=self.arena, figureId=self.figure1, adminCheck=True, isRejected=False)
 
         Query = {
             'date': timeAhead.strftime('%Y-%m-%d')
@@ -584,3 +586,47 @@ class GetFigureFilterTestCase(TestCase):
         template = Template("{% load recentlytag %}{{ figure_id|getFigure }}")
         render = template.render(Context({'figure_id': self.figure.id}))
         self.assertInHTML(str(self.figure), render)
+        
+# ADMIN REVIEW VIEW TEST (~100% COVERAGE)
+
+class AdminReviewTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(email='test@example.com', userPhoneNumber='1234567890', userAddress='123 Test St', password='testpassword')
+        self.client.login(email='test@example.com', password='testpassword')
+        self.pending_event = Event.objects.create(
+            eventName='Pending Event',
+            adminCheck=False,
+            isRejected=False,
+            eventDate=date.today()
+        )
+        self.accepted_event = Event.objects.create(
+            eventName='Accepted Event',
+            adminCheck=True,
+            isRejected=False,
+            eventDate=date.today()
+        )
+
+    def test_admin_review_view(self):
+        response = self.client.get(reverse('admin_review'))
+        self.assertEqual(response.status_code, 200)
+
+        # COUNTS/EVENTS Passed to template
+        self.assertEqual(len(response.context['pendingEvents']), 1)
+        self.assertEqual(len(response.context['acceptedEvents']), 1)
+        self.assertEqual(len(response.context['rejectedEvents']), 0)
+        self.assertEqual(response.context['pendingCount'], 1)
+        self.assertEqual(response.context['acceptedCount'], 1)
+        self.assertEqual(response.context['rejectedCount'], 0)
+
+        # POST TO Accept and Event
+        response = self.client.post(reverse('admin_review'), {'eventId': self.accepted_event.eventId, 'accept': 'Accept'})
+        self.assertEqual(response.status_code, 200)  # Redirects after POST
+
+        # POST to Reject an Event
+        response = self.client.post(reverse('admin_review'), {'eventId': self.accepted_event.eventId, 'reject': 'Reject'})
+        self.assertEqual(response.status_code, 200)  # Redirects after POST
+
+        # TEST an Event with a non-existing ID
+        response = self.client.post(reverse('admin_review'), {'eventId': 999, 'accept': 'Accept'})
+        self.assertEqual(response.status_code, 302)  # Redirects after POST
