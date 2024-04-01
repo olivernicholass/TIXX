@@ -64,7 +64,7 @@ function createGrid(zone, rowsize, colsize) {
       seat.classList.add('seat');
       rowElement.appendChild(seat);
 
-      const seatLabel = alphabet.charAt(row) + (col + 1);
+      const seatLabel = "S" + zone + alphabet.charAt(row) + (col + 1);
       seat.setAttribute('data-seat-label', seatLabel);
     }
   }
