@@ -29,7 +29,6 @@ max-width: none;
 max-height: none;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 overflow: hidden;
-
 border: 2px solid black;
 }
 
@@ -169,7 +168,7 @@ padding: 10px;
 display: none;
 }
 
-.sidebar{
+.tickets-sidebar{
 display: flex;
 flex-direction: column;
 position: relative;

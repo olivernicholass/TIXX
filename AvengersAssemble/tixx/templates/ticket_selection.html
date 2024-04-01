@@ -1,16 +1,8 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 {% block content %}
-  {% load static %}
-  <head>
-    <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
-    <title>
-      {% block title %}
-        Tixx - Ticket Selection
-      {% endblock %}
-    </title>
-    {% load crispy_forms_tags %}
-  </head>
-  
+  <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
+
   <div class="container">
     <div class="main">
       <h1>Event: {{ event.eventName }}</h1>
@@ -76,7 +68,7 @@
 
       <div class="seatcontainer" id="gridContainer"></div>
     </div>
-    <div class="sidebar">
+    <div class="tickets-sidebar">
       <div class="sidebar-header">
         <h3>Your Tickets</h3>
       </div>
