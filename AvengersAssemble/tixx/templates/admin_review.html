@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/admin_review.css' %}">
+
+    <div class="events-review">
+        <div class="pending">
+            <p class="p-icon">
+                <img src="{% static 'icons/pending.png' %}" alt="Pending Icon" class="icon">
+                PENDING EVENTS • {{ pendingCount }}
+            </p>
+                {% for event in pendingEvents %}
+                <div class="event">
+                    <div class="event-info">
+                        <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                        <div class="event-date">
+                            <p id="eventDate">{{ event.eventDate }}</p>
+                            <p>{{ event.figureId }}</p>
+                        </div>
+                        <div class="event-details">
+                            <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                            <p><span class="bold">{{ event.arenaId }}</span></p>
+                        </div>
+                        <form method="post" class="d-flex flex-column align-items-center">
+                            {% csrf_token %}
+                            <input type="hidden" name="eventId" value="{{ event.eventId }}">
+                            <button type="submit" name="accept" class="btn btn-primary mb-2" id="accept">Accept</button>
+                            <button type="submit" name="reject" class="btn btn-primary" id="reject">Reject</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+        <div class="accepted">
+            <p class="p-icon">
+                <img src="{% static 'icons/check.png' %}" alt="Check Icon" class="icon">
+                ACCEPTED EVENTS • {{ pendingCount }}
+            </p>
+            {% for event in acceptedEvents %}
+            <div class="event">
+                <div class="event-info">
+                    <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                    <div class="event-date">
+                        <p id="eventDate">{{ event.eventDate }}</p>
+                        <p>{{ event.figureId }}</p>
+                    </div>
+                    <div class="event-details">
+                        <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                        <p><span class="bold">{{ event.arenaId }}</span></p>
+                    </div>
+                    <form method="post" class="d-flex flex-column align-items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="eventId" value="{{ event.eventId }}">
+                        <button type="submit" name="reject" class="btn btn-primary" id="reject">Reject</button>
+                        {% if event.eventId %}
+                            <a href="{% url 'admin:tixx_event_change' event.eventId %}" class="btn btn-primary" id="edit">Edit</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <div class="rejected">
+            <p class="p-icon">
+                <img src="{% static 'icons/reject.png' %}" alt="Reject Icon" class="icon">
+                REJECTED EVENTS • {{ rejectedCount }}
+            </p>
+            {% for event in rejectedEvents %}
+            <div class="event">
+                <div class="event-info">
+                    <img src="{% static 'icons/tickets.png' %}" class="event-icon">
+                    <div class="event-date">
+                        <p id="eventDate">{{ event.eventDate }}</p>
+                        <p>{{ event.figureId }}</p>
+                    </div>
+                    <div class="event-details">
+                        <p>{{ event.eventDate|date:"D" }} • {{ event.eventTime|time:"g:i A" }}</p>
+                        <p><span class="bold">{{ event.arenaId }}</span></p>
+                    </div>
+                    <form method="post" class="d-flex flex-column align-items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="eventId" value="{{ event.eventId }}">
+                        <button type="submit" name="delete" class="btn btn-primary" id="delete">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
