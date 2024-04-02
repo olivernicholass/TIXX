@@ -48,7 +48,9 @@ def home(request):
                                          'popFigures': popFigures,
                                          'basketballFigures': basketballFigures,
                                          'recently_viewed_events': viewedEvents})
-    
+
+@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def admin_review(request):
     if request.method == 'POST':
         eventId = request.POST.get('eventId')
@@ -189,8 +191,8 @@ def logoutpage(request):
         logout(request)
     return redirect("/login")
 
-def profile(request):
-    return render(request, "profile.html")
+def view_profile(request):
+    return render(request, "view_profile.html")
 
 def register(request):
     if request.method == 'POST':
