@@ -15,7 +15,7 @@ urlpatterns = [
     path('search_results/', views.search_results, name='search_results'),
     path('tickets/<str:eventid>/', views.ticket_selection, name='ticket_selection'),
     path('temp/', views.temp, name='temp'),
-    path('checkout/<str:selected_seats>/', views.checkout, name='checkout'),
+    path('checkout/<int:event_id>/<str:selected_seats>/', views.checkout, name='checkout'),
     path('review/<str:figure_name>/', views.review, name='review'),
     path('filtered_events/<slug:eventGenre>/', views.filtered_events, name='filtered_events'),
     path('figure/<str:figure_name>/', views.figure, name='figure'),
@@ -27,6 +27,7 @@ urlpatterns = [
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('admin_review/', views.admin_review, name='admin_review')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
