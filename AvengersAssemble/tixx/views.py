@@ -192,8 +192,8 @@ def logoutpage(request):
         logout(request)
     return redirect("/login")
 
-def view_profile(request):
-    return render(request, "view_profile.html")
+def profile(request):
+    return render(request, "profile.html")
 
 def register(request):
     if request.method == 'POST':
