@@ -50,8 +50,6 @@ def home(request):
                                          'basketballFigures': basketballFigures,
                                          'recently_viewed_events': viewedEvents})
 
-@user_passes_test(lambda u: u.is_superuser)
-@login_required
 def admin_review(request):
     if request.method == 'POST':
         eventId = request.POST.get('eventId')
