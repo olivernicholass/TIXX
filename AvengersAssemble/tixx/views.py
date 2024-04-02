@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login as auth_login, logout
-from .models import Arena, Event, Figure, ReviewImage, Review
+from .models import Arena, Event, Figure, ReviewImage, Review, Payment
 from django.core.exceptions import ObjectDoesNotExist
 import logging
 from django.utils import timezone
@@ -446,25 +446,24 @@ def get_ticket_data(request):
 def confirmation(request):
     context = {}
     # if request.method == 'POST':
-    #     paymentId = request.POST.get('paymentId')
-    #     username = request.POST.get('username')
-    #     paymentAmount = request.POST.get('paymentAmount')
-    #     paymentMethod = request.POST.get('paymentMethod')
-    #     paymentDate = request.POST.get('paymentDate')
+    #     paymentId = request.POST.get('paymentId')    
     #     transactionId = request.POST.get('transactionId')
     #     ticketId = request.POST.get('ticketId')
-    #     seatNum = request.POST.get('seatNum')
+    paymentId = '12345' 
+    transactionId = 'abcde'  
+    ticketId = 123  
 
+    payment = Payment.objects.filter(paymentId=paymentId, transactionId=transactionId).first()
+    ticket = Ticket.objects.filter(ticketId=ticketId).first()
+    user = payment.userId if payment else None
+    event = ticket.eventId if ticket else None
+    arena = ticket.arenaId if ticket else None
 
-
-    # context = {
-    #     'paymentId':paymentId,
-    #     'username':username,
-    #     'paymentAmount':paymentAmount,
-    #     'paymentMethod':paymentMethod,
-    #     'paymentDate':paymentDate,
-    #     'transactionId':transactionId,
-    #     'ticketId': ticketId,
-    #     'seatNum': seatNum,
-    # }
+    context = {
+        'payment': payment,
+        'user': user,
+        'ticket': ticket,
+        'event': event,
+        'arena': arena,
+    }
     return render(request, "confirmation.html",context)
