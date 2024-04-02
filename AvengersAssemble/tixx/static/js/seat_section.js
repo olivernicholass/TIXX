@@ -1,23 +1,18 @@
 const showGridButton = document.getElementById('section1');
 const gridContainer = document.getElementById('gridContainer');
+const eventIdElement = document.getElementById('eventId');
+const eventid = eventIdElement.textContent;
+
 let ticketData = [];
 let selectedSeats = [];
 
-// fetch('/get-ticket-data/')
-//   .then(response => response.json())
-//   .then(data => {
-//     // Handle the received data
-//     ticketData = data.tickets;
-//     console.log(ticketData);
-//   })
-//   .catch(error => {
-//     console.error('Error:', error);
-//   });
 
-function showSection1AvailableSeats(zone){
+
+
+function showSection1AvailableSeats(zone) {
   var rowsize = 0;
   var colsize = 0;
-  switch(zone){
+  switch (zone) {
     case 1:
       rowsize = 10;
       colsize = 50;
@@ -39,7 +34,7 @@ function showSection1AvailableSeats(zone){
   gridContainer.innerHTML = ''; // Clear the grid
   createGrid(zone, rowsize, colsize);
   console.log("grid created");
-  
+
 };
 
 function createGrid(zone, rowsize, colsize) {
@@ -70,11 +65,11 @@ function createGrid(zone, rowsize, colsize) {
   }
 }
 
-function addSelectedSeats(seatLabel){
+function addSelectedSeats(seatLabel) {
   console.log('seat selected: ' + seatLabel);
 
   const selectedSeatsList = document.getElementById('selected-seats');
-  
+
   // Create list items for selected seats
   const listItem = document.createElement('li');
   listItem.textContent = 'seat selected: ' + seatLabel;
@@ -84,7 +79,7 @@ function addSelectedSeats(seatLabel){
   selectedSeats.push(seatLabel);
 }
 
-function removeSelectedSeat(seatLabel){
+function removeSelectedSeat(seatLabel) {
   console.log('seat deselected: ' + seatLabel);
 
   const selectedSeatsList = document.getElementById('selected-seats');
@@ -102,22 +97,35 @@ function removeSelectedSeat(seatLabel){
 }
 
 gridContainer.addEventListener('click', (e) => {
-  if(e.target.classList.contains('seat') && !e.target.classList.contains('occupied')){
+  if (e.target.classList.contains('seat') && !e.target.classList.contains('occupied')) {
     const seatLabel = e.target.getAttribute('data-seat-label');
     const isSelected = e.target.classList.toggle('selected');
 
-    if(isSelected){
+    if (isSelected) {
       addSelectedSeats(seatLabel);
-    }else{
+    } else {
       removeSelectedSeat(seatLabel);
     }
   }
 });
 
 
-document.getElementById('checkoutButton').addEventListener('click', function() {
+document.getElementById('checkoutButton').addEventListener('click', function () {
+
+
+
+
+  console.log("Event ID: ", eventid);
+
+  // Check if selectedSeats array is empty
+  if (selectedSeats.length === 0) {
+    // Display an error message or perform any other action to handle the empty selectedSeats array
+
+    return; // Exit the event listener function
+  }
+
   // Send the selectedSeats array to the server using fetch API
-  fetch('/checkout/' + selectedSeats.join(',') + '/', {
+  fetch('/checkout/' + eventid + '/' + selectedSeats.join(',') + '/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -127,7 +135,7 @@ document.getElementById('checkoutButton').addEventListener('click', function() {
   }).then(response => {
     if (response.ok) {
       // If the response is successful, redirect to the checkout page
-      window.location.href = '/checkout/' + selectedSeats.join(',') + '/';
+      window.location.href = '/checkout/' + eventid + '/' + selectedSeats.join(',') + '/';
     } else {
       // Handle error if needed
       console.error('Error occurred while processing checkout.');

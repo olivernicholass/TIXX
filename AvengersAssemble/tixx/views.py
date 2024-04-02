@@ -333,7 +333,7 @@ def search_results(request):
 
 
 def ticket_selection(request, eventid):
-    tickets = Ticket.objects.all()
+    tickets = Ticket.objects.filter(eventId=eventid).values()
     
     event = get_object_or_404(Event, pk=eventid)
     arena = Arena.objects.get(arenaName=event.arenaId)
@@ -352,10 +352,10 @@ def ticket_selection(request, eventid):
 def temp(request):
     return render(request, "temp.html")
 
-def checkout(request, selected_seats):
+def checkout(request, event_id, selected_seats):
     selected_seats = selected_seats.split(',')
 
-    return render(request, "checkout.html", {'selected_seats': selected_seats})
+    return render(request, "checkout.html", {'event_id': event_id, 'selected_seats': selected_seats})
 
 
 def filtered_events(request, eventGenre):
