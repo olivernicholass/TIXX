@@ -51,10 +51,12 @@ class ViewTests(TestCase):
 
     def test_checkout_view(self):
         # Assuming 'selected_seats' is a valid string of selected seats for testing purposes
-        selected_seats = 'A1,B2,C3'  # Replace with actual selected seats
+        event_id = 1
+        selected_seats = 'S1A1,S1B2,S1C3'  # Replace with actual selected seats
         response = self.client.get(reverse('checkout', args=[selected_seats]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
+
 class TicketSelectionViewTest(TestCase):
     def setUp(self):
         # Create a test Event object
