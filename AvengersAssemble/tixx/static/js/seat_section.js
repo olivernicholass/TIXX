@@ -46,6 +46,7 @@ function createGrid(zone, rowsize, colsize) {
 
   const zoneNumber = document.createElement('p');
   zoneNumber.textContent = "Section " + zone + " seats:";
+  zoneNumber.classList.add('seatcontainer');
   gridContainer.appendChild(zoneNumber);
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
