@@ -25,11 +25,13 @@
     <div class="content">
       <p style="display: none;" id="eventId">{{ event.eventId }}</p>
 
-      <ol>
-        {% comment %} {% for ticket in tickets %}
-          <li>{{ ticket }}</li>
-        {% endfor %} {% endcomment %}
-      </ol>
+
+
+      {% comment %} <div id="ticketDataContainer">
+        {% for ticket in tickets %}
+            <li>{{ ticket }}</li>
+        {% endfor %}
+      </div> {% endcomment %}
 
       <h1>Ticket Selection</h1>
 
@@ -104,7 +106,6 @@
     
   </div>
 
-
-
+  <div id="ticketsData" data-tickets="{{ tickets_json }}"></div>
   <script src="{% static 'js/seat_section.js' %}"></script>
 {% endblock %}

@@ -6,6 +6,11 @@ const eventid = eventIdElement.textContent;
 let ticketData = [];
 let selectedSeats = [];
 
+// Add an event listener for the DOMContentLoaded event
+document.addEventListener('DOMContentLoaded', function() {
+  ticketData = JSON.parse(document.getElementById('ticketsData').getAttribute('data-tickets'));
+  console.log("TicketData: " + ticketData);
+});
 
 
 
@@ -14,20 +19,20 @@ function showSection1AvailableSeats(zone) {
   var colsize = 0;
   switch (zone) {
     case 1:
-      rowsize = 10;
-      colsize = 50;
+      rowsize = 25;
+      colsize = 25;
       break;
     case 2:
-      rowsize = 10;
-      colsize = 50;
+      rowsize = 25;
+      colsize = 25;
       break;
     case 3:
-      rowsize = 20;
-      colsize = 10;
+      rowsize = 25;
+      colsize = 25;
       break;
     case 4:
-      rowsize = 20;
-      colsize = 10;
+      rowsize = 25;
+      colsize = 25;
       break;
   }
 
@@ -56,13 +61,28 @@ function createGrid(zone, rowsize, colsize) {
     for (let col = 0; col < colsize; col++) {
 
       const seat = document.createElement('div');
-      seat.classList.add('seat');
-      rowElement.appendChild(seat);
-
       const seatLabel = "S" + zone + alphabet.charAt(row) + (col + 1);
+
+      if(available(seatLabel)){
+        seat.classList.add('seat');
+        
+      }else{
+        //seat.classList.add('seat-occupied');
+      }
+
+      rowElement.appendChild(seat);
+      
       seat.setAttribute('data-seat-label', seatLabel);
+
+
     }
   }
+}
+
+function available(seatLabel){
+  ticket = ticketData.find(ticket => ticket.seatNum === seatLabel);
+  console.log(ticket);
+  return ticket.available;
 }
 
 function addSelectedSeats(seatLabel) {

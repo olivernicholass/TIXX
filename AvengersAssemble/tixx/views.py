@@ -334,7 +334,7 @@ def search_results(request):
 
 def ticket_selection(request, eventid):
     tickets = Ticket.objects.filter(eventId=eventid).values()
-    
+    tickets_json = json.dumps(list(tickets))
     event = get_object_or_404(Event, pk=eventid)
     arena = Arena.objects.get(arenaName=event.arenaId)
     figure = Figure.objects.get(figureName=event.figureId)
@@ -343,7 +343,8 @@ def ticket_selection(request, eventid):
         'event' : event,
         'arena' : arena,
         'figure': figure,
-        'tickets': tickets
+        'tickets': tickets,
+        'tickets_json' : tickets_json
     }
     
     return render(request, "ticket_selection.html", context)
