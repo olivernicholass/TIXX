@@ -339,12 +339,46 @@ def ticket_selection(request, eventid):
     arena = Arena.objects.get(arenaName=event.arenaId)
     figure = Figure.objects.get(figureName=event.figureId)
     
+    genre_map = {
+        'Rock': 'concert',
+        'Pop': 'concert',
+        'Hip-Hop': 'concert',
+        'R&B': 'concert',
+        'Electronic': 'concert',
+        'Jazz': 'concert',
+        'Classical': 'concert',
+        'Country': 'concert',
+        'Blues': 'concert',
+        'Reggae': 'concert',
+        'Folk': 'concert',
+        'Indie': 'concert',
+        'Metal': 'concert',
+        'Punk': 'concert',
+    }
+    
+    sport_map = {
+        'Hockey': 'sport',
+        'Soccer': 'sport',
+        'Basketball': 'sport',
+        'Football': 'sport',
+        'Tennis': 'sport',
+        'Baseball': 'sport',
+        'Golf': 'sport',
+        'Cricket': 'sport',
+        'Rugby': 'sport',
+        'Volleyball': 'sport',
+        'Boxing': 'sport',
+        'MMA': 'sport',
+        'Cycling': 'sport',
+    }
+    
     context = {
         'event' : event,
         'arena' : arena,
         'figure': figure,
         'tickets': tickets,
-        'tickets_json' : tickets_json
+        'tickets_json' : tickets_json,
+        'genre_map': genre_map
     }
     
     return render(request, "ticket_selection.html", context)

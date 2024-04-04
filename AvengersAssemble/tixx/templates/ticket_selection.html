@@ -37,7 +37,7 @@
 
 
       <div class="section_container">
-        {% if event.eventGenre == 'Hockey' or event.eventGenre == 'Soccer' %}
+        {% if event.eventGenre in sport_map %}
           <div class="grid-container-sports">
             <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
             <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">2</button>
@@ -45,7 +45,7 @@
             <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">4</button>
             <img src="{% static 'images/sports.png' %}" class="image" alt="Concert Venue" />
           </div>
-        {% elif event.eventGenre == 'Rock' %}
+        {% elif event.eventGenre in genre_map %}
           <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image" />
           <div class="grid-container-concert">
             <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">1</button>
