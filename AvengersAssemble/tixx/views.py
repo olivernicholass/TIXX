@@ -191,8 +191,36 @@ def logoutpage(request):
         logout(request)
     return redirect("/login")
 
-def view_profile(request):
-    return render(request, "view_profile.html")
+@login_required
+def view_profile(request, username):
+    user = get_object_or_404(User, username=username)
+    reviews = Review.objects.filter(userReview=request.user)
+    return render(request, 'view_profile.html', {'user': user, 'reviews': reviews})
+
+def edit_profile(request):
+    reviews = Review.objects.filter(userReview=request.user)
+    user = request.user
+    if request.method == 'POST' and user.is_authenticated:
+        if 'firstName' in request.POST:
+            user.firstName = request.POST['firstName']
+        elif 'lastName' in request.POST:
+            user.lastName = request.POST['lastName']
+        elif 'email' in request.POST:
+            user.email = request.POST['email']
+        elif 'userPhoneNumber' in request.POST:
+            user.userPhoneNumber = request.POST['userPhoneNumber']
+        elif 'userAddress' in request.POST:
+            user.userAddress = request.POST['userAddress']
+        elif 'city' in request.POST:
+            user.city = request.POST['city']
+        elif 'stateProvince' in request.POST:
+            user.stateProvince = request.POST['stateProvince']
+        elif 'postalcode' in request.POST:
+            user.postalcode = request.POST['postalcode']
+        user.save()
+        print("User saved successfully:", user)
+        return redirect('view_profile', username=user.username) 
+    return render(request, 'edit_profile.html', {'reviews': reviews})
 
 def register(request):
     if request.method == 'POST':
@@ -378,6 +406,7 @@ def figure(request, figure_name):
         'galleryCount': galleryCount,  
     })
 
+@login_required
 def review(request, figure_name):
     figure_case = figure_name.lower()
     figure = get_object_or_404(Figure, figureName__iexact=figure_case)
@@ -394,13 +423,14 @@ def review(request, figure_name):
         imageForm = ReviewImageForm(request.POST, request.FILES)
         if reviewForm.is_valid() and imageForm.is_valid():
             review = reviewForm.save(commit=False)
+            review.userReview = request.user  
             review.reviewFigure = figure
             review.save()
             for image in request.FILES.getlist('reviewImage'):
                 ReviewImage.objects.create(review=review, reviewImage=image)
-                
+                        
             formValidity = True
-            
+                    
             return render(request, 'review.html', {
                 'figure': figure,
                 'averageRating': avgRating,
@@ -409,6 +439,7 @@ def review(request, figure_name):
                 'formValidity': formValidity,
                 'figureName': figure.figureName
             })
+
     else:
         reviewForm = ReviewForm()
         imageForm = ReviewImageForm()  

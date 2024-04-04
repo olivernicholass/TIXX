@@ -136,9 +136,9 @@
                             {% endfor %}
                             </ul>
                         </div>
-                        <a href="#">
+                        <a href="/profile/{{ request.user.username }}">
                             <img src="{% static 'icons/edit.png' %}" alt="Edit Icon" class="edit-icon">
-                            Edit Profile
+                            View Profile
                         </a>
                         <a href="#">
                             <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="settings-icon">

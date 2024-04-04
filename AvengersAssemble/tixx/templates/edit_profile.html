@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %} 
+{% load figuretag %} 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+<body>
+    <div class="background-items">
+        <div class="pfp" id="pfpContainer">
+            {% if user.userProfilePicture %}
+                <img src="{{ user.miniImage.url }}" alt="{{ user.username }}">
+            {% else %}
+                <p>No Image Available</p>
+            {% endif %}
+            <p id="About">ABOUT</p>
+            <p id="userDesc">{{ user.userDescription }}</p>
+            {% if user.favoriteFigure %}
+                <p id="tixxFavorite">TIXX FAVORITE</p>
+                <div id="favoriteFigure">
+                    <img id="figureImage" src="{{ user.favoriteFigure.figurePicture.url }}" alt="{{ user.favoriteFigure.figureName }}">
+                    <div class="figureInfo">
+                        <p id="figureName">{{ user.favoriteFigure.figureName }}</p>
+                        <p id="figureGenre">{{ user.favoriteFigure.figureGenre }}</p>
+                    </div>
+                    <div id="favoriteSong">
+                        <iframe src="https://open.spotify.com/embed/track/{{ user.favoriteSongSpotifyId }}" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display: block;"></iframe>
+                        <div class="songInfo">
+                            <p id="songName">{{ user.favoriteSong.name }}</p>
+                            <p id="artistName">{{ user.favoriteSong.artist }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="usernameStatus">
+            <p id="username">
+                {% if user.is_superuser %}
+                    <img src="{% static 'icons/verified.png' %}" alt="Verified Icon" class="icon">
+                {% endif %}
+                {{ user.username }}
+            </p>
+            <button type="button" id="follow" class="btn btn-primary">SHARE</button>
+        </div>
+    </div>
+    <div class="pfp-background">
+        {% if user.backgroundImage %}
+            <img src="{{ user.backgroundImage.url }}" alt="{{ user.username }}" class="background-image">
+        {% else %}
+            {% if user.userProfilePicture %}
+                <img src="{{ user.userProfilePicture.url }}" alt="{{ user.username }}" class="background-image">
+            {% else %}
+                <p>No Image Available</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="white-bar navbar navbar-expand">
+        <ul class="navbar-nav">
+            <li class="nav-item mr-3"> 
+                <a class="nav-link events-button" href="#">DETAILS</a>
+            </li>
+            <li class="nav-item mr-3"> 
+                <a class="nav-link gallery-button" href="#">MY REVIEWS</a>
+            </li>
+            <li class="nav-item mr-3"> 
+                <a class="nav-link about-button" href="#about-section">EDIT PROFILE</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link reviews-button" href="#">REVIEWS</a>
+            </li>
+        </ul>
+    </div>
+    <div class="details">
+        <div class="detail" data-type="name">
+            <img src="{% static 'icons/name.png' %}" alt="Name Icon" class="icon">
+            <p><span class="title">NAME:</span></p>
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="name-inputs">
+                    <input type="text" name="firstName" value="{{ user.firstName }}" placeholder="First Name">
+                    <input type="text" name="lastName" value="{{ user.lastName }}" placeholder="Last Name">
+                    <button type="submit" id="save_name" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="email">
+            <img src="{% static 'icons/email.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="email-input">
+                    <p><span class="title">EMAIL:</span></p>
+                    <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
+                    <button type="submit" id="save_email" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="phone">
+            <img src="{% static 'icons/phone.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="phone-input">
+                    <p><span class="title">PHONE:</span></p>
+                    <input type="text" name="userPhoneNumber" value="{{ user.userPhoneNumber }}" placeholder="Phone Number">
+                    <button type="submit" id="save_phone" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="address">
+            <img src="{% static 'icons/address.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="address-input">
+                    <p><span class="title">ADDRESS:</span></p>
+                    <input type="text" name="userAddress" value="{{ user.userAddress }}" placeholder="Address">
+                    <button type="submit" id="save_address" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="city">
+            <img src="{% static 'icons/city.png' %}" alt="City Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="city-input">
+                    <p><span class="title">CITY:</span></p>
+                    <input type="text" name="city" value="{{ user.city }}" placeholder="City">
+                    <button type="submit" id="save_city" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="stateProvince">
+            <img src="{% static 'icons/state.png' %}" alt="State/Province Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="stateProvince-input">
+                    <p><span class="title">STATE/PROVINCE:</span></p>
+                    <input type="text" name="stateProvince" value="{{ user.stateProvince }}" placeholder="State/Province">
+                    <button type="submit" id="save_stateProvince" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="postalcode">
+            <img src="{% static 'icons/postal.png' %}" alt="Postal Code Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="postalcode-input">
+                    <p><span class="title">POSTAL CODE:</span></p>
+                    <input type="text" name="postalcode" value="{{ user.postalcode }}" placeholder="Postal Code">
+                    <button type="submit" id="save_postalcode" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="reviews-title" class="d-flex justify-content-between align-items-center">
+        <p><strong>MY REVIEWS</strong> • {{ reviews.count }}</p>
+    </div>
+    <div class="reviews">
+        {% for review in reviews %}
+            <div class="review {% if review.reviewimage_set.exists %}with-image{% endif %}">
+                <h3>{{ review.reviewTitle }}</h3>
+                <p>{{ review.userReview.username|default:"Anonymous" }}</p>
+                <div class="rating">
+                    {% for star in review.reviewRating|starRange %}
+                        {% if star == 1 %}
+                            <i class="fas fa-star filled"></i>
+                        {% elif star == 0.5 %}
+                            <i class="fas fa-star-half-alt filled"></i>
+                        {% else %}
+                            <i class="fas fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p>{{ review.reviewText }}</p>
+                {% if review.reviewimage_set.exists %}
+                    <img src="{{ review.reviewimage_set.first.reviewImage.url }}" alt="Review Image">
+                {% endif %}
+                <button id="review-delete" class="btn btn-primary" data-review-id="{{ review.id }}">DELETE</button>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+    </script>
+</body>
+</html>
+{% endblock %}

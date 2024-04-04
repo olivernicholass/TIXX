@@ -39,6 +39,10 @@
     font-size:14px;
 }
 
+.main-info{
+    display:flex;
+}
+
 .navbar-nav .nav-link {
     position: relative;
 }
