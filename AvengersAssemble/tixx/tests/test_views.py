@@ -53,7 +53,7 @@ class ViewTests(TestCase):
         # Assuming 'selected_seats' is a valid string of selected seats for testing purposes
         event_id = 1
         selected_seats = 'S1A1,S1B2,S1C3'  # Replace with actual selected seats
-        response = self.client.get(reverse('checkout', args=[selected_seats]))
+        response = self.client.get(reverse('checkout', args=[event_id, selected_seats]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'checkout.html')
 
