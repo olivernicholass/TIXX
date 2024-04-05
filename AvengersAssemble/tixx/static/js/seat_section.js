@@ -7,9 +7,9 @@ let ticketData = [];
 let selectedSeats = [];
 
 // Add an event listener for the DOMContentLoaded event
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   ticketData = JSON.parse(document.getElementById('ticketsData').getAttribute('data-tickets'));
-  console.log("TicketData: " + ticketData);
+  //console.log("TicketData: " + ticketData);
 });
 
 
@@ -46,6 +46,7 @@ function createGrid(zone, rowsize, colsize) {
 
   const zoneNumber = document.createElement('p');
   zoneNumber.textContent = "Section " + zone + " seats:";
+  zoneNumber.classList.add('seatcontainer');
   gridContainer.appendChild(zoneNumber);
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -63,25 +64,22 @@ function createGrid(zone, rowsize, colsize) {
       const seat = document.createElement('div');
       const seatLabel = "S" + zone + alphabet.charAt(row) + (col + 1);
 
-      if(available(seatLabel)){
-        seat.classList.add('seat');
-        
-      }else{
-        //seat.classList.add('seat-occupied');
+      seat.classList.add('seat');
+      if (!available(seatLabel)) {
+        seat.classList.add('occupied');
       }
 
       rowElement.appendChild(seat);
-      
-      seat.setAttribute('data-seat-label', seatLabel);
 
+      seat.setAttribute('data-seat-label', seatLabel);
 
     }
   }
 }
 
-function available(seatLabel){
+function available(seatLabel) {
   ticket = ticketData.find(ticket => ticket.seatNum === seatLabel);
-  console.log(ticket);
+  //console.log(ticket);
   return ticket.available;
 }
 
