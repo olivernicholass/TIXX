@@ -183,6 +183,13 @@ class FigureViewTestCase(TestCase):
 
 class ReviewViewTest(TestCase):
     def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword',
+            email='testuser@example.com',  
+            userPhoneNumber='1234567890',  
+            userAddress='Test Address'       
+        )
         
         # Sample figure 
         self.figure = Figure.objects.create(
@@ -206,6 +213,7 @@ class ReviewViewTest(TestCase):
     
     def test_review_view_get(self):
         url = reverse('review', kwargs={'figure_name': self.figure.figureName})
+        self.client.login(username='testuser', password='testpassword') 
         response = self.client.get(url)
         
         # Asserting various responses on context
@@ -224,6 +232,7 @@ class ReviewViewTest(TestCase):
     
     def test_review_view_post(self):
         url = reverse('review', kwargs={'figure_name': self.figure.figureName})
+        self.client.login(username='testuser', password='testpassword') 
         response = self.client.post(url, {
             'reviewRating': 4.0,
             'reviewTitle': 'Test Review',
@@ -625,7 +634,9 @@ class AdminReviewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(email='test@example.com', userPhoneNumber='1234567890', userAddress='123 Test St', password='testpassword')
-        self.client.login(email='test@example.com', password='testpassword')
+        self.client.login(username='test@example.com', password='testpassword')
+        self.user.is_staff = True
+        self.user.save()
         self.pending_event = Event.objects.create(
             eventName='Pending Event',
             adminCheck=False,

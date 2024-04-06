@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging
 from django.utils import timezone
 from django.contrib import admin
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.contrib.auth.hashers import make_password
 from django.urls import path, include, reverse
 from tixx import views as v
@@ -190,10 +192,62 @@ def logoutpage(request):
         logout(request)
     return redirect("/login")
 
-def profile(request):
-    return render(request, "profile.html")
+@login_required
+def view_profile(request):
+    user = request.user 
+    reviews = Review.objects.filter(userReview=user)
+    return render(request, 'view_profile.html', {'user': user, 'reviews': reviews})
+
+@login_required
+def edit_profile(request):
+
+    reviews = Review.objects.filter(userReview=request.user)
+    user = request.user
+    if request.method == 'POST' and user.is_authenticated:
+        if 'firstName' in request.POST:
+            user.firstName = request.POST['firstName']
+        if 'lastName' in request.POST:
+            user.lastName = request.POST['lastName']
+        if 'email' in request.POST:
+            user.email = request.POST['email']
+        if 'userPhoneNumber' in request.POST:
+            user.userPhoneNumber = request.POST['userPhoneNumber']
+        if 'userAddress' in request.POST:
+            user.userAddress = request.POST['userAddress']
+        if 'city' in request.POST:
+            user.city = request.POST['city']
+        if 'stateProvince' in request.POST:
+            user.stateProvince = request.POST['stateProvince']
+        if 'postalcode' in request.POST:
+            user.postalcode = request.POST['postalcode']
+        if 'mini_image' in request.FILES:
+            mini_image = request.FILES['mini_image']
+            file_name = default_storage.save('mini_images/' + mini_image.name, ContentFile(mini_image.read()))
+            user.miniImage = file_name
+        if 'pfp' in request.FILES: 
+            pfp_image = request.FILES['pfp']
+            file_name = default_storage.save('profile_pictures/' + pfp_image.name, ContentFile(pfp_image.read()))
+            user.userProfilePicture = file_name
+        if 'favoriteSongSpotifyId' in request.POST:
+            user.favoriteSongSpotifyId = request.POST['favoriteSongSpotifyId']
+        if 'userDescription' in request.POST:
+            user.userDescription = request.POST['userDescription']  
+        user.save()
+        if 'delete_review' in request.POST:
+            reviewId = request.POST['delete_review']
+            review = Review.objects.filter(reviewId=reviewId, userReview=request.user).first()
+            if review:
+                review.delete()
+        if 'username_color' in request.POST:
+            color = request.POST['username_color']
+            if color in ['black', '#03256C', '#FFF', '#2541B2']:
+                request.session['username_color'] = color
+        return redirect(reverse('view_profile'))
+    return render(request, 'edit_profile.html', {'reviews': reviews, 'user': user})
+
 
 def register(request):
+    figures = Figure.objects.all()  
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -207,7 +261,7 @@ def register(request):
     else:
         form = UserRegistrationForm()
         
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'figures': figures})
 
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
@@ -445,6 +499,7 @@ def review(request, figure_name):
         imageForm = ReviewImageForm(request.POST, request.FILES)
         if reviewForm.is_valid() and imageForm.is_valid():
             review = reviewForm.save(commit=False)
+            review.userReview = request.user 
             review.reviewFigure = figure
             review.save()
             for image in request.FILES.getlist('reviewImage'):

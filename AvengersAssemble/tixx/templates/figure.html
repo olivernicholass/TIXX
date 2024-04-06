@@ -111,6 +111,7 @@
         {% for review in allReviews|slice:":6" %}
             <div class="review {% if forloop.counter0 < 3 and review.reviewimage_set.exists %}with-image{% endif %}">
                 <h3>{{ review.reviewTitle }}</h3>
+                <p>{{ review.userReview|default:"Anonymous" }}</p>
                 <div class="rating">
                     {% for star in review.reviewRating|starRange %}
                         {% if star == 1 %}
