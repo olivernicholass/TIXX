@@ -7,20 +7,27 @@
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/filtered_events.css' %}">
 
-<!-- TEST FUNCTIONALITY FOR EVENTS SORTED BY GENRE -->
 <div class="content-container">
-    <h1>Events by Genre</h1>
-    <ul>
-        {% for event in filtered_events %}
-            <li>
-                <h2>{{ event.eventName }}</h2>
-                <p>Genre: {{ event.eventGenre }}</p>
-                <p>Date: {{ event.eventDate}}</p>
-                <p>Description: {{ event.eventDescription }}</p>
-            </li>
-        {% empty %}
-            <li>No events found.</li>
-        {% endfor %}
-    </ul>
+    
+    <div class="container mt-3">
+        <div class="sf-container">
+            <h2>EVENTS BY <span class="underline">GENRE</span></h2>
+            <div class="figure-grid">
+                {% for event in filtered_events %}
+                    <div class="figure-card">
+                        <a href="{% url 'ticket_selection' event.eventId %}"> 
+                            <img src="{{ event.figureId.figurePicture.url }}" class="figure-image" alt="{{ event.eventName }}">
+                            <div class="caption">
+                                <h5 class="figure-title">{{ event.eventName }}</h5>
+                                <p class="figure-genre">{{ event.eventDate }}</p>
+                            </div>
+                        </a>
+                    </div>
+                {% empty %}
+                    <h4>No events found.</h4>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
