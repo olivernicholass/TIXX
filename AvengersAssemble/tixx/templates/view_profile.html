@@ -7,10 +7,15 @@
 <body>
     <div class="background-items">
         <div class="pfp" id="pfpContainer">
-            {% if user.userProfilePicture %}
+            {% if user.miniImage %}
                 <img src="{{ user.miniImage.url }}" alt="{{ user.username }}">
             {% else %}
-                <p>No Image Available</p>
+                <div class="mini-image-placeholder">
+                    <p>No Mini Image Available</p>
+                    <a href="{% url 'edit_profile' %}?section=miniImage&username={{ user.username }}">
+                        <button type="button" id="addMini" class="btn btn-primary">ADD IMAGE</button>
+                    </a>
+                </div>
             {% endif %}
             <p id="About">ABOUT</p>
             <p id="userDesc">{{ user.userDescription }}</p>
@@ -22,24 +27,26 @@
                         <p id="figureName">{{ user.favoriteFigure.figureName }}</p>
                         <p id="figureGenre">{{ user.favoriteFigure.figureGenre }}</p>
                     </div>
-                    <div id="favoriteSong">
-                        <iframe src="https://open.spotify.com/embed/track/{{ user.favoriteSongSpotifyId }}" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display: block;"></iframe>
-                        <div class="songInfo">
-                            <p id="songName">{{ user.favoriteSong.name }}</p>
-                            <p id="artistName">{{ user.favoriteSong.artist }}</p>
-                        </div>
-                    </div>
+                    {% endif %}
+                        {% if user.favoriteSongSpotifyId %}
+                            <div id="favoriteSong">
+                                <iframe src="https://open.spotify.com/embed/track/{{ user.favoriteSongSpotifyId }}" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display: block;"></iframe>
+                            </div>
+                        {% else %}
+                            <div class="no-favorite-song">
+                                <p>No favorite song selected. <a href="{% url 'edit_profile' %}?section=favoriteSongSpotifyId&username={{ user.username }}">Add favorite song</a></p>
+                            </div>
+                        {% endif %}
                 </div>
-            {% endif %}
         </div>
         <div class="usernameStatus">
-            <p id="username">
+            <p id="username" style="color: {{ request.session.username_color|default:'#000' }}" onclick="toggleColorMenu()">
                 {% if user.is_superuser %}
                     <img src="{% static 'icons/verified.png' %}" alt="Verified Icon" class="icon">
                 {% endif %}
                 {{ user.username }}
             </p>
-            <button type="button" id="follow" class="btn btn-primary">SHARE</button>
+            <button type="button" id="follow" class="btn btn-primary">UID: {{ user.userId }}</button>
         </div>
     </div>
     <div class="pfp-background">
@@ -63,9 +70,6 @@
             </li>
             <li class="nav-item mr-3"> 
                 <a class="nav-link about-button" href="#about-section">EDIT PROFILE</a>
-            </li>
-            <li class="nav-item"> 
-                <a class="nav-link reviews-button" href="#">REVIEWS</a>
             </li>
         </ul>
     </div>
@@ -133,6 +137,38 @@
                 </button>
             </a>
         </div>
+        <div id="colorMenu" class="color-menu">
+            <p id="usernameColor">Username Color:</p>
+            <div class="color-option" >
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="black">
+                    <button type="submit" id="colorID" class="btn btn-primary">BLACK</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#03256C">
+                    <button type="submit" id="colorID" class="btn btn-primary">BLUE</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#FFF">
+                    <button type="submit" id="colorID" class="btn btn-primary">WHITE</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#2541B2">
+                    <button type="submit" id="colorID" class="btn btn-primary">TIXX!</button>
+                </form>
+            </div>
+        </div>
+
     </div>
     </div>
     <div id="reviews-title" class="d-flex justify-content-between align-items-center">

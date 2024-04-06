@@ -10,7 +10,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('login/', views.login, name='login'),
     path('logout/', views.logoutpage, name='logout'),
-    path('profile/<str:username>/', views.view_profile, name='view_profile'), 
+    path('profile/', views.view_profile, name='view_profile'),    
     path('edit/profile/', views.edit_profile, name='edit_profile'), 
     path('register/', views.register, name='register'),
     path('search_results/', views.search_results, name='search_results'),
@@ -31,4 +31,3 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

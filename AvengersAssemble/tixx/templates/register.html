@@ -68,6 +68,38 @@
                         <div class="error">{{ form.errors.userAddress }}</div>
                     {% endif %}
                 </div>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" name="city" id="city" class="form-control" placeholder="City" required/>
+                        {% if form.errors.city %}
+                            <div class="error">{{ form.errors.city }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <input type="text" name="stateProvince" id="stateProvince" class="form-control" placeholder="State/Province" required/>
+                        {% if form.errors.stateProvince %}
+                            <div class="error">{{ form.errors.stateProvince }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="input-field">
+                    <input type="text" name="postalcode" id="postalcode" class="form-control" placeholder="Postal Code" required/>
+                    {% if form.errors.postalcode %}
+                        <div class="error">{{ form.errors.postalcode }}</div>
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <label for="favoriteFigure">Favorite Figure:</label>
+                    <select name="favoriteFigure" id="favoriteFigure" class="form-control">
+                        <option value="" selected>---------</option>
+                        {% for figure in figures %}
+                            <option value="{{ figure.pk }}">{{ figure.figureName }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.errors.favoriteFigure %}
+                        <div class="error">{{ form.errors.favoriteFigure }}</div>
+                    {% endif %}
+                </div>
                 <div class="submit-box">
                     <input type="submit" value="Register"/>
                 </div>

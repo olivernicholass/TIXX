@@ -81,7 +81,7 @@ class User(AbstractUser):
     userAddress = models.CharField(max_length=100, blank=True)
     isOrganiser = models.BooleanField(default=False)
     organiserCredentials = models.CharField(max_length=100, blank=True)
-    userProfilePicture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    userProfilePicture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, default='profile_pictures/default.png')
     miniImage = models.ImageField(upload_to='mini_images/', blank=True, null=True)
     firstName = models.CharField(max_length=30, blank=True)
     lastName = models.CharField(max_length=150, blank=True)

@@ -9,7 +9,7 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser', 'firstName', 'lastName')
+        fields = ('username', 'email', 'userId', 'userPhoneNumber', 'userAddress', 'isOrganiser', 'firstName', 'lastName', 'favoriteFigure', 'stateProvince', 'postalcode', 'city')
 
     def __str__(self):
         return self.username
@@ -37,7 +37,6 @@ class ReviewForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['reviewImage'].required = False
-
 class ReviewImageForm(forms.ModelForm):
     class Meta:
         model = ReviewImage
