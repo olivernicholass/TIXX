@@ -15,7 +15,7 @@ from django.db.models import Avg
 from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
-from .forms import CreateEventForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
+from .forms import CreateEventForm, EditProfileForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
@@ -200,38 +200,49 @@ def view_profile(request):
 
 @login_required
 def edit_profile(request):
-
     reviews = Review.objects.filter(userReview=request.user)
     user = request.user
-    if request.method == 'POST' and user.is_authenticated:
-        if 'firstName' in request.POST:
-            user.firstName = request.POST['firstName']
-        if 'lastName' in request.POST:
-            user.lastName = request.POST['lastName']
-        if 'email' in request.POST:
-            user.email = request.POST['email']
-        if 'userPhoneNumber' in request.POST:
-            user.userPhoneNumber = request.POST['userPhoneNumber']
-        if 'userAddress' in request.POST:
-            user.userAddress = request.POST['userAddress']
-        if 'city' in request.POST:
-            user.city = request.POST['city']
-        if 'stateProvince' in request.POST:
-            user.stateProvince = request.POST['stateProvince']
-        if 'postalcode' in request.POST:
-            user.postalcode = request.POST['postalcode']
-        if 'mini_image' in request.FILES:
-            mini_image = request.FILES['mini_image']
+    form = EditProfileForm(request.POST or None, request.FILES or None, initial={
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email,
+        'userPhoneNumber': user.userPhoneNumber,
+        'userAddress': user.userAddress,
+        'city': user.city,
+        'stateProvince': user.stateProvince,
+        'postalcode': user.postalcode,
+        'favoriteSongSpotifyId': user.favoriteSongSpotifyId,
+        'userDescription': user.userDescription,
+    })
+    if request.method == 'POST' and form.is_valid():
+        if 'firstName' in form.cleaned_data and form.cleaned_data['firstName']:
+            user.firstName = form.cleaned_data['firstName']
+        if 'lastName' in form.cleaned_data and form.cleaned_data['lastName']:
+            user.lastName = form.cleaned_data['lastName']
+        if 'email' in form.cleaned_data and form.cleaned_data['email']:
+            user.email = form.cleaned_data['email']
+        if 'userPhoneNumber' in form.cleaned_data and form.cleaned_data['userPhoneNumber']:
+            user.userPhoneNumber = form.cleaned_data['userPhoneNumber']
+        if 'userAddress' in form.cleaned_data and form.cleaned_data['userAddress']:
+            user.userAddress = form.cleaned_data['userAddress']
+        if 'city' in form.cleaned_data and form.cleaned_data['city']:
+            user.city = form.cleaned_data['city']
+        if 'stateProvince' in form.cleaned_data and form.cleaned_data['stateProvince']:
+            user.stateProvince = form.cleaned_data['stateProvince']
+        if 'postalcode' in form.cleaned_data and form.cleaned_data['postalcode']:
+            user.postalcode = form.cleaned_data['postalcode']
+        if 'favoriteSongSpotifyId' in form.cleaned_data and form.cleaned_data['favoriteSongSpotifyId']:
+            user.favoriteSongSpotifyId = form.cleaned_data['favoriteSongSpotifyId']
+        if 'userDescription' in form.cleaned_data and form.cleaned_data['userDescription']:
+            user.userDescription = form.cleaned_data['userDescription']
+        if 'mini_image' in form.cleaned_data and form.cleaned_data['mini_image']:
+            mini_image = form.cleaned_data['mini_image']
             file_name = default_storage.save('mini_images/' + mini_image.name, ContentFile(mini_image.read()))
             user.miniImage = file_name
-        if 'pfp' in request.FILES: 
-            pfp_image = request.FILES['pfp']
+        if 'pfp' in form.cleaned_data and form.cleaned_data['pfp']:
+            pfp_image = form.cleaned_data['pfp']
             file_name = default_storage.save('profile_pictures/' + pfp_image.name, ContentFile(pfp_image.read()))
             user.userProfilePicture = file_name
-        if 'favoriteSongSpotifyId' in request.POST:
-            user.favoriteSongSpotifyId = request.POST['favoriteSongSpotifyId']
-        if 'userDescription' in request.POST:
-            user.userDescription = request.POST['userDescription']  
         user.save()
         if 'delete_review' in request.POST:
             reviewId = request.POST['delete_review']
@@ -243,7 +254,7 @@ def edit_profile(request):
             if color in ['black', '#03256C', '#FFF', '#2541B2']:
                 request.session['username_color'] = color
         return redirect(reverse('view_profile'))
-    return render(request, 'edit_profile.html', {'reviews': reviews, 'user': user})
+    return render(request, 'edit_profile.html', {'reviews': reviews, 'user': user, 'form': form})
 
 
 def register(request):

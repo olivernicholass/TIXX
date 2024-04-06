@@ -36,7 +36,35 @@ class ReviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['reviewImage'].required = False
+        self.fields['reviewImage'].required = False\
+            
+class EditProfileForm(forms.Form):
+    firstName = forms.CharField(max_length=50, required=False)
+    lastName = forms.CharField(max_length=50, required=False)
+    email = forms.EmailField(required=False)
+    userPhoneNumber = forms.CharField(max_length=20, required=False)
+    userAddress = forms.CharField(max_length=255, required=False)
+    city = forms.CharField(max_length=100, required=False)
+    stateProvince = forms.CharField(max_length=100, required=False)
+    postalcode = forms.CharField(max_length=20, required=False)
+    favoriteSongSpotifyId = forms.CharField(max_length=255, required=False)
+    userDescription = forms.CharField(max_length=255, required=False)
+    mini_image = forms.ImageField(required=False)
+    pfp = forms.ImageField(required=False)
+
+    def clean_favoriteSongSpotifyId(self):
+        data = self.cleaned_data['favoriteSongSpotifyId']
+        if data:
+            if len(data) != 22:
+                raise forms.ValidationError('Spotify ID should be 22 characters long.')
+        return data
+
+    def clean_userDescription(self):
+        data = self.cleaned_data['userDescription']
+        if data:
+            if len(data) > 200:
+                raise forms.ValidationError('Description should be at most 200 characters long.')
+        return data
 
 class ReviewImageForm(forms.ModelForm):
     class Meta:
