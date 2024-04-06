@@ -16,16 +16,6 @@ class UrlTestCase(TestCase):
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
 
-    class viewProfile(TestCase):
-        def setUp(self):
-            self.client = Client()
-            self.user = User.objects.create_user(username='testuser', password='testpassword')
-
-        def test_profile_url(self):
-            self.client.login(username='testuser', password='testpassword')
-            response = self.client.get(reverse('view_profile'))
-            self.assertEqual(response.status_code, 200)
-
     def test_search_results_url(self):
         response = self.client.get(reverse('search_results'))
         self.assertEqual(response.status_code, 200)

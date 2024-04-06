@@ -29,12 +29,16 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
         
-    # Browser Test for Profile
-    def test_profile_view(self):
-        response = self.client.get(reverse('profile'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profile.html')
+    class viewProfile(TestCase):
+        def setUp(self):
+            self.client = Client()
+            self.user = User.objects.create_user(username='testuser', password='testpassword')
 
+        def test_profile_url(self):
+            self.client.login(username='testuser', password='testpassword')
+            response = self.client.get(reverse('view_profile'))
+            self.assertEqual(response.status_code, 200)
+            
     # Browser Test for Register
     def test_register_view(self):
         response = self.client.get(reverse('register'))
@@ -633,7 +637,7 @@ class GetFigureFilterTestCase(TestCase):
 class AdminReviewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(email='test@example.com', userPhoneNumber='1234567890', userAddress='123 Test St', password='testpassword')
+        self.user = User.objects.create_user(username='testuser', email='test@example.com', userPhoneNumber='1234567890', userAddress='123 Test St', password='testpassword')
         self.client.login(username='test@example.com', password='testpassword')
         self.user.is_staff = True
         self.user.save()
