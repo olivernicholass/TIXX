@@ -26,6 +26,10 @@
     height: 100vh;
 }
 
+.form-row{
+    margin-bottom: 10px;
+}
+
 .logo {
     text-align: center;
     margin-bottom: 20px;

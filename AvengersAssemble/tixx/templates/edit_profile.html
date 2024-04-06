@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %} 
+{% load figuretag %} 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+<body>
+    <div class="background-items">
+        <div class="pfp" id="pfpContainer">
+            {% if user.miniImage %}
+                <img src="{{ user.miniImage.url }}" alt="{{ user.username }}">
+            {% else %}
+                <div class="mini-image-placeholder">
+                    <p>No Mini Image Available</p>
+                </div>
+            {% endif %}
+            <p id="About">ABOUT</p>
+            <form class="form" id="aboutForm" method="post">
+                {% csrf_token %}
+                <div class="about-input">
+                    <textarea name="userDescription" id="userDescription" class="form-control" placeholder="User Description">{{ user.userDescription }}</textarea>
+                </div>
+                <button type="submit" id="save-about" class="btn btn-primary">Save</button>
+            </form>            
+            {% if user.favoriteFigure %}
+                <p id="tixxFavorite">TIXX FAVORITE</p>
+                <div id="favoriteFigure">
+                    <img id="figureImage" src="{{ user.favoriteFigure.figurePicture.url }}" alt="{{ user.favoriteFigure.figureName }}">
+                    <div class="figureInfo">
+                        <p id="figureName">{{ user.favoriteFigure.figureName }}</p>
+                        <p id="figureGenre">{{ user.favoriteFigure.figureGenre }}</p>
+                    </div>
+                    {% endif %}
+                    {% if user.favoriteSongSpotifyId %}
+                        <div id="favoriteSong">
+                            <iframe src="https://open.spotify.com/embed/track/{{ user.favoriteSongSpotifyId }}" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display: block;"></iframe>
+                            <div class="songInfo">
+                                <p id="songName">{{ user.favoriteSong.name }}</p>
+                                <p id="artistName">{{ user.favoriteSong.artist }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                    <div class="detail" data-type="favoriteSong" id="favoriteSongDetail">
+                        <img src="{% static 'icons/music.png' %}" alt="Favorite Song Icon" class="icon">
+                        <p><span class="title">FAVORITE SONG:</span></p>
+                        <form method="post" action="{% url 'edit_profile' %}">
+                            {% csrf_token %}
+                            <div class="favorite-song-input">
+                                <input type="text" name="favoriteSongSpotifyId" value="{{ user.favoriteSongSpotifyId }}" placeholder="Enter Spotify ID">
+                                <button type="submit" id="save_favorite_song" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+        </div>
+        <div class="spotDetails">
+            <p>1. Hit "Share" on your favorite song</p>
+            <p>2. Press "Copy Song Link" </p>
+            <p>3. Copy the HIGLIGHTED section from your song link (Below is an example song) </p>
+            <p>https://open.spotify.com/track/<span id="spotID" style="display: inline-block;">4wajJ1o7jWIg62YqpkHC7S</span>?si=cf8fa71c923b4ada</p>
+            <p>3. Paste it in the box</p>
+            <p>4. Save!</p>
+        </div>
+        <div class="usernameStatus">
+            <p id="username" style="color: {{ request.session.username_color|default:'#000' }}" onclick="toggleColorMenu()">
+                {% if user.is_superuser %}
+                    <img src="{% static 'icons/verified.png' %}" alt="Verified Icon" class="icon">
+                {% endif %}
+                {{ user.username }}
+            </p>
+            <button type="button" id="follow" class="btn btn-primary">UID: {{ user.userId }}</button>
+        </div>
+    </div>
+    <div class="pfp-background">
+        {% if user.backgroundImage %}
+            <img src="{{ user.backgroundImage.url }}" alt="{{ user.username }}" class="background-image">
+        {% else %}
+            {% if user.userProfilePicture %}
+                <img src="{{ user.userProfilePicture.url }}" alt="{{ user.username }}" class="background-image">
+            {% else %}
+                <p>No Image Available</p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="white-bar navbar navbar-expand">
+        <ul class="navbar-nav">
+            <li class="nav-item mr-3"> 
+                <a class="nav-link events-button" href="#">DETAILS</a>
+            </li>
+            <li class="nav-item mr-3"> 
+                <a class="nav-link gallery-button" href="#">MY REVIEWS</a>
+            </li>
+            <li class="nav-item mr-3"> 
+                <a class="nav-link about-button" href="#about-section">EDIT PROFILE</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link reviews-button" href="#">REVIEWS</a>
+            </li>
+        </ul>
+    </div>
+    <div class="details">
+        <div class="detail" data-type="name">
+            <img src="{% static 'icons/name.png' %}" alt="Name Icon" class="icon">
+            <p><span class="title">NAME:</span></p>
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="name-inputs">
+                    <input type="text" name="firstName" value="{{ user.firstName }}" placeholder="First Name">
+                    <input type="text" name="lastName" value="{{ user.lastName }}" placeholder="Last Name">
+                    <button type="submit" id="save_name" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="email">
+            <img src="{% static 'icons/email.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="email-input">
+                    <p><span class="title">EMAIL:</span></p>
+                    <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
+                    <button type="submit" id="save_email" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="phone">
+            <img src="{% static 'icons/phone.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="phone-input">
+                    <p><span class="title">PHONE:</span></p>
+                    <input type="text" name="userPhoneNumber" value="{{ user.userPhoneNumber }}" placeholder="Phone Number">
+                    <button type="submit" id="save_phone" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="address">
+            <img src="{% static 'icons/address.png' %}" alt="Name Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="address-input">
+                    <p><span class="title">ADDRESS:</span></p>
+                    <input type="text" name="userAddress" value="{{ user.userAddress }}" placeholder="Address">
+                    <button type="submit" id="save_address" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="city">
+            <img src="{% static 'icons/city.png' %}" alt="City Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="city-input">
+                    <p><span class="title">CITY:</span></p>
+                    <input type="text" name="city" value="{{ user.city }}" placeholder="City">
+                    <button type="submit" id="save_city" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="stateProvince">
+            <img src="{% static 'icons/state.png' %}" alt="State/Province Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="stateProvince-input">
+                    <p><span class="title">STATE/PROVINCE:</span></p>
+                    <input type="text" name="stateProvince" value="{{ user.stateProvince }}" placeholder="State/Province">
+                    <button type="submit" id="save_stateProvince" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="postalcode">
+            <img src="{% static 'icons/postal.png' %}" alt="Postal Code Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="postalcode-input">
+                    <p><span class="title">POSTAL CODE:</span></p>
+                    <input type="text" name="postalcode" value="{{ user.postalcode }}" placeholder="Postal Code">
+                    <button type="submit" id="save_postalcode" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="miniImage">
+            <img src="{% static 'icons/image.png' %}" alt="Mini Image Icon" class="icon">
+            <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="miniimage-input">
+                    <p><span class="title">MINI IMAGE:</span></p>
+                    <input type="file" name="mini_image">
+                    <button type="submit" id="save_mini_image" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="detail" data-type="userProfilePicture">
+            <img src="{% static 'icons/pfp.png' %}" alt="Mini Image Icon" class="icon">
+            <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <div class="pfp-input">
+                    <p><span class="title">PROFILE PICTURE:</span></p>
+                    <input type="file" name="pfp">
+                    <button type="submit" id="save_pfp" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="colorMenu" class="color-menu">
+            <p id="usernameColor">Username Color:</p>
+            <div class="color-option" >
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="black">
+                    <button type="submit" id="colorID" class="btn btn-primary">BLACK</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#03256C">
+                    <button type="submit" id="colorID" class="btn btn-primary">BLUE</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#FFF">
+                    <button type="submit" id="colorID" class="btn btn-primary">WHITE</button>
+                </form>
+            </div>
+            <div class="color-option">
+                <form method="post" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="username_color" value="#2541B2">
+                    <button type="submit" id="colorID" class="btn btn-primary">TIXX!</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <div id="reviews-title" class="d-flex justify-content-between align-items-center">
+        <p><strong>MY REVIEWS</strong> • {{ reviews.count }}</p>
+    </div>
+    <div class="reviews">
+        {% for review in reviews %}
+        <div class="review {% if review.reviewimage_set.exists %}with-image{% endif %}">
+            <h3>{{ review.reviewTitle }}</h3>
+            <p>{{ review.userReview.username|default:"Anonymous" }}</p>
+            <div class="rating">
+                {% for star in review.reviewRating|starRange %}
+                    {% if star == 1 %}
+                        <i class="fas fa-star filled"></i>
+                    {% elif star == 0.5 %}
+                        <i class="fas fa-star-half-alt filled"></i>
+                    {% else %}
+                        <i class="fas fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <p>{{ review.reviewText }}</p>
+            {% if review.reviewimage_set.exists %}
+                <img src="{{ review.reviewimage_set.first.reviewImage.url }}" alt="Review Image">
+            {% endif %}
+            <form method="post" action="{% url 'edit_profile' %}">
+                {% csrf_token %}
+                <input type="hidden" name="delete_review" value="{{ review.reviewId }}">
+                <button type="submit" id="review-delete" class="btn btn-primary">DELETE</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+{% endblock %}

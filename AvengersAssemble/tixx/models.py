@@ -76,20 +76,23 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     userId = models.AutoField(primary_key=True)
+    userDescription = models.CharField(max_length=200, blank=True)
     userPhoneNumber = models.CharField(max_length=10, blank=True)
     userAddress = models.CharField(max_length=100, blank=True)
     isOrganiser = models.BooleanField(default=False)
     organiserCredentials = models.CharField(max_length=100, blank=True)
     userProfilePicture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+    userProfilePicture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, default='profile_pictures/default.png')
+    miniImage = models.ImageField(upload_to='mini_images/', blank=True, null=True)
     firstName = models.CharField(max_length=30, blank=True)
     lastName = models.CharField(max_length=150, blank=True)
+    favoriteFigure = models.ForeignKey(Figure, on_delete=models.SET_NULL, blank=True, null=True)
+    favoriteSongSpotifyId = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True)
+    stateProvince = models.CharField(max_length=100, blank=True)
+    postalcode = models.CharField(max_length=20, blank=True)
 
     REQUIRED_FIELDS = ['email', 'userPhoneNumber', 'userAddress']
-
-    objects = CustomUserManager()
-
-    def __str__(self):
-        return self.username
     
 class Payment(models.Model):
     paymentId = models.CharField(max_length=10, primary_key=True)
@@ -103,6 +106,7 @@ class Payment(models.Model):
         return self.paymentId
 
 class Review(models.Model):
+    userReview = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)
     reviewId = models.AutoField(primary_key=True)
     reviewRating = models.DecimalField(
         max_digits=3, 
