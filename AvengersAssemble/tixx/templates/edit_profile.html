@@ -107,7 +107,9 @@
                 {% csrf_token %}
                 <div class="name-inputs">
                     <input type="text" name="firstName" value="{{ user.firstName }}" placeholder="First Name">
+                    {{ form.firstName.errors }}
                     <input type="text" name="lastName" value="{{ user.lastName }}" placeholder="Last Name">
+                    {{ form.lastName.errors }}
                     <button type="submit" id="save_name" class="btn btn-primary">Save</button>
                 </div>
             </form>
@@ -119,28 +121,31 @@
                 <div class="email-input">
                     <p><span class="title">EMAIL:</span></p>
                     <input type="email" name="email" value="{{ user.email }}" placeholder="Email">
+                    {{ form.email.errors }}
                     <button type="submit" id="save_email" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
         <div class="detail" data-type="phone">
-            <img src="{% static 'icons/phone.png' %}" alt="Name Icon" class="icon">
+            <img src="{% static 'icons/phone.png' %}" alt="Phone Icon" class="icon">
             <form method="post" action="{% url 'edit_profile' %}">
                 {% csrf_token %}
                 <div class="phone-input">
-                    <p><span class="title">PHONE:</span></p>
+                    <p><span class="title">PHONE NUMBER:</span></p>
                     <input type="text" name="userPhoneNumber" value="{{ user.userPhoneNumber }}" placeholder="Phone Number">
+                    {{ form.userPhoneNumber.errors }}
                     <button type="submit" id="save_phone" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
         <div class="detail" data-type="address">
-            <img src="{% static 'icons/address.png' %}" alt="Name Icon" class="icon">
+            <img src="{% static 'icons/address.png' %}" alt="Address Icon" class="icon">
             <form method="post" action="{% url 'edit_profile' %}">
                 {% csrf_token %}
                 <div class="address-input">
                     <p><span class="title">ADDRESS:</span></p>
                     <input type="text" name="userAddress" value="{{ user.userAddress }}" placeholder="Address">
+                    {{ form.userAddress.errors }}
                     <button type="submit" id="save_address" class="btn btn-primary">Save</button>
                 </div>
             </form>
@@ -152,17 +157,19 @@
                 <div class="city-input">
                     <p><span class="title">CITY:</span></p>
                     <input type="text" name="city" value="{{ user.city }}" placeholder="City">
+                    {{ form.city.errors }}
                     <button type="submit" id="save_city" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
-        <div class="detail" data-type="stateProvince">
-            <img src="{% static 'icons/state.png' %}" alt="State/Province Icon" class="icon">
+        <div class="detail" data-type="state">
+            <img src="{% static 'icons/state.png' %}" alt="State Icon" class="icon">
             <form method="post" action="{% url 'edit_profile' %}">
                 {% csrf_token %}
                 <div class="stateProvince-input">
                     <p><span class="title">STATE/PROVINCE:</span></p>
                     <input type="text" name="stateProvince" value="{{ user.stateProvince }}" placeholder="State/Province">
+                    {{ form.stateProvince.errors }}
                     <button type="submit" id="save_stateProvince" class="btn btn-primary">Save</button>
                 </div>
             </form>
@@ -174,33 +181,35 @@
                 <div class="postalcode-input">
                     <p><span class="title">POSTAL CODE:</span></p>
                     <input type="text" name="postalcode" value="{{ user.postalcode }}" placeholder="Postal Code">
+                    {{ form.postalcode.errors }}
                     <button type="submit" id="save_postalcode" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
         <div class="detail" data-type="miniImage">
             <img src="{% static 'icons/image.png' %}" alt="Mini Image Icon" class="icon">
-            <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
+            <form method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="miniimage-input">
                     <p><span class="title">MINI IMAGE:</span></p>
                     <input type="file" name="mini_image">
+                    {{ form.mini_image.errors }}
                     <button type="submit" id="save_mini_image" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
-        <div class="detail" data-type="userProfilePicture">
-            <img src="{% static 'icons/pfp.png' %}" alt="Mini Image Icon" class="icon">
-            <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
+        <div class="detail" data-type="pfp">
+            <img src="{% static 'icons/pfp.png' %}" alt="Profile Picture Icon" class="icon">
+            <form method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="pfp-input">
                     <p><span class="title">PROFILE PICTURE:</span></p>
                     <input type="file" name="pfp">
+                    {{ form.pfp.errors }}
                     <button type="submit" id="save_pfp" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
-
         <div id="colorMenu" class="color-menu">
             <p id="usernameColor">Username Color:</p>
             <div class="color-option" >

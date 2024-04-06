@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
@@ -668,12 +670,110 @@ class AdminReviewTestCase(TestCase):
 
         # POST TO Accept and Event
         response = self.client.post(reverse('admin_review'), {'eventId': self.accepted_event.eventId, 'accept': 'Accept'})
-        self.assertEqual(response.status_code, 200)  # Redirects after POST
+        self.assertEqual(response.status_code, 200) 
 
         # POST to Reject an Event
         response = self.client.post(reverse('admin_review'), {'eventId': self.accepted_event.eventId, 'reject': 'Reject'})
-        self.assertEqual(response.status_code, 200)  # Redirects after POST
+        self.assertEqual(response.status_code, 200) 
 
         # TEST an Event with a non-existing ID
         response = self.client.post(reverse('admin_review'), {'eventId': 999, 'accept': 'Accept'})
-        self.assertEqual(response.status_code, 302)  # Redirects after POST
+        self.assertEqual(response.status_code, 302)  
+        
+        
+# EDIT/VIEW PROFILE VIEW TEST (100% COVERAGE)
+
+class ViewProfileTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+    def test_view_profile(self):
+        response = self.client.get(reverse('view_profile'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'view_profile.html')
+        self.assertEqual(response.context['user'], self.user)
+
+        # Test to see if the users revies in context match the reviews displaying on the page
+
+        self.assertQuerysetEqual(response.context['reviews'], Review.objects.filter(userReview=self.user), transform=lambda x: x)
+        
+    def tearDown(self):
+        self.client.logout()
+        
+class EditProfile(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+    def test_edit_profile_view(self):
+        response = self.client.get(reverse('edit_profile'))
+        self.assertEqual(response.status_code, 200)
+
+        data = {
+            'firstName': 'John',
+            'lastName': 'Doe',
+            'email': 'john.doe@example.com',
+            'userPhoneNumber': '1234567890',
+            'userAddress': '123 Main St',
+            'city': 'Anytown',
+            'stateProvince': 'ABC',
+            'postalcode': '12345',
+            'favoriteSongSpotifyId': '1234567890123456789012',
+            'userDescription': 'description',
+            'username_color': '#03256C',
+        }
+
+        # Set the paths for mini_image and pfp
+        miniPATH= os.path.join(settings.MEDIA_ROOT, 'mini_images', 'dasdasdasdad.png')
+        pfpPATH = os.path.join(settings.MEDIA_ROOT, 'profile_pictures', 'default.png')
+
+        data['mini_image'] = open(miniPATH, 'rb')
+        data['pfp'] = open(pfpPATH, 'rb')
+
+        response = self.client.post(reverse('edit_profile'), data)
+        self.assertEqual(response.status_code, 302) 
+
+        # Verify data matching
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.firstName, 'John')
+        self.assertEqual(self.user.lastName, 'Doe')
+        self.assertEqual(self.user.email, 'john.doe@example.com')
+
+        # Make sure that the review is deleted even if its not in the data
+        self.assertEqual(Review.objects.filter(userReview=self.user).count(), 0)
+
+        self.assertTrue('mini_image' in data)
+        self.assertTrue(self.user.miniImage.name.startswith('mini_images/'))
+
+        self.assertTrue('pfp' in data)
+        self.assertTrue(self.user.userProfilePicture.name.startswith('profile_pictures/'))
+
+        figure = Figure.objects.create(
+            figureName="Test Figure",
+            figureGenre="Test Genre",
+            figureAbout="Test Description"
+        )
+
+        review = Review.objects.create(
+            userReview=self.user,
+            reviewRating=4.5,  
+            reviewTitle='Great experience',
+            reviewText='Test review text',
+            reviewFigure=figure,  
+            reviewDate=timezone.now()
+        )
+
+        # DELETE the user review
+        response = self.client.post(reverse('edit_profile'), {'delete_review': review.reviewId})
+        self.assertEqual(response.status_code, 302) 
+        self.assertEqual(Review.objects.filter(userReview=self.user).count(), 0)
+
+        # See if the correct color is in the users session
+        self.assertEqual(self.client.session['username_color'], '#03256C')
+
+
+    def tearDown(self):
+        self.client.logout()
