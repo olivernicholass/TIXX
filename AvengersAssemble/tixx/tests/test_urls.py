@@ -37,3 +37,8 @@ class UrlTestCase(TestCase):
     def test_figure_url(self):
         response = self.client.get(reverse('figure', args=['some_figure']))
         self.assertEqual(response.status_code, 404)
+
+    def test_checkout_url(self):
+        response = self.client.get(reverse('figure', args=['some_checkout']))
+        self.assertEqual(response.status_code, 404)
+

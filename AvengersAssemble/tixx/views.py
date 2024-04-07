@@ -26,6 +26,8 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
+import stripe
+from django.conf import settings
 
 def home(request):
     searchQuery = None
@@ -453,9 +455,77 @@ def temp(request):
     return render(request, "temp.html")
 
 def checkout(request, event_id, selected_seats):
-    selected_seats = selected_seats.split(',')
+    selected_seat_nums = selected_seats.split(',')
 
-    return render(request, "checkout.html", {'event_id': event_id, 'selected_seats': selected_seats})
+    tickets = Ticket.objects.filter(eventId=event_id,seatNum__in=selected_seat_nums)
+    
+
+
+    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums ,'tickets': tickets})
+
+
+# This is your test secret API key.
+stripe.api_key = settings.STRIPE_SECRET_KEY
+def payment(request):
+    if request.method == "POST":
+        
+        selected_seats = request.POST.get('selected_seat_nums').split(',')
+        event_id = request.POST.get('eventId')
+
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        province = request.POST.get('prov')
+
+        # Calculate total price for the selected tickets
+        tickets = Ticket.objects.filter(eventId=event_id, seatNum__in=selected_seats)
+        total_price = sum(ticket.ticketPrice for ticket in tickets)
+        
+        # Store payment details (without transactionId and paymentAmount as they'll be confirmed after payment)
+        for ticket in tickets:
+            Payment.objects.create(
+                eventId=Event.objects.get(pk=event_id),
+                seatNum=ticket,
+                firstName=first_name,
+                lastName=last_name,
+                phoneNumber=phone_number,
+                email=email,
+                Address=address,
+                city=city,
+                province=province,
+                paymentAmount=0,  # To be updated after payment confirmation
+                paymentMethod="Stripe",
+                paymentDate=None,  # To be updated after payment confirmation
+                transactionId="",  # To be updated after payment confirmation
+            )
+        try:
+                checkout_session = stripe.checkout.Session.create(
+                    line_items=[
+                        {
+                            'price_data': {
+                                'currency': 'cad',
+                                'product_data': {
+                                    'name': 'Event Tickets',
+                                },
+                                'unit_amount': int(total_price * 100),  # Stripe expects amount in cents
+                            },
+                            'quantity': 1,
+                        },
+                    ],
+                    mode='payment',
+                    success_url=request.build_absolute_uri('/confirm'),
+                    cancel_url=request.build_absolute_uri('/checkout'),
+                )
+                return redirect(checkout_session.url)
+        except Exception as e:
+                # Consider logging the error and returning an appropriate response
+                return JsonResponse({'error': str(e)})
+
+    # If not POST method, redirect to a relevant page or show an error
+    return redirect('/error_page')
 
 
 def filtered_events(request, eventGenre):
