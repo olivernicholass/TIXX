@@ -24,6 +24,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
+import subprocess
 
 def home(request):
     searchQuery = None
@@ -49,6 +50,25 @@ def home(request):
                                          'popFigures': popFigures,
                                          'basketballFigures': basketballFigures,
                                          'recently_viewed_events': viewedEvents})
+
+
+
+def create_ticket_objects(request):
+    if request.method == 'POST':
+        event_id = request.POST.get('eventId')
+        arena_id = request.POST.get('arenaId')
+
+        try:
+            subprocess.run(['python', 'import_tickets_concert.py', str(event_id), str(arena_id)], check=True)
+            response_data = {'message': 'Script executed successfully'}
+            return JsonResponse(response_data)
+        except subprocess.CalledProcessError as e:
+            response_data = {'error': 'Script execution failed'}
+            return JsonResponse(response_data)
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
+    
+
 
 def admin_review(request):
     if request.method == 'POST':

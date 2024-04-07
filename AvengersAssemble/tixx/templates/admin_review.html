@@ -2,7 +2,8 @@
 {% block content %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/admin_review.css' %}">
-
+<p style="display: none;" id="eventId">{{ event.eventId }}</p>
+<p style="display: none;" id="eventId">{{ event.arenaId }}</p>
     <div class="events-review">
         <div class="pending">
             <p class="p-icon">
@@ -87,6 +88,8 @@
             {% endfor %}
         </div>
     </div>
+
+
 </body>
 </html>
 {% endblock %}
