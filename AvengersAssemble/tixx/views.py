@@ -28,6 +28,8 @@ from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
 import stripe
 from django.conf import settings
+import uuid
+
 
 def home(request):
     searchQuery = None
@@ -469,7 +471,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def payment(request):
     if request.method == "POST":
         
-        selected_seats = request.POST.get('selected_seat_nums').split(',')
+        
+        selected_seats_str = request.POST.get('selected_seat_nums')
+        selected_seats = json.loads(selected_seats_str.replace("'", "\""))
         event_id = request.POST.get('eventId')
 
         first_name = request.POST.get('fname')
@@ -482,6 +486,15 @@ def payment(request):
 
         # Calculate total price for the selected tickets
         tickets = Ticket.objects.filter(eventId=event_id, seatNum__in=selected_seats)
+        # if tickets.exists():
+        #     response_data = {"success": True, "message": "Tickets exist."}
+        # else:
+        #     response_data = {"success": False, "message": "No tickets found."}
+
+        # # Return JSON response
+        # return JsonResponse(response_data)
+        
+           
         total_price = sum(ticket.ticketPrice for ticket in tickets)
         
         # Store payment details (without transactionId and paymentAmount as they'll be confirmed after payment)
@@ -497,9 +510,10 @@ def payment(request):
                 city=city,
                 province=province,
                 paymentAmount=0,  # To be updated after payment confirmation
-                paymentMethod="Stripe",
-                paymentDate=None,  # To be updated after payment confirmation
-                transactionId="",  # To be updated after payment confirmation
+                paymentMethod="Stripe", # To be updated after payment confirmation
+                transactionId="",
+                paymentDate=datetime.now(),
+                paymentId = uuid.uuid4() 
             )
         try:
                 checkout_session = stripe.checkout.Session.create(
@@ -510,7 +524,7 @@ def payment(request):
                                 'product_data': {
                                     'name': 'Event Tickets',
                                 },
-                                'unit_amount': int(total_price * 100),  # Stripe expects amount in cents
+                                'unit_amount': (total_price*100) ,  # Stripe expects amount in cents
                             },
                             'quantity': 1,
                         },
