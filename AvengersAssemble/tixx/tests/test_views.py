@@ -735,12 +735,12 @@ class CheckoutViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check that the response context contains the correct event_id and selected_seat_nums
-        self.assertEqual(response.context['event_id'], str(self.event.id))
+        self.assertEqual(response.context['event_id'], str(self.event.eventId))
         self.assertListEqual(response.context['selected_seat_nums'], ["A1", "A2"])
 
         # Check that the tickets in the context match the tickets created in setUp
-        expected_ticket_ids = {self.ticket1.id, self.ticket2.id}
-        response_ticket_ids = {ticket.id for ticket in response.context['tickets']}
+        expected_ticket_ids = {self.ticket1.ticketId, self.ticket2.ticketId}
+        response_ticket_ids = {ticket.ticketId for ticket in response.context['tickets']}
         self.assertEqual(expected_ticket_ids, response_ticket_ids)
 
         # Check that the correct template was used
