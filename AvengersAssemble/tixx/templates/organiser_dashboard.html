@@ -1,0 +1,43 @@
+{% extends "base_organiser.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-6">
+  <div class="grid grid-cols-4 gap-6">
+    <!-- Assuming static images for now -->
+    <div class="col-span-1">
+      <img src="{% static 'path/to/your/image1.svg' %}" alt="Event" class="rounded-lg mb-4" style="aspect-ratio: 300 / 200; object-fit: cover;"/>
+      <img src="{% static 'path/to/your/image2.svg' %}" alt="Event" class="rounded-lg" style="aspect-ratio: 300 / 200; object-fit: cover;"/>
+    </div>
+    <div class="col-span-3">
+      <div class="bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold mb-2">Organiser Dashboard</h2>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Total Revenue Generated</h3>
+            <p class="text-gray-700">${{ total_revenue }}</p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-1">Total Tickets Sold</h3>
+            <p class="text-gray-700">{{ total_tickets_sold }}</p>
+          </div>
+        </div>
+        <div class="mb-4">
+          <h3 class="text-lg font-semibold mb-2">Upcoming Events</h3>
+          <ul class="space-y-2">
+            {% for event in upcoming_events %}
+            <li class="bg-gray-100 p-3 rounded-lg">
+              {% comment %} <a href="{% url 'event_detail' event.eventId %}" class="text-blue-600 hover:text-blue-500"> {% endcomment %}
+                {{ event.eventName }}
+              </a> - {{ event.eventDate }}
+            </li>
+            {% empty %}
+            <li>No upcoming events</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

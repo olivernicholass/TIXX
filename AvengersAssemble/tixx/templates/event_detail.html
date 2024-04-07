@@ -1,0 +1,16 @@
+{% extends "base_organiser.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto mt-8 px-6">
+  <!-- Detailed view of the event -->
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold mb-2">{{ event.eventName }}</h2>
+    <p><strong>Date:</strong> {{ event.eventDate }}</p>
+    <p><strong>Time:</strong> {{ event.eventTime }}</p>
+    <p><strong>Location:</strong> {{ event.eventLocation }}</p>
+    <p><strong>Description:</strong> {{ event.eventDescription }}</p>
+    <!-- Add any other details you have for the event -->
+  </div>
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@
     <title>{% block title %}Tixx{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
     <script src="{% static 'js/sidebar.js' %}"></script>
 </head>
 <body>
@@ -20,35 +21,14 @@
         </button>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle concerts" href="#" id="navbarDropdownConcerts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Concerts
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownConcerts">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-sm-4"> 
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='All' %}">All Music</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Hip-Hop' %}">Rap</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Pop' %}">Pop</a>
-                                </div>
-                                <div class="col-sm-4"> 
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Country' %}">Country</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Rock' %}">Rock</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='RB' %}">R&#x26;B</a>
-                                </div>
-                                <div class="col-sm-4">
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Metal' %}">Metal</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Folk' %}">Folk</a>
-                                    <a class="dropdown-item" href="{% url 'filtered_events' eventGenre='Alternative' %}">Alternative</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+               
+                        <!-- Direct link for Events -->
+                        <li class="nav-item">
+                            <a href="{% url 'dashboard_events' %}" class="py-2 px-3 text-gray-700 hover:text-gray-600">Events Overview</a>
+                        </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle sports" href="#" id="navbarDropdownSports" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Sports
+                        Customers
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownSports">
                         <div class="container">
@@ -78,7 +58,7 @@
             </ul>
             <ul class="navbar-nav ml-auto login-register">
                     <div class="navbar-custom-search">
-                        <input type="text" class="search-input" placeholder="  Search by Event, Figure or Artist">
+                        <input type="text" class="search-input" placeholder="  Search by Event or Customer">
                         <img src="{% static 'icons/search.png' %}" alt="Search Icon" class="search-icon">
                     </div>
                     {% if request.user.is_authenticated %}
@@ -110,7 +90,7 @@
                     {% if request.user.is_authenticated %}
                         <div class="user-info">
                             {% if request.user.userProfilePicture %}
-                                <img src="{{ request.user.userProfilePicture.url }}" class="profile-picture-sidebar">
+                            <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
                             {% else %}
                                 <img src="{% static 'icons/user.png' %}" class="icon">
                             {% endif %}
@@ -118,34 +98,6 @@
                                 Hey there! <span class="name-greeting">{{ request.user.firstName }}</span>
                             </div>
                         </div>
-                        {% if request.user.isOrganiser %}
-                            <!-- Organiser-specific links -->
-                            <a href="{% url 'dashboard_home' %}" >
-                                <img src="{% static 'icons/star.png' %}" alt="Dashboard Icon" class="sidebar-icon">
-                                Dashboard
-                            </a>
-                            <a href="{% url 'dashboard_events' %}" >
-                                <img src="{% static 'icons/tickets.png' %}" alt="Events Icon" class="sidebar-icon">
-                                Your Events
-                            </a>
-                            <a href="{% url 'create_event' %}" >
-                                <img src="{% static 'icons/edit.png' %}" alt="Add Icon" class="sidebar-icon">
-                                Create an Event
-                            </a>
-                        {% endif %}
-                        <a href="/profile/" >
-                            <img src="{% static 'icons/userORG.png' %}" alt="Edit Icon" class="sidebar-icon">
-                            View Profile
-                        </a>
-                        <a href="#" >
-                            <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="sidebar-icon">
-                            Settings
-                        </a>
-                        <a href="{% url 'logout' %}" >
-                            <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="sidebar-icon">
-                            Sign Out
-                        </a>
-                        <!-- Recently Viewed -->
                         <div class="recently-viewed">
                             <h3>
                                 <img src="{% static 'icons/viewed.png' %}" alt="Viewed Icon" class="viewed-icon">
@@ -153,28 +105,39 @@
                             </h3>
                             <ul>
                                 {% for figure_id in request.session.recently_viewed %}
-                                    {% with figure=figure_id|getFigure %}
-                                        <li>
-                                            <a href="{% url 'figure' figure.figureName %}">
-                                                {{ figure.figureName }}
-                                            </a>
-                                        </li>
-                                    {% endwith %}
-                                {% endfor %}
+                                {% with figure=figure_id|getFigure %}
+                                    <p>
+                                        <a href="{% url 'figure' figure.figureName %}">
+                                            <img src="{% static 'icons/star.png' %}" alt="Star Icon" class="star-icon">
+                                            {{ figure.figureName }}
+                                        </a>
+                                    </p>
+                                {% endwith %}
+                            {% endfor %}
                             </ul>
                         </div>
-                        <!-- Contact Info -->
+                        <a href="#">
+                            <img src="{% static 'icons/edit.png' %}" alt="Edit Icon" class="edit-icon">
+                            Edit Profile
+                        </a>
+                        <a href="#">
+                            <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="settings-icon">
+                            Settings
+                        </a>
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="logout-icon">
+                            Sign Out
+                        </a>
                         <div class="contact-info">
                             <p>Contact <span style="color: #03256C;">tixxEVENTS@gmail.com</span> for requests!</p>
                         </div>
+                        {% if request.user.isOrganiser %}
+                            <a href="{% url 'create_event' %}">Create an Event</a>
+                        {% endif %}
                     {% else %}
-                        <a href="{% url 'login' %}" class="sidebar-link">Login/Register</a>
+                        <a href="{% url 'login' %}">Login/Register</a>
                     {% endif %}
-                    <div class="tixx-logo-container">
-                        <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
-                    </div>               
                 </div>
-                
     </nav>
 
     <!-- Extend this block so the navbar is inherited for the new pages -->

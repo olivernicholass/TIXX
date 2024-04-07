@@ -26,6 +26,10 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
+from django.db.models import Sum, Count
+from django.utils import timezone
+from .models import Payment
+
 
 def home(request):
     searchQuery = None
@@ -109,7 +113,7 @@ def organiser_login(request):
         user = authenticate(username=username, password=password)
         if user is not None and user.is_authenticated and user.isOrganiser:
             auth_login(request, user)
-            return redirect('create_event')
+            return redirect('dashboard_home')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'organiser_login.html')
@@ -152,12 +156,13 @@ def create_event(request):
         if form.is_valid():
             event = form.save(commit=False)
             event.adminCheck = False
+            event.organiser = request.user
             arena_id = request.POST.get('arenaId')  
             arena = Arena.objects.get(pk=arena_id) 
             event.arenaId = arena
             event.save()
             messages.success(request, 'Event created successfully!')
-            return redirect('home')
+            return redirect('dashboard_events')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -169,6 +174,38 @@ def create_event(request):
                                                  'genres': genres, 
                                                  'arenas': arenas, 
                                                  'figures': figures})
+
+@login_required
+@user_passes_test(isOrganiser)
+def dashboard_home(request):
+    upcoming_events = [] 
+    recent_ticket_sales = [] 
+
+    upcoming_events = Event.objects.filter(organiser=request.user, eventDate__gte=timezone.now()).order_by('eventDate')
+    recent_ticket_sales = Ticket.objects.filter(eventId__organiser=request.user)
+
+    return render(request, 'organiser_dashboard.html', {
+        'upcoming_events': upcoming_events,
+        'recent_ticket_sales': recent_ticket_sales,
+    })
+
+def dashboard_events(request):
+    # Mock-up data for presentation
+    upcoming_events = Event.objects.filter(organiser=request.user, eventDate__gte=timezone.now()).order_by('eventDate')
+    recent_ticket_sales = []  # Populate with mock data or real queries
+
+    # upcoming_events = Event.objects.filter(organiser=request.user, event_date__gte=timezone.now()).order_by('event_date')
+    # recent_ticket_sales = TicketSale.objects.filter(event__organiser=request.user)
+
+    # But for presentation purposes, you might just use:
+    # upcoming_events = Event.objects.all().order_by('event_date')[:5]
+    # recent_ticket_sales = TicketSale.objects.all()[:5]
+
+    return render(request, 'event_overview.html', {
+        'upcoming_events': upcoming_events,
+        'recent_ticket_sales': recent_ticket_sales,
+    })
+
 
 
 def login(request):

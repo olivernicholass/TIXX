@@ -151,8 +151,14 @@
 }
 
 .name-greeting {
-  font-weight: 500;
+  font-size: large;
+  font-weight: 700;
   color: #03256C;
+}
+
+.greeting{
+  margin-top:3%;
+  font-size: large;
 }
 
 
@@ -165,11 +171,6 @@
   transform: translateX(5px);
   font-weight: 400; 
   text-decoration: none;
-}
-
-.greeting{
-  margin-left: 3%;
-  margin-top:3%;
 }
 
 .sidebar a {
@@ -207,10 +208,12 @@ recently-viewed #text{
 }
 .user-info {
   display: flex;
-  align-items: center;
-  margin-left: 5%;
+  flex-direction: column;
   justify-content: center;
-  margin-bottom:10%;
+  text-align: center; 
+  align-items: center;
+  justify-content: center;
+  margin-bottom:5%;
 }
 
 .star-icon,
@@ -247,6 +250,14 @@ recently-viewed #text{
   margin-bottom: 5%;
 }
 
+.profile-picture-sidebar{
+  width: 70px; 
+  height: 70px;
+  border-radius: 50%; 
+  object-fit: cover; 
+  margin-bottom: 5%;
+}
+
 #accountLink{
   color:black;
 }
@@ -260,4 +271,20 @@ recently-viewed #text{
 
 .tixx-logo{
   width:100px;
+}
+
+.tixx-logo-container {
+  margin-top: auto; 
+  width: 100%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding-bottom: 20px; 
+}
+
+.sidebar-icon {
+  vertical-align: middle;
+  margin-right: 5px; 
+  width:20px;
+  height:20px;
 }

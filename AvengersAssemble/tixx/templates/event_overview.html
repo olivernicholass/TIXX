@@ -1,0 +1,36 @@
+{% extends "base_organiser.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Event List with Management Options -->
+<div class="bg-white p-6 rounded-lg shadow-lg mb-4">
+  <h3 class="text-lg font-semibold mb-2">Manage Your Events</h3>
+  <a href="{% url 'create_event' %}" class="btn btn-primary">Create New Event</a>
+  <table class="min-w-full table-auto">
+    <thead>
+      <tr>
+        <th class="px-4 py-2">Event Name</th>
+        <th class="px-4 py-2">Date</th>
+        <th class="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in upcoming_events %}
+      <tr>
+        <td class="border px-4 py-2">{{ event.eventName }}</td>
+        <td class="border px-4 py-2">{{ event.eventDate }}</td>
+        <td class="border px-4 py-2">
+          <a href="{% url 'edit_event' event.pk %}" class="text-blue-600 hover:text-blue-800">Edit</a> | 
+          <a href="{% url 'delete_event' event.pk %}" class="text-red-600 hover:text-red-800">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td class="border px-4 py-2" colspan="3">No events found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
