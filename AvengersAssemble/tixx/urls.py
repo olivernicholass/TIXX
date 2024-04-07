@@ -21,7 +21,7 @@ urlpatterns = [
     path('filtered_events/<slug:eventGenre>/', views.filtered_events, name='filtered_events'),
     path('figure/<str:figure_name>/', views.figure, name='figure'),
     path('organiser/create_event/', views.create_event, name='create_event'),
-    path('confirmation/', views.confirmation, name='confirmation'),
+    path('confirmation/<uuid:paymentId>/', views.confirmation, name='confirmation'),
     path('organiser/login/', views.organiser_login, name='organiser_login'),
     path('organiser/register/', views.organiser_register, name='organiser_register'),
     path('reset_password/', auth_views.PasswordResetView.as_view(), name='reset_password'),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('admin_review/', views.admin_review, name='admin_review'),
     path('payment/', views.payment, name='payment'),
+    # path('processing_payment/<uuid:paymentId>/', views.processing_payment, name='processing_payment'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

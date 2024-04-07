@@ -2,36 +2,47 @@
 {% load static %}
 
 <head>
-<title>
-{% block title%} Tixx - Booking Confirmed {% endblock %}
-</title>
-{% load crispy_forms_tags %}
+    <title>
+        {% block title%} Tixx - Booking Confirmed {% endblock %}
+    </title>
+    {% load crispy_forms_tags %}
+
 </head>
 
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'css/base.css' %}">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="tixx/static/css/confirmation.css">
+<link rel="stylesheet" href="{% static 'css/confirmation.css' %}">
+
+<body>
 
 <div class="main">
-<h1>Thank You For Booking With Tixx!</h1>
+    <h1>Thank You For Booking With Tixx!</h1>
 </div>
-<div>
-<h2>Invoice Details</h2>
-<p>Payment Id: {{ paymentId}}</p>
-<p>Transaction Id: {{ transactionId}}</p>
-<p>Payment Date: {{ paymentDate}}</p>
-<p>Payment Amount: {{ paymentAmount}}</p>
-<p>Payment Method: {{ paymentMethod}}</p>
-<p>Username: {{username }}</p>
-<p>Ticket Id: {{ticketId }}</p>
-<p>Seat Num: {{seatNum }}</p>
+<div id="receipt">
+
+
+    <div class="receiptContainer">
+
+        <h2>Invoice Details</h2>
+        <p>Name: {{ payment.firstName }} {{ payment.lastName }}</p>
+        <p>Payment Id: {{ payment.paymentId }}</p>
+        <p>Transaction Id: {{ payment.transactionId }}</p>
+        <p>Payment Date: {{ payment.paymentDate }}</p>
+        <p>Payment Amount: {{ payment.paymentAmount }}</p>
+        <p>Payment Method: {{ payment.paymentMethod }}</p>
+        <!-- <p>Ticket Id: {{ticketId }}</p>
+    <p>Seat Num: {{seatNum }}</p> -->
+    </div>
+
 
 
 
 
 
 </div>
+</body>
 
 
 
