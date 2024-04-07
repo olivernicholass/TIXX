@@ -151,14 +151,14 @@
 }
 
 .name-greeting {
-  font-size: large;
+  font-size:21px;
   font-weight: 700;
   color: #03256C;
 }
 
 .greeting{
   margin-top:3%;
-  font-size: large;
+  font-size:20px;
 }
 
 
@@ -213,7 +213,7 @@ recently-viewed #text{
   text-align: center; 
   align-items: center;
   justify-content: center;
-  margin-bottom:5%;
+  margin-bottom:10%;
 }
 
 .star-icon,
@@ -255,7 +255,6 @@ recently-viewed #text{
   height: 70px;
   border-radius: 50%; 
   object-fit: cover; 
-  margin-bottom: 5%;
 }
 
 #accountLink{
