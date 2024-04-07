@@ -662,3 +662,36 @@ class AdminReviewTestCase(TestCase):
         # TEST an Event with a non-existing ID
         response = self.client.post(reverse('admin_review'), {'eventId': 999, 'accept': 'Accept'})
         self.assertEqual(response.status_code, 302)  # Redirects after POST
+
+class CheckoutViewTest(TestCase):
+    def setUp(self):
+        # Setup test data
+        self.client = Client()
+        self.event = Event.objects.create(...)  # Fill in with appropriate data for an Event
+        # Create some Ticket instances related to the event
+        self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
+        self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=150)
+
+        # Generate a URL for testing
+        self.checkout_url = reverse('checkout', args=[self.event.id, "A1,A2"])  # Adjust the URL name and parameters based on your urls.py
+
+    def test_checkout_view(self):
+        # Simulate a GET request to the checkout view
+        response = self.client.get(self.checkout_url)
+
+        # Check that the response is 200 OK.
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the response context contains the correct event_id and selected_seat_nums
+        self.assertEqual(response.context['event_id'], str(self.event.id))
+        self.assertListEqual(response.context['selected_seat_nums'], ["A1", "A2"])
+
+        # Check that the tickets in the context match the tickets created in setUp
+        expected_ticket_ids = {self.ticket1.id, self.ticket2.id}
+        response_ticket_ids = {ticket.id for ticket in response.context['tickets']}
+        self.assertEqual(expected_ticket_ids, response_ticket_ids)
+
+        # Check that the correct template was used
+        self.assertTemplateUsed(response, "checkout.html")
+
+

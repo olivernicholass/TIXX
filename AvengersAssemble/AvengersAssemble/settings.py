@@ -3,6 +3,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY', 'pk_test_51P1y3mK0qYDt9j6oJxAjdEoptqlcOPcFD2e7qCngEZ9wJjoJcBNMybPBZdVsU34Z6MYvqGubzRRXLSRPLjRuGa1F00qmWiwAsk')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', 'sk_test_51P1y3mK0qYDt9j6o8zqlluwN5XJLB8DWR6udoj256uQBBLkVblmswM9VVK0bH8OesTtucQ6iBCKvB6vZipmdfmSj00tR1goUbA')
+
 SECRET_KEY = 'django-insecure-tc*_7_+8o3y0h3(84xc-x_1lu(cwgqiusgdp&vre@f!l9@3z4h'
 
 CRISPY_TEMPLATE_PACK='bootstrap4'
