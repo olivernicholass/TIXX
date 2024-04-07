@@ -128,7 +128,7 @@
     </div>
 </div>
 
-<script>
+{% comment %} <script>
     document.getElementById('send-admin').addEventListener('click', function() {
         var eventId = document.getElementById('arena-Id').value;
         var arenaId = document.getElementById('figure-Id').value;
@@ -146,6 +146,6 @@
         var data = JSON.stringify({ 'eventId': eventId, 'arenaId': arenaId });
         xhr.send(data);
     });
-</script>
+</script> {% endcomment %}
 
 {% endblock %}

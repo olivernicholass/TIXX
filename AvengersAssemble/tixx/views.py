@@ -54,7 +54,7 @@ def home(request):
                                          'recently_viewed_events': viewedEvents})
 
 
-
+"""
 def create_ticket_objects(request):
     if request.method == 'POST':
         event_id = request.POST.get('eventId')
@@ -69,7 +69,7 @@ def create_ticket_objects(request):
             return JsonResponse(response_data)
     else:
         return JsonResponse({'error': 'Invalid request method'})
-    
+"""
 
 
 def admin_review(request):
