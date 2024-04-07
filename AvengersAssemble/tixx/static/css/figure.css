@@ -30,6 +30,11 @@
     width:50px;
 }
 
+.main-info{
+    display:flex;
+}
+
+
 .white-bar .navbar-nav {
     position: relative;
     left: 15%; 
