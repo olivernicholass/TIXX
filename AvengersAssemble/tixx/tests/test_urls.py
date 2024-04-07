@@ -1,5 +1,7 @@
 from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
+from tixx.models import User
 
 class UrlTestCase(TestCase):
     def test_home_url(self):
@@ -12,10 +14,6 @@ class UrlTestCase(TestCase):
 
     def test_login_url(self):
         response = self.client.get(reverse('login'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_profile_url(self):
-        response = self.client.get(reverse('profile'))
         self.assertEqual(response.status_code, 200)
 
     def test_search_results_url(self):

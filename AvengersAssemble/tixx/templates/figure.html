@@ -60,7 +60,7 @@
                         <p><span class="bold">{{ event.arenaId }}</span></p>
                         <p>{{ figure.figureName }}</p>
                     </div>
-                    <a href="" class="btn btn-primary">Find Tickets</a>
+                    <a href="/tickets/{{ event.eventId }}/" class="btn btn-primary">Find Tickets</a>
                 </div>
             </div>
         {% empty %}
@@ -111,6 +111,7 @@
         {% for review in allReviews|slice:":6" %}
             <div class="review {% if forloop.counter0 < 3 and review.reviewimage_set.exists %}with-image{% endif %}">
                 <h3>{{ review.reviewTitle }}</h3>
+                <p>{{ review.userReview|default:"Anonymous" }}</p>
                 <div class="rating">
                     {% for star in review.reviewRating|starRange %}
                         {% if star == 1 %}

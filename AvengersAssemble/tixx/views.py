@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 import logging
 from django.utils import timezone
 from django.contrib import admin
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.contrib.auth.hashers import make_password
 from django.urls import path, include, reverse
 from tixx import views as v
@@ -13,7 +15,7 @@ from django.db.models import Avg
 from .models import Event, Ticket, Review, User
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
-from .forms import CreateEventForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
+from .forms import CreateEventForm, EditProfileForm, ReviewForm, ReviewImageForm, UserRegistrationForm, OrganiserRegistrationForm
 from django.db.models import Q
 from django.contrib import messages
 from datetime import datetime
@@ -192,10 +194,73 @@ def logoutpage(request):
         logout(request)
     return redirect("/login")
 
-def profile(request):
-    return render(request, "profile.html")
+@login_required
+def view_profile(request):
+    user = request.user 
+    reviews = Review.objects.filter(userReview=user)
+    return render(request, 'view_profile.html', {'user': user, 'reviews': reviews})
+
+@login_required
+def edit_profile(request):
+    reviews = Review.objects.filter(userReview=request.user)
+    user = request.user
+    form = EditProfileForm(request.POST or None, request.FILES or None, initial={
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email,
+        'userPhoneNumber': user.userPhoneNumber,
+        'userAddress': user.userAddress,
+        'city': user.city,
+        'stateProvince': user.stateProvince,
+        'postalcode': user.postalcode,
+        'favoriteSongSpotifyId': user.favoriteSongSpotifyId,
+        'userDescription': user.userDescription,
+    })
+    if request.method == 'POST' and form.is_valid():
+        if 'firstName' in form.cleaned_data and form.cleaned_data['firstName']:
+            user.firstName = form.cleaned_data['firstName']
+        if 'lastName' in form.cleaned_data and form.cleaned_data['lastName']:
+            user.lastName = form.cleaned_data['lastName']
+        if 'email' in form.cleaned_data and form.cleaned_data['email']:
+            user.email = form.cleaned_data['email']
+        if 'userPhoneNumber' in form.cleaned_data and form.cleaned_data['userPhoneNumber']:
+            user.userPhoneNumber = form.cleaned_data['userPhoneNumber']
+        if 'userAddress' in form.cleaned_data and form.cleaned_data['userAddress']:
+            user.userAddress = form.cleaned_data['userAddress']
+        if 'city' in form.cleaned_data and form.cleaned_data['city']:
+            user.city = form.cleaned_data['city']
+        if 'stateProvince' in form.cleaned_data and form.cleaned_data['stateProvince']:
+            user.stateProvince = form.cleaned_data['stateProvince']
+        if 'postalcode' in form.cleaned_data and form.cleaned_data['postalcode']:
+            user.postalcode = form.cleaned_data['postalcode']
+        if 'favoriteSongSpotifyId' in form.cleaned_data and form.cleaned_data['favoriteSongSpotifyId']:
+            user.favoriteSongSpotifyId = form.cleaned_data['favoriteSongSpotifyId']
+        if 'userDescription' in form.cleaned_data and form.cleaned_data['userDescription']:
+            user.userDescription = form.cleaned_data['userDescription']
+        if 'mini_image' in form.cleaned_data and form.cleaned_data['mini_image']:
+            mini_image = form.cleaned_data['mini_image']
+            file_name = default_storage.save('mini_images/' + mini_image.name, ContentFile(mini_image.read()))
+            user.miniImage = file_name
+        if 'pfp' in form.cleaned_data and form.cleaned_data['pfp']:
+            pfp_image = form.cleaned_data['pfp']
+            file_name = default_storage.save('profile_pictures/' + pfp_image.name, ContentFile(pfp_image.read()))
+            user.userProfilePicture = file_name
+        user.save()
+        if 'delete_review' in request.POST:
+            reviewId = request.POST['delete_review']
+            review = Review.objects.filter(reviewId=reviewId, userReview=request.user).first()
+            if review:
+                review.delete()
+        if 'username_color' in request.POST:
+            color = request.POST['username_color']
+            if color in ['black', '#03256C', '#FFF', '#2541B2']:
+                request.session['username_color'] = color
+        return redirect(reverse('view_profile'))
+    return render(request, 'edit_profile.html', {'reviews': reviews, 'user': user, 'form': form})
+
 
 def register(request):
+    figures = Figure.objects.all()  
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -209,7 +274,7 @@ def register(request):
     else:
         form = UserRegistrationForm()
         
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'figures': figures})
 
 def search_results(request):
     query = request.GET.get('searchQuery', '').strip()
@@ -341,12 +406,46 @@ def ticket_selection(request, eventid):
     arena = Arena.objects.get(arenaName=event.arenaId)
     figure = Figure.objects.get(figureName=event.figureId)
     
+    genre_map = {
+        'Rock': 'concert',
+        'Pop': 'concert',
+        'Hip-Hop': 'concert',
+        'R&B': 'concert',
+        'Electronic': 'concert',
+        'Jazz': 'concert',
+        'Classical': 'concert',
+        'Country': 'concert',
+        'Blues': 'concert',
+        'Reggae': 'concert',
+        'Folk': 'concert',
+        'Indie': 'concert',
+        'Metal': 'concert',
+        'Punk': 'concert',
+    }
+    
+    sport_map = {
+        'Hockey': 'sport',
+        'Soccer': 'sport',
+        'Basketball': 'sport',
+        'Football': 'sport',
+        'Tennis': 'sport',
+        'Baseball': 'sport',
+        'Golf': 'sport',
+        'Cricket': 'sport',
+        'Rugby': 'sport',
+        'Volleyball': 'sport',
+        'Boxing': 'sport',
+        'MMA': 'sport',
+        'Cycling': 'sport',
+    }
+    
     context = {
         'event' : event,
         'arena' : arena,
         'figure': figure,
         'tickets': tickets,
-        'tickets_json' : tickets_json
+        'tickets_json' : tickets_json,
+        'genre_map': genre_map
     }
     
     return render(request, "ticket_selection.html", context)
@@ -481,6 +580,7 @@ def review(request, figure_name):
         imageForm = ReviewImageForm(request.POST, request.FILES)
         if reviewForm.is_valid() and imageForm.is_valid():
             review = reviewForm.save(commit=False)
+            review.userReview = request.user 
             review.reviewFigure = figure
             review.save()
             for image in request.FILES.getlist('reviewImage'):
