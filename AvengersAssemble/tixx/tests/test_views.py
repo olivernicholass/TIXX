@@ -108,6 +108,7 @@ class FilteredEventsTestCase(TestCase):
             eventDate=timezone.now().date(),
             eventTime=timezone.now().time(),
             eventId=1,
+            eventImage = "/media/event_images/liltecca_hsfyluS.jpg",
             eventLocation="Location 1",
             eventDescription="Description 1",
             eventStatus="Upcoming",
