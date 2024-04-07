@@ -685,13 +685,47 @@ class CheckoutViewTest(TestCase):
     def setUp(self):
         # Setup test data
         self.client = Client()
-        self.event = Event.objects.create(...)  # Fill in with appropriate data for an Event
+
+        self.arena = Arena.objects.create(
+            arenaId='A123',
+            arenaName='Main Arena',
+            arenaCapacity=5000,
+        )
+        self.event = Event.objects.create(
+            eventName='Event name',
+            eventDate='2024-07-04',
+            eventTime='17:00:00',
+            eventLocation='event location',
+            eventDescription='Enjoy an evening of music from top artists from around the world.',
+            eventStatus='Status',  
+            eventGenre='Music', 
+            arenaId=self.arena,
+            # Add or adjust fields based on your actual Event model
+        )
         # Create some Ticket instances related to the event
-        self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
-        self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=150)
+        self.ticket1 = Ticket.objects.create(
+            eventId=self.event, 
+            seatNum="A1", 
+            ticketPrice=100,
+            ticketType='Standard',
+            zone=1,
+            available=True,
+            arenaId=self.arena,  # Assuming each ticket is associated with an arena
+            # The ticketQR field is omitted in this example; include it if required for your tests
+        )
+        self.ticket2 = Ticket.objects.create(
+            eventId=self.event, 
+            seatNum="A2", 
+            ticketPrice=150,
+            ticketType='VIP',
+            zone=1,
+            available=True,
+            arenaId=self.arena,  # Assuming each ticket is associated with an arena
+            # The ticketQR field is omitted in this example; include it if required for your tests
+        )
 
         # Generate a URL for testing
-        self.checkout_url = reverse('checkout', args=[self.event.id, "A1,A2"])  # Adjust the URL name and parameters based on your urls.py
+        self.checkout_url = reverse('checkout', args=[self.event.pk, "A1,A2"])  # Adjust the URL name and parameters based on your urls.py
 
     def test_checkout_view(self):
         # Simulate a GET request to the checkout view
