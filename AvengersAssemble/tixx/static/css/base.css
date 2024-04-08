@@ -206,6 +206,7 @@ recently-viewed #text{
 .recently-viewed img{
   margin-right: 2%;
 }
+
 .user-info {
   display: flex;
   flex-direction: column;

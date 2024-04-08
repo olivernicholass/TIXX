@@ -112,7 +112,7 @@
                             {% if request.user.userProfilePicture %}
                                 <img src="{{ request.user.userProfilePicture.url }}" class="profile-picture-sidebar">
                             {% else %}
-                                <img src="{% static 'icons/user.png' %}" class="icon">
+                                <img src="{% static 'icons/user.png' %}" class="profile-picture-sidebar">
                             {% endif %}
                             <div class="greeting">
                                 Hey there! <span class="name-greeting">{{ request.user.firstName }}</span>
