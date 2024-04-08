@@ -544,11 +544,7 @@ def payment(request):
     # If not POST method, redirect to a relevant page or show an error
     return redirect('/error_page')
 
-def processing_payment(request,paymentId):
 
-    
-    redirect_url = reverse('confirmation', kwargs={'transactionId': transaction_id})
-    return redirect(redirect_url)
 
 
 def filtered_events(request, eventGenre):

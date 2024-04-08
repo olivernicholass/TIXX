@@ -3,7 +3,7 @@ from django.conf import settings
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket, Payment
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.template import Context, Template
@@ -16,7 +16,10 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from datetime import date
 import datetime
-
+import stripe
+from django.http import JsonResponse
+import json
+from unittest.mock import patch
 class ViewTests(TestCase):
     
     # Browser Test for Home
@@ -848,4 +851,75 @@ class EditProfile(TestCase):
 
     def tearDown(self):
         self.client.logout()
+
+class TestPayment(TestCase):
+    @patch('your_app.views.stripe.checkout.Session.create')
+    def test_payment_success(self, mock_stripe_checkout):
+        # Setup
+        # Replace 'your_app.models.Event' with the correct import path for your Event model
+        event = Event.objects.create(name="Test Event", date="2023-05-05")
+        ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
+        
+        # Mocking Stripe's response
+        mock_stripe_checkout.return_value = {'url': 'https://mock-stripe-checkout-url.com'}
+
+        # Data to send in POST request
+        post_data = {
+            'selected_seat_nums': json.dumps(['A1']),
+            'eventId': event.id,
+            'fname': 'John',
+            'lname': 'Doe',
+            'email': 'john@example.com',
+            'phone': '1234567890',
+            'address': '123 Test St',
+            'city': 'Test City',
+            'prov': 'Test Prov',
+        }
+
+        # Execution
+        response = self.client.post(reverse('payment'), post_data)
+
+        # Assertions
+        self.assertRedirects(response, 'https://mock-stripe-checkout-url.com', fetch_redirect_response=False)
+        self.assertEqual(Payment.objects.count(), 1)
+
+        # Verifying the payment object's attributes
+        payment = Payment.objects.first()
+        self.assertEqual(payment.firstName, 'John')
+        self.assertEqual(payment.email, 'john@example.com')
+        self.assertEqual(payment.phoneNumber, '1234567891')
+       
+
+class ConfirmationViewTest(TestCase):
+    def setUp(self):
+        # Setup
+        event = Event.objects.create(name="Test Event", date="2023-05-05")
+        ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
+        self.payment = Payment.objects.create(
+            eventId=event,
+            seatNum=ticket,
+            firstName='John',
+            lastName='Doe',
+            phoneNumber='1234567890',
+            email='john@example.com',
+            Address='123 Test St',
+            city='Test City',
+            province='Test Prov',
+            paymentAmount=100,
+            paymentMethod="Stripe",
+            paymentDate="2023-05-01",
+            paymentId="test-payment-id"
+        )
+
+    def test_confirmation_page(self):
+        # Execution
+        response = self.client.get(reverse('confirmation', args=[self.payment.paymentId]))
+
+        # Assertions
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'confirmation.html')
+        self.assertIn('payment', response.context)
+        self.assertEqual(response.context['payment'], self.payment)
+
+
 

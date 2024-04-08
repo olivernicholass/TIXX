@@ -39,6 +39,15 @@ class UrlTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_checkout_url(self):
-        response = self.client.get(reverse('figure', args=['some_checkout']))
+        response = self.client.get(reverse('checkout', args=['some_checkout']))
         self.assertEqual(response.status_code, 404)
+
+    def test_payment_url(self):
+        response = self.client.get(reverse('payment', args=['some_payment']))
+        self.assertEqual(response.status_code, 404)
+    
+    def test_confirmation_url(self):
+        response = self.client.get(reverse('confirmation', args=['some_paymentId']))
+        self.assertEqual(response.status_code, 404)
+
 
