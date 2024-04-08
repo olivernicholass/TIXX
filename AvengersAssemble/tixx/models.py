@@ -96,11 +96,20 @@ class User(AbstractUser):
     
 class Payment(models.Model):
     paymentId = models.CharField(max_length=10, primary_key=True)
-    userId = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) 
+    eventId = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True) 
+    seatNum = models.ForeignKey(Ticket,on_delete=models.SET_NULL, null=True)
     paymentAmount = models.FloatField()
     paymentMethod = models.CharField(max_length=10)
     paymentDate = models.DateField()
     transactionId = models.CharField(max_length=10)
+    firstName = models.CharField(max_length=30, blank=True)
+    lastName = models.CharField(max_length=150, blank=True)
+    phoneNumber = models.IntegerField(blank=True)
+    email = models.EmailField(max_length=20, blank=True)
+    Address = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=20, blank=True)
+    province = models.CharField(max_length=20, blank=True)
+   
 
     def __str__(self):
         return self.paymentId

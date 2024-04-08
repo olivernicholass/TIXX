@@ -1,0 +1,161 @@
+.figure-grid-scrollable {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative; 
+}
+
+.rf-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.rf-container h2 .underline {
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+}
+
+.sf-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.sf-container h2 .underline {
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+}
+
+.figure-card:hover .figure-image {
+    transform: scale(0.95); 
+}
+.figure-image {
+    width: 100%;
+    height: 200px; 
+    object-fit: cover; 
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out; 
+    overflow: hidden;
+}
+
+.figure-card a {
+    text-decoration: none;
+    color: #03256C;
+}
+
+.figure-card {
+    display: inline-block;
+    margin-right: 20px;
+    width: 300px;
+    height: auto;
+    border-radius: 5px;
+    position: relative;
+    overflow: visible; 
+}
+
+.caption {
+    margin-top: 10px;
+}
+
+.figure-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.figure-genre {
+    font-size: 14px;
+    color: #666;
+}
+
+.sf-container,
+.rf-container {
+    background-color: #ffffff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.events-container {
+    position: relative;
+    top: 20px;
+    width: 100%; 
+    background-color: transparent;
+    overflow-y: auto; 
+    max-height: 500px; 
+    margin-bottom:5%;
+}
+
+.events-container p {
+    font-size: 25px;
+    margin:0;
+}
+
+.event {
+    border: 2px solid #03256C;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.initialFigure {
+    font-weight:500;
+    color:#03256C;
+}
+
+.event-info {
+    display: flex;
+    align-items: center;
+}
+
+.event-icon {
+    margin-right: 10px;
+    vertical-align: middle;
+    width: 50px; 
+    height: auto; 
+}
+
+.event-date {
+    margin-right: 3%;
+    margin-left: 1%;
+}
+
+.event-details p,
+.event-date p {
+    letter-spacing: 0em;
+    font-size: 16px;
+}
+
+.event p {
+    margin: 5px 0;
+}
+
+.bold {
+    font-weight: 600; 
+}
+
+#eventDate {
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    margin-left: auto;
+    background-color: #03256C;
+    border: none;
+}
+
+.events-container .events-count {
+    font-size: 14px !important; 
+    color: black;
+    margin-bottom:1%;
+}
+
+.first-figure {
+    color: #03256C; 
+    font-weight: 500;
+}
+
+.figure-name {
+    color: #03256C; 
+    font-weight: 500;
+}

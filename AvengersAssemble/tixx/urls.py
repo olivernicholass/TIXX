@@ -30,6 +30,7 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('admin_review/', views.admin_review, name='admin_review'),
     #path('send_to_administration/', views.create_ticket_objects, name='create_ticket_objects'),
+    path('payment/', views.payment, name='payment'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
