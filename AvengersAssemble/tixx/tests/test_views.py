@@ -853,10 +853,10 @@ class EditProfile(TestCase):
         self.client.logout()
 
 class TestPayment(TestCase):
-    @patch('your_app.views.stripe.checkout.Session.create')
+    @patch('tixx.views.stripe.checkout.Session.create')
     def test_payment_success(self, mock_stripe_checkout):
         # Setup
-        # Replace 'your_app.models.Event' with the correct import path for your Event model
+       
         event = Event.objects.create(name="Test Event", date="2023-05-05")
         ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
         
