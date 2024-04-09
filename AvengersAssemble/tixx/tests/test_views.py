@@ -856,11 +856,12 @@ class EditProfile(TestCase):
 class ConfirmationViewTest(TestCase):
     def setUp(self):
         # Setup
-        event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
-        ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
+        self.event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
+        self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
+        self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=100)
+
         self.payment = Payment.objects.create(
-            eventId=event,
-            seatNum=ticket,
+            eventId=self.event,
             firstName='John',
             lastName='Doe',
             phoneNumber='1234567890',
@@ -873,6 +874,7 @@ class ConfirmationViewTest(TestCase):
             paymentDate="2023-05-01",
             paymentId="test-payment-id"
         )
+        self.payment.seatNum.add(self.ticket1, self.ticket2)
 
     def test_confirmation_page(self):
         # Execution
