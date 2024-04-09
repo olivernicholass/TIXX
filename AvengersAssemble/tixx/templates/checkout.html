@@ -14,7 +14,7 @@
                 <div class="card-body">
                     <h6>Details</h6>
                     <hr>
-                    <form method="post" action="{% url 'payment' %}">
+                    <form id = "paymentForm" method="post" action="{% url 'payment' %}">
                         {% csrf_token %}
                         <!-- Personal Information -->
                         <div class="row">
@@ -46,8 +46,7 @@
                                 <label for="prov">Province:</label>
                                 <input type="text" class="form-control" id="prov" name="prov" required>
                             </div>
-                            <input type="hidden" name="selected_seat_nums" value="{{ selected_seats|join:',' }}"
-                                required>
+                            <input type="hidden" name="selected_seat_nums" value="{{selected_seat_nums}}" required>
                             <input type="hidden" name="eventId" value="{{event_id}}" required>
                         </div>
                         <br>
@@ -55,6 +54,7 @@
 
 
                     </form>
+                    
                 </div>
             </div>
         </div>
