@@ -30,6 +30,8 @@ import subprocess
 import stripe
 from django.conf import settings
 from subprocess import CalledProcessError, call, check_call
+import uuid
+
 
 def home(request):
     searchQuery = None
@@ -484,7 +486,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 def payment(request):
     if request.method == "POST":
         
-        selected_seats = request.POST.get('selected_seat_nums').split(',')
+        
+        selected_seats_str = request.POST.get('selected_seat_nums')
+        selected_seats = json.loads(selected_seats_str.replace("'", "\""))
         event_id = request.POST.get('eventId')
 
         first_name = request.POST.get('fname')
@@ -494,16 +498,27 @@ def payment(request):
         address = request.POST.get('address')
         city = request.POST.get('city')
         province = request.POST.get('prov')
+       
 
         # Calculate total price for the selected tickets
         tickets = Ticket.objects.filter(eventId=event_id, seatNum__in=selected_seats)
+        # if tickets.exists():
+        #     response_data = {"success": True, "message": "Tickets exist."}
+        # else:
+        #     response_data = {"success": False, "message": "No tickets found."}
+
+        # # Return JSON response
+        # return JsonResponse(response_data)
+        
+           
         total_price = sum(ticket.ticketPrice for ticket in tickets)
+        # payment_id = uuid.uuid4() 
+
         
         # Store payment details (without transactionId and paymentAmount as they'll be confirmed after payment)
-        for ticket in tickets:
-            Payment.objects.create(
+        
+        payment = Payment.objects.create(
                 eventId=Event.objects.get(pk=event_id),
-                seatNum=ticket,
                 firstName=first_name,
                 lastName=last_name,
                 phoneNumber=phone_number,
@@ -511,11 +526,13 @@ def payment(request):
                 Address=address,
                 city=city,
                 province=province,
-                paymentAmount=0,  # To be updated after payment confirmation
-                paymentMethod="Stripe",
-                paymentDate=None,  # To be updated after payment confirmation
-                transactionId="",  # To be updated after payment confirmation
+                paymentAmount=total_price,  # To be updated after payment confirmation
+                paymentMethod="Stripe", # To be updated after payment confirmation
+                
+                paymentDate=datetime.now(),
+                # paymentId = payment_id
             )
+        payment.seatNum.set(tickets)
         try:
                 checkout_session = stripe.checkout.Session.create(
                     line_items=[
@@ -525,14 +542,16 @@ def payment(request):
                                 'product_data': {
                                     'name': 'Event Tickets',
                                 },
-                                'unit_amount': int(total_price * 100),  # Stripe expects amount in cents
+                                'unit_amount': (total_price*100) ,  # Stripe expects amount in cents
                             },
                             'quantity': 1,
                         },
                     ],
                     mode='payment',
-                    success_url=request.build_absolute_uri('/confirm'),
-                    cancel_url=request.build_absolute_uri('/checkout'),
+                    success_url = request.build_absolute_uri(
+                reverse('confirmation', kwargs={'paymentId': str(payment.paymentId)})
+            ),
+                    cancel_url = request.build_absolute_uri('/'),
                 )
                 return redirect(checkout_session.url)
         except Exception as e:
@@ -541,6 +560,8 @@ def payment(request):
 
     # If not POST method, redirect to a relevant page or show an error
     return redirect('/error_page')
+
+
 
 
 def filtered_events(request, eventGenre):
@@ -629,27 +650,29 @@ def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
     return JsonResponse({'tickets': list(tickets)})
 
-def confirmation(request):
-    context = {}
-    # if request.method == 'POST':
-    #     paymentId = request.POST.get('paymentId')    
-    #     transactionId = request.POST.get('transactionId')
-    #     ticketId = request.POST.get('ticketId')
-    paymentId = '12345' 
-    transactionId = 'abcde'  
-    ticketId = 123  
+def confirmation(request,paymentId):
 
-    payment = Payment.objects.filter(paymentId=paymentId, transactionId=transactionId).first()
-    ticket = Ticket.objects.filter(ticketId=ticketId).first()
-    user = payment.userId if payment else None
-    event = ticket.eventId if ticket else None
-    arena = ticket.arenaId if ticket else None
+    payment = get_object_or_404(Payment, paymentId=paymentId)
+    payment_id_reduced = str(payment.paymentId)[:4]
+    
+    transaction_id = f"{payment.eventId.pk}_{payment_id_reduced}"
+    payment.transactionId = transaction_id
+    payment.save()
+
+    context = {}
+    
+
+    # payment = Payment.objects.filter(transactionId=transactionId)
+    # ticket = Ticket.objects.filter(ticketId=ticketId).first()
+    # user = payment.userId if payment else None
+    # event = ticket.eventId if ticket else None
+    # arena = ticket.arenaId if ticket else None
 
     context = {
         'payment': payment,
-        'user': user,
-        'ticket': ticket,
-        'event': event,
-        'arena': arena,
+        # 'user': user,
+        # 'ticket': ticket,
+        # 'event': event,
+        # 'arena': arena,
     }
     return render(request, "confirmation.html",context)

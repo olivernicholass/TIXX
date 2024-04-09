@@ -3,7 +3,7 @@ from django.conf import settings
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket, Payment
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.template import Context, Template
@@ -16,7 +16,11 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from datetime import date
 import datetime
-
+import stripe
+from django.http import JsonResponse
+import json
+from unittest.mock import patch
+import uuid
 class ViewTests(TestCase):
     
     # Browser Test for Home
@@ -848,4 +852,40 @@ class EditProfile(TestCase):
 
     def tearDown(self):
         self.client.logout()
+       
+
+# class ConfirmationViewTest(TestCase):
+#     def setUp(self):
+#         # Setup
+#         self.event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
+#         self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
+#         self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=100)
+
+#         self.payment = Payment.objects.create(
+#             eventId=self.event,
+#             firstName='John',
+#             lastName='Doe',
+#             phoneNumber='1234567890',
+#             email='john@example.com',
+#             Address='123 Test St',
+#             city='Test City',
+#             province='Test Prov',
+#             paymentAmount=100,
+#             paymentMethod="Stripe",
+#             paymentDate="2023-05-01",
+#             paymentId=uuid.uuid4()
+#         )
+#         self.payment.seatNum.add(self.ticket1, self.ticket2)
+
+#     def test_confirmation_page(self):
+#         # Execution
+#         response = self.client.get(reverse('confirmation', args=[self.payment.paymentId]))
+
+#         # Assertions
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'confirmation.html')
+#         self.assertIn('payment', response.context)
+#         self.assertEqual(response.context['payment'], self.payment)
+
+
 
