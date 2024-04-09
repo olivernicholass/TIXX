@@ -45,10 +45,11 @@ h1 {
   max-height: none;
   font-family: 'Lato', 'sans-serif';
   overflow: hidden;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 30%;
+  margin-right: 0;
+  margin-top: 25px;
   height: 115vh;
-  flex: 0 0 80%;
+
 }
 .section_container {
   padding: 10px;
@@ -263,7 +264,21 @@ h1 {
 .hidden {
   display: none;
 }
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
 
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  margin-bottom: 5px;
+}
 
 
 .tickets-sidebar {
@@ -271,9 +286,12 @@ h1 {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 250px;
+  border-radius: 8px;
+  width: 400px;
   margin: 25px;
-  height: 500px;
+  margin-top: 80px;
+  height: 550px;
+  overflow: hidden;
 }
 
 .sidebar-header, .sidebar-footer {
@@ -295,6 +313,13 @@ h1 {
   background-color: #ddd; /* Adjust background color as needed */
   padding: 10px; /* Adjust padding as needed */
   text-align: center; /* Center the text */
+}
+
+.subtotal {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .btn.btn-primary {

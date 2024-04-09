@@ -475,7 +475,7 @@ def checkout(request, event_id, selected_seats):
     
 
 
-    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums ,'tickets': tickets})
+    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums, 'tickets': tickets})
 
 
 # This is your test secret API key.
