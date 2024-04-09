@@ -43,7 +43,7 @@ def home(request):
     else:
         events = Event.objects.filter(adminCheck=True).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
 
-    carouselFigures = Figure.objects.filter(figureName__in=['Queen', 'Ye', 'Frank Ocean'])
+    carouselFigures = Figure.objects.filter(figureName__in=['TV Girl', 'Ye', 'Frank Ocean'])
 
     hipHopFigures = Figure.objects.filter(figureGenre='Hip-Hop')
     popFigures = Figure.objects.filter(figureGenre='Pop')
@@ -438,6 +438,7 @@ def ticket_selection(request, eventid):
         'Indie': 'concert',
         'Metal': 'concert',
         'Punk': 'concert',
+        'Alternative': 'concert'
     }
     
     sport_map = {

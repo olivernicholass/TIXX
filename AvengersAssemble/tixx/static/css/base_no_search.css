@@ -199,7 +199,9 @@ recently-viewed #text{
 .star-icon,
 .settings-icon,
 .viewed-icon,
-.logout-icon {
+.logout-icon,
+.create-icon,
+.check-icon {
   vertical-align: middle;
   margin-right: 5px; 
   width:20px;
