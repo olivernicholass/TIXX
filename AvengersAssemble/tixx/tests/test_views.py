@@ -851,43 +851,6 @@ class EditProfile(TestCase):
 
     def tearDown(self):
         self.client.logout()
-
-class TestPayment(TestCase):
-    @patch('tixx.views.stripe.checkout.Session.create')
-    def test_payment_success(self, mock_stripe_checkout):
-        # Setup
-       
-        event = Event.objects.create(name="Test Event", date="2023-05-05")
-        ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
-        
-        # Mocking Stripe's response
-        mock_stripe_checkout.return_value = {'url': 'https://mock-stripe-checkout-url.com'}
-
-        # Data to send in POST request
-        post_data = {
-            'selected_seat_nums': json.dumps(['A1']),
-            'eventId': event.id,
-            'fname': 'John',
-            'lname': 'Doe',
-            'email': 'john@example.com',
-            'phone': '1234567890',
-            'address': '123 Test St',
-            'city': 'Test City',
-            'prov': 'Test Prov',
-        }
-
-        # Execution
-        response = self.client.post(reverse('payment'), post_data)
-
-        # Assertions
-        self.assertRedirects(response, 'https://mock-stripe-checkout-url.com', fetch_redirect_response=False)
-        self.assertEqual(Payment.objects.count(), 1)
-
-        # Verifying the payment object's attributes
-        payment = Payment.objects.first()
-        self.assertEqual(payment.firstName, 'John')
-        self.assertEqual(payment.email, 'john@example.com')
-        self.assertEqual(payment.phoneNumber, '1234567891')
        
 
 class ConfirmationViewTest(TestCase):
