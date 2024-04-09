@@ -857,7 +857,7 @@ class ConfirmationViewTest(TestCase):
     def setUp(self):
         # Setup
         event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
-        ticket = Ticket.objects.create(eventId=event.eventId, seatNum="A1", ticketPrice=100)
+        ticket = Ticket.objects.create(eventId=event, seatNum="A1", ticketPrice=100)
         self.payment = Payment.objects.create(
             eventId=event,
             seatNum=ticket,
