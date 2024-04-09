@@ -20,6 +20,7 @@ import stripe
 from django.http import JsonResponse
 import json
 from unittest.mock import patch
+import uuid
 class ViewTests(TestCase):
     
     # Browser Test for Home
@@ -872,7 +873,7 @@ class ConfirmationViewTest(TestCase):
             paymentAmount=100,
             paymentMethod="Stripe",
             paymentDate="2023-05-01",
-            paymentId="test-payment-id"
+            paymentId=uuid.uuid4()
         )
         self.payment.seatNum.add(self.ticket1, self.ticket2)
 
