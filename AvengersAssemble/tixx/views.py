@@ -29,6 +29,7 @@ from django.contrib.auth.decorators import user_passes_test
 import subprocess
 import stripe
 from django.conf import settings
+from subprocess import CalledProcessError, call, check_call
 import uuid
 
 
@@ -58,6 +59,7 @@ def home(request):
                                          'recently_viewed_events': viewedEvents})
 
 
+
 """
 def create_ticket_objects(request):
     if request.method == 'POST':
@@ -74,6 +76,7 @@ def create_ticket_objects(request):
     else:
         return JsonResponse({'error': 'Invalid request method'})
 """
+
 
 
 def admin_review(request):
@@ -180,7 +183,15 @@ def create_event(request):
             arena = Arena.objects.get(pk=arena_id) 
             event.arenaId = arena
             event.save()
+            event_id = event.eventId
             messages.success(request, 'Event created successfully!')
+            try:
+                check_call(['python', 'manage.py', 'import_tickets_concert', str(event_id), arena_id])
+                messages.success(request, 'Tickets imported successfully!')
+            except CalledProcessError as e:
+                messages.error(request, f'An error occurred while processing the action: {e}')
+            except Exception as e:
+                messages.error(request, f'An unexpected error occurred: {e}')
             return redirect('home')
         else:
             for field, errors in form.errors.items():
@@ -473,9 +484,6 @@ def ticket_selection(request, eventid):
     return render(request, "ticket_selection.html", context)
 
 
-def temp(request):
-    return render(request, "temp.html")
-
 def checkout(request, event_id, selected_seats):
     selected_seat_nums = selected_seats.split(',')
 
@@ -483,7 +491,7 @@ def checkout(request, event_id, selected_seats):
     
 
 
-    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums ,'tickets': tickets})
+    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums, 'tickets': tickets})
 
 
 # This is your test secret API key.
