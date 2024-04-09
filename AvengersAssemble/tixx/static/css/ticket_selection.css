@@ -32,10 +32,11 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   padding: 0px;
+  background-color: #e6e4e4;
 }
 
 .content {
-  background-color: #e6e4e4;
+
   display: flex;
   flex-direction: column;
   color: white;
@@ -47,7 +48,7 @@ h1 {
   margin-left: auto;
   margin-right: auto;
   height: 115vh;
-  width: 100%;
+  flex: 0 0 80%;
 }
 .section_container {
   padding: 10px;
@@ -263,37 +264,37 @@ h1 {
   display: none;
 }
 
+
+
 .tickets-sidebar {
+  background-color: #f2f2f2; /* Just for visualization */
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  background-color: #ffffff;
-  height: 100vh;
-  width: 500px;
-  top: 0;
-  right: 0;
+  width: 250px;
+  margin: 25px;
+  height: 500px;
 }
 
-.sidebar-header {
-  background-color: lightgray;
-  width: 100%;
+.sidebar-header, .sidebar-footer {
+  background-color: #ddd;
+  padding: 10px;
   text-align: center;
+  
 }
 
-.sidebar-content{
-  height: 100%;
-  overflow: auto;
+.sidebar-content {
+  padding: 10px;
+  text-align: center;
+  flex-grow: 1;
+  overflow-y: auto; /* Vertical scrollbar */
 }
 
 .sidebar-footer {
-  bottom: 0;
-  left: 0;
-  padding: 10px;
-  background-color: lightgray;
-  width: 100%;
-  height: 13vh;
-  text-align: center;
-  position: relative;
+  margin-top: auto; /* Push footer to the bottom */
+  background-color: #ddd; /* Adjust background color as needed */
+  padding: 10px; /* Adjust padding as needed */
+  text-align: center; /* Center the text */
 }
 
 .btn.btn-primary {
