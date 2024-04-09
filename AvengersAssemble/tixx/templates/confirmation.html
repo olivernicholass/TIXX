@@ -26,13 +26,21 @@
         <div class="receiptContainer">
 
             <h2>Booking Details</h2>
-            <p>>Name: {{ payment.firstName }} {{ payment.lastName }}</p>
-            <p>Payment Id: {{ payment.paymentId }}</p>
-            <p>Transaction Id: {{ payment.transactionId }}</p>
-            <p>Payment Date: {{ payment.paymentDate }}</p>
-            <p>Payment Amount: {{ payment.paymentAmount }}</p>
-            <p>Payment Method: {{ payment.paymentMethod }}</p>
-            <p>Seat Number(s): {{payment.seatNum }}</p> 
+            <p><b>Name:</b> {{ payment.firstName }} {{ payment.lastName }}</p>
+            <p><b>Payment Id:</b> {{ payment.paymentId }}</p>
+            <p><b>Transaction Id:</b> {{ payment.transactionId }}</p>
+            <p><b>Payment Date:</b> {{ payment.paymentDate }}</p>
+            <p><b>Payment Amount:</b> {{ payment.paymentAmount }}</p>
+            <p><b>Payment Method:</b> {{ payment.paymentMethod }}</p>
+            <p><b>Seat Number(s):</b></p>
+            <ul>
+                {% for ticket in payment.seatNum.all %}
+                    <li>{{ ticket.seatNum }}</li>
+                {% empty %}
+                    <li>No seats associated.</li>
+                {% endfor %}
+            </ul>
+            <p><img src="{% static 'images/tixx.png' %}" class="receipt-image"></p>
         </div>
 
 
