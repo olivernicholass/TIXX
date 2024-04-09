@@ -468,9 +468,6 @@ def ticket_selection(request, eventid):
     return render(request, "ticket_selection.html", context)
 
 
-def temp(request):
-    return render(request, "temp.html")
-
 def checkout(request, event_id, selected_seats):
     selected_seat_nums = selected_seats.split(',')
 
