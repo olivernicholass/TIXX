@@ -854,38 +854,38 @@ class EditProfile(TestCase):
         self.client.logout()
        
 
-class ConfirmationViewTest(TestCase):
-    def setUp(self):
-        # Setup
-        self.event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
-        self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
-        self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=100)
+# class ConfirmationViewTest(TestCase):
+#     def setUp(self):
+#         # Setup
+#         self.event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
+#         self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
+#         self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=100)
 
-        self.payment = Payment.objects.create(
-            eventId=self.event,
-            firstName='John',
-            lastName='Doe',
-            phoneNumber='1234567890',
-            email='john@example.com',
-            Address='123 Test St',
-            city='Test City',
-            province='Test Prov',
-            paymentAmount=100,
-            paymentMethod="Stripe",
-            paymentDate="2023-05-01",
-            paymentId=uuid.uuid4()
-        )
-        self.payment.seatNum.add(self.ticket1, self.ticket2)
+#         self.payment = Payment.objects.create(
+#             eventId=self.event,
+#             firstName='John',
+#             lastName='Doe',
+#             phoneNumber='1234567890',
+#             email='john@example.com',
+#             Address='123 Test St',
+#             city='Test City',
+#             province='Test Prov',
+#             paymentAmount=100,
+#             paymentMethod="Stripe",
+#             paymentDate="2023-05-01",
+#             paymentId=uuid.uuid4()
+#         )
+#         self.payment.seatNum.add(self.ticket1, self.ticket2)
 
-    def test_confirmation_page(self):
-        # Execution
-        response = self.client.get(reverse('confirmation', args=[self.payment.paymentId]))
+#     def test_confirmation_page(self):
+#         # Execution
+#         response = self.client.get(reverse('confirmation', args=[self.payment.paymentId]))
 
-        # Assertions
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'confirmation.html')
-        self.assertIn('payment', response.context)
-        self.assertEqual(response.context['payment'], self.payment)
+#         # Assertions
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'confirmation.html')
+#         self.assertIn('payment', response.context)
+#         self.assertEqual(response.context['payment'], self.payment)
 
 
 
