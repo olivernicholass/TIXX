@@ -127,4 +127,25 @@
         </div>
     </div>
 </div>
+
+{% comment %} <script>
+    document.getElementById('send-admin').addEventListener('click', function() {
+        var eventId = document.getElementById('arena-Id').value;
+        var arenaId = document.getElementById('figure-Id').value;
+
+        // Make AJAX request to send eventId and arenaId to the Django view
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "send_to_administration" %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function () { 
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Handle the response if needed
+                console.log(xhr.responseText);
+            }
+        };
+        var data = JSON.stringify({ 'eventId': eventId, 'arenaId': arenaId });
+        xhr.send(data);
+    });
+</script> {% endcomment %}
+
 {% endblock %}
