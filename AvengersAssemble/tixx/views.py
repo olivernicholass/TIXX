@@ -483,7 +483,7 @@ def payment(request):
         address = request.POST.get('address')
         city = request.POST.get('city')
         province = request.POST.get('prov')
-        payment_id = uuid.uuid4() 
+       
 
         # Calculate total price for the selected tickets
         tickets = Ticket.objects.filter(eventId=event_id, seatNum__in=selected_seats)
@@ -497,12 +497,13 @@ def payment(request):
         
            
         total_price = sum(ticket.ticketPrice for ticket in tickets)
+        # payment_id = uuid.uuid4() 
+
         
         # Store payment details (without transactionId and paymentAmount as they'll be confirmed after payment)
-        for ticket in tickets:
-            Payment.objects.create(
+        
+        payment = Payment.objects.create(
                 eventId=Event.objects.get(pk=event_id),
-                seatNum=ticket,
                 firstName=first_name,
                 lastName=last_name,
                 phoneNumber=phone_number,
@@ -514,8 +515,9 @@ def payment(request):
                 paymentMethod="Stripe", # To be updated after payment confirmation
                 
                 paymentDate=datetime.now(),
-                paymentId = payment_id
+                # paymentId = payment_id
             )
+        payment.seatNum.set(tickets)
         try:
                 checkout_session = stripe.checkout.Session.create(
                     line_items=[
@@ -532,7 +534,7 @@ def payment(request):
                     ],
                     mode='payment',
                     success_url = request.build_absolute_uri(
-                reverse('confirmation', kwargs={'paymentId': str(payment_id)})
+                reverse('confirmation', kwargs={'paymentId': str(payment.paymentId)})
             ),
                     cancel_url = request.build_absolute_uri('/'),
                 )

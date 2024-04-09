@@ -99,7 +99,7 @@ class User(AbstractUser):
 class Payment(models.Model):
     paymentId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     eventId = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True) 
-    seatNum = models.ForeignKey(Ticket,on_delete=models.SET_NULL, null=True)
+    seatNum = models.ManyToManyField(Ticket, blank=True)
     paymentAmount = models.FloatField()
     paymentMethod = models.CharField(max_length=10)
     paymentDate = models.DateField()
