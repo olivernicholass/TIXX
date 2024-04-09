@@ -65,11 +65,7 @@
                     <div class="card-body">
                         <h6>Order Summary</h6>
                         <hr>
-                        <ul>
-                            {% for seat in selected_seat_nums %}
-                            <li>{{ seat }}</li>
-                            {% endfor %}
-                        </ul>
+
 
                         <!--NEED TO QUERY SEATS WHERE SEATS.SEATNUM = SEAT SINCE 
                             THE DATA PASSES IS NOT AN OBJECT (because javascript)-->
