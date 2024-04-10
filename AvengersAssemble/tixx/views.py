@@ -29,6 +29,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum, Count
 from django.utils import timezone
 from .models import Payment
+from datetime import timedelta
 
 
 def home(request):
@@ -107,13 +108,15 @@ def getRecentlyViewed(request, figureId):
     return viewedList
 
 def organiser_login(request):
+    if request.user.is_authenticated and request.user.isOrganiser:
+        return redirect(reverse('dashboard_home'))
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None and user.is_authenticated and user.isOrganiser:
             auth_login(request, user)
-            return redirect('dashboard_home')
+            return redirect(dashboard_home) 
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'organiser_login.html')
@@ -162,7 +165,8 @@ def create_event(request):
             event.arenaId = arena
             event.save()
             messages.success(request, 'Event created successfully!')
-            return redirect('dashboard_events')
+            messages.info(request, 'Your event has been created and is pending admin approval.')
+            return redirect('dashboard_home')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -175,29 +179,114 @@ def create_event(request):
                                                  'arenas': arenas, 
                                                  'figures': figures})
 
+
+@login_required
+@user_passes_test(isOrganiser)
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+
+    if request.method == 'POST':
+        form = CreateEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event updated successfully!')
+            return redirect('event_overview', event_id=event.pk)  
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error in {field}: {error}')
+    else:
+        form = CreateEventForm(instance=event)
+
+    return render(request, 'edit_event.html', {'form': form, 'event': event})
+
+    
+@login_required
+@user_passes_test(isOrganiser)
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+    
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, 'Event deleted successfully!')
+        return redirect('dashboard_home')  
+    else:
+        # confirmation page before deletion
+        return render(request, 'confirm_delete.html', {'event': event})
+
+
 @login_required
 @user_passes_test(isOrganiser)
 def dashboard_home(request):
-    upcoming_events = [] 
-    recent_ticket_sales = [] 
+    current_date = timezone.now().date()
+    events = Event.objects.filter(
+        organiser=request.user).order_by('eventDate')
+    for event in events:
+        tickets_sold = Ticket.objects.filter(
+            eventId=event,
+            available=False  
+        ).count()
+        event.tickets_sold = tickets_sold
+        event.days_left = (event.eventDate - current_date).days
+    total_revenue = Ticket.objects.filter(
+        eventId__organiser=request.user,
+        available=False  
+    ).aggregate(Sum('ticketPrice'))['ticketPrice__sum'] or 0
 
-    upcoming_events = Event.objects.filter(organiser=request.user, eventDate__gte=timezone.now()).order_by('eventDate')
-    recent_ticket_sales = Ticket.objects.filter(eventId__organiser=request.user)
+    total_tickets_sold = Ticket.objects.filter(
+        eventId__organiser=request.user,
+        available=False  
+    ).count()
+
+    total_events_count = Event.objects.filter(organiser=request.user).count()
+    pending_events_count = Event.objects.filter(
+        organiser=request.user,
+        adminCheck=False,
+        isRejected=False
+    ).count()
+    upcoming_events_count = events.count()
 
     return render(request, 'organiser_dashboard.html', {
-        'upcoming_events': upcoming_events,
-        'recent_ticket_sales': recent_ticket_sales,
+        'events': events,
+        'current_date': current_date,
+        'total_events_count': total_events_count,
+        'pending_events_count': pending_events_count,
+        'upcoming_events_count': upcoming_events_count,
+        'total_revenue': total_revenue,
+        'total_tickets_sold': total_tickets_sold,
     })
 
+@login_required
+@user_passes_test(isOrganiser)
+def event_overview(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+    form = CreateEventForm(instance=event)  
+    tickets_sold = Ticket.objects.filter(eventId=event, available=False).count()  
+
+    if request.method == 'POST':
+        form = CreateEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event updated successfully!')
+            return redirect('event_overview', event_id=event.pk)
+        else:
+            messages.error(request, 'There was an error updating the event.')
+
+    context = {
+        'event': event,
+        'form': form,  
+        'tickets_sold': tickets_sold,
+    }
+    return render(request, 'event_overview.html', context)
+
+
+
 def dashboard_events(request):
-    # Mock-up data for presentation
     upcoming_events = Event.objects.filter(organiser=request.user, eventDate__gte=timezone.now()).order_by('eventDate')
     recent_ticket_sales = []  # Populate with mock data or real queries
 
     # upcoming_events = Event.objects.filter(organiser=request.user, event_date__gte=timezone.now()).order_by('event_date')
     # recent_ticket_sales = TicketSale.objects.filter(event__organiser=request.user)
-
-    # But for presentation purposes, you might just use:
     # upcoming_events = Event.objects.all().order_by('event_date')[:5]
     # recent_ticket_sales = TicketSale.objects.all()[:5]
 
@@ -205,7 +294,6 @@ def dashboard_events(request):
         'upcoming_events': upcoming_events,
         'recent_ticket_sales': recent_ticket_sales,
     })
-
 
 
 def login(request):

@@ -1,0 +1,130 @@
+{% extends "organiser_base.html" %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/create_event.css' %}">
+<script src="{% static 'js/create_event.js' %}"></script>
+<div class="container">
+    <div class="info">
+        <img src="{% static 'icons/event.png' %}" >
+        <h1>Update your Event</h1>
+    </div>
+</div>
+
+<div class="form-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    <form id="eventForm" method="post" class="event-form" action="{% url 'update_event' event.id %}"> 
+        {% csrf_token %}
+        <div class="form-fields">
+            <div>
+                <span class="contains-icon">
+                    <img src="{% static 'icons/disco.png' %}" alt="Event Icon" class="icon">
+                    <input type="text" id="id_eventName" name="eventName" placeholder="Event Name" value = "{{ event.name }}" required>
+                </span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="contains-icon">
+                        <input type="date" id="id_eventDate" name="eventDate" class="form-control" value = "{{ event.date }}"required>
+                        <img src="{% static 'icons/date.png' %}" alt="Calendar Icon" class="icon">
+                    </span>
+                </div>
+                <div class="col-md-6">
+                    <span class="contains-icon">
+                        <input type="time" id="id_eventTime" name="eventTime" class="form-control" value = "{{event.eventTime }}" required>
+                        <img src="{% static 'icons/time.png' %}" alt="Clock Icon" class="icon">
+                    </span>
+                </div>
+            </div>
+            <div>
+                <span class="contains-icon">
+                    <img src="{% static 'icons/globe.png' %}" alt="Location Icon" class="icon">
+                    <input type="text" id="id_eventLocation" name="eventLocation" placeholder="Event Location" value ="{{eventLocation}}"required>
+                </span>
+            </div>
+            <div>
+                <textarea id="id_eventDescription" name="eventDescription" rows="3" placeholder="Tell us about your event..." required></textarea>
+            </div>
+            <div>
+                <div class="status-radio">
+                    <label class="radio-container">
+                        <input type="radio" name="eventStatus" value="upcoming" required>
+                        <span class="checkmark"></span>
+                        Upcoming
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="eventStatus" value="ongoing" required>
+                        <span class="checkmark"></span>
+                        Ongoing
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="eventStatus" value="finished" required>
+                        <span class="checkmark"></span>
+                        Finished
+                    </label>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span class="contains-icon">
+                        <img src="{% static 'icons/genre.png' %}" alt="Genre Icon" class="icon">
+                        <select id="event-Genre" name="eventGenre" required>
+                            <option value="" disabled selected>Select Genre</option>
+                            {% for genre in genres %}
+                                <option value="{{ genre }}">{{ genre }}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span class="contains-icon">
+                        <img src="{% static 'icons/arena.png' %}" alt="Arena Icon" class="icon">
+                        <select id="arena-Id" name="arenaId" required>
+                            <option value="" disabled selected>Select Arena</option>
+                            {% for arena in arenas %}
+                                <option value="{{ arena.arenaId }}">{{ arena }}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <span class="contains-icon">
+                        <img src="{% static 'icons/figure.png' %}" alt="Figure Icon" class="icon">
+                        <select id="figure-Id" name="figureId" onchange="updateSelectedFigure()" required>
+                            <option value="" disabled selected>Select Figure</option>
+                            {% for figure in figures %}
+                                <option value="{{ figure.pk }}" data-picture="{{ figure.figurePicture.url }}">{{ figure.figureName }}</option>
+                            {% endfor %}
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <button type="submit" onclick="showSummary(event)">SHOW SUMMARY</button></div>
+    </form>
+    <div class="details">
+        <div id="selected-figure">
+            <img id="selected-figure-img" src="" alt="Selected Figure">
+            <span id="selected-figure-name"></span>
+        </div>
+        <div id="event-summary" style="display: none;">
+            <p id="event-details">EVENT DETAILS</p>
+            <p>Event Name: <span id="eventName"></span></p>
+            <p>Date: <span id="eventDate"></span></p>
+            <p>Time: <span id="eventTime"></span></p>
+            <p>Location: <span id="eventLocation"></span></p>
+            <p>Description: <span id="eventDescription"></span></p>
+            <p>Genre: <span id="eventGenre"></span></p>
+            <p>Arena: <span id="arena"></span></p>
+            <p>Figure: <span id="figure"></span></p>
+            <button type="submit" id="send-admin">Send to Administration</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

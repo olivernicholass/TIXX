@@ -1,43 +1,67 @@
-{% extends "base.html" %}
+{% extends "base_organiser.html" %}
 {% load static %}
+{% block title %}Tixx - Organiser{% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-8 px-6">
-  <div class="grid grid-cols-4 gap-6">
-    <!-- Assuming static images for now -->
-    <div class="col-span-1">
-      <img src="{% static 'path/to/your/image1.svg' %}" alt="Event" class="rounded-lg mb-4" style="aspect-ratio: 300 / 200; object-fit: cover;"/>
-      <img src="{% static 'path/to/your/image2.svg' %}" alt="Event" class="rounded-lg" style="aspect-ratio: 300 / 200; object-fit: cover;"/>
-    </div>
-    <div class="col-span-3">
-      <div class="bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold mb-2">Organiser Dashboard</h2>
-        <div class="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Total Revenue Generated</h3>
-            <p class="text-gray-700">${{ total_revenue }}</p>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold mb-1">Total Tickets Sold</h3>
-            <p class="text-gray-700">{{ total_tickets_sold }}</p>
-          </div>
-        </div>
-        <div class="mb-4">
-          <h3 class="text-lg font-semibold mb-2">Upcoming Events</h3>
-          <ul class="space-y-2">
-            {% for event in upcoming_events %}
-            <li class="bg-gray-100 p-3 rounded-lg">
-              {% comment %} <a href="{% url 'event_detail' event.eventId %}" class="text-blue-600 hover:text-blue-500"> {% endcomment %}
-                {{ event.eventName }}
-              </a> - {{ event.eventDate }}
-            </li>
-            {% empty %}
-            <li>No upcoming events</li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+<link rel="stylesheet" type="text/css" href="{% static 'css/organiser_dashboard.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+{% comment %} <script src="{% static 'js/organiser_dashboard.js' %}"></script> {% endcomment %}
+
+<div class="dashboard-wrapper">
+  <div class="side-container">
+    <h4>Total Revenue </h4>
+    <p class="revenue">${{ total_revenue }}</p>
+    <h4>Total Tickets Sold</h4>
+    <p class="tickets-sold">{{ total_tickets_sold }}</p>
 </div>
+<div class="main-content">
+    <div class="dashboard-header">
+      <i class="fas fa-chart-line dashboard-header-icon"></i>
+        <h1>Organiser Dashboard</h1>
+        <p class="dashboard-date">{{ current_date }}</p>
+    </div>
+    <div class="dashboard-stats">
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Events pending approval</p>
+            <h3>{{ pending_events_count }}</h3>
+        </div>
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Upcoming events</p>
+            <h3>{{ upcoming_events_count }}</h3>
+        </div>
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Total events made</p>
+            <h3>{{ total_events_count }}</h3>
+        </div>
+    </div>
+
+    <div class="events-container">
+        {% for event in events %}
+        <a href="{% url 'event_overview' event.eventId %}" class="event-card-link">
+          <div class="event-card">
+                <div class="event-body">
+                    <h5 class="event-title">{{ event.eventName }}</h5>
+                    <p class="event-text">Event Date: {{ event.eventDate }}</p>
+                    <p class="event-text">Tickets Sold: {{ event.tickets_sold }}</p>
+                    <p class="days-left">Days left: {{ event.days_left }}</p>
+                </div>
+            </div>
+            <a>
+        {% empty %}
+            <p>No events to display.</p>
+        {% endfor %}
+    </div>
+
+    
+
+    <a href="{% url 'create_event' %}" class="btn-create-event">Create Event</a>
+</div>
+</div>
+
+
+
 {% endblock %}
+

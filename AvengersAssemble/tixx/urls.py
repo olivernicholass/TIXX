@@ -31,7 +31,10 @@ urlpatterns = [
     path('admin_review/', views.admin_review, name='admin_review'),
     path('organiser/dashboard/', views.dashboard_home, name='dashboard_home'),
     path('organiser/dashboard/events/', views.dashboard_events, name='dashboard_events'),
-    
+    path('organiser/dashboard/edit/<int:event_id>', views.edit_event, name='edit_event'),
+    path('organiser/dashboard/delete/<int:event_id>', views.delete_event, name='delete_event'),
+    path('organiser/dashboard/events/<int:event_id>/', views.event_overview, name='event_overview'),
+ 
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

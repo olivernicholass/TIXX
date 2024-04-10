@@ -28,7 +28,7 @@ jobs:
         pip install Pillow
         pip install -r requirements.txt
 
-    - name: Run Tests
+    - name: Run Tests with Coverage
       run: |
         cd AvengersAssemble
-        python manage.py test
+        coverage run manage.py test tixx.tests
