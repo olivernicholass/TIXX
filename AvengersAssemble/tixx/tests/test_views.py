@@ -114,13 +114,12 @@ class TicketSelectionViewTest(TestCase):
 class FilteredEventsTestCase(TestCase):
     def setUp(self):
         self.arena = Arena.objects.create(arenaId='A001', arenaName='Test Arena', arenaCapacity=1000)
-        self.figure = Figure.objects.create(figureName='Test Figure', figureGenre='Genre-1')
+        self.figure = Figure.objects.create(figureName='Test Figure', figureGenre='Genre-1', figurePicture='Drake.jpg')
         self.event1 = Event.objects.create(
             eventName="Event 1",
             eventDate=timezone.now().date(),
             eventTime=timezone.now().time(),
             eventId=1,
-            eventImage = "/media/event_images/liltecca_hsfyluS.jpg",
             eventLocation="Location 1",
             eventDescription="Description 1",
             eventStatus="Upcoming",
