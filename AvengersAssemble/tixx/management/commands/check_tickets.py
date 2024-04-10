@@ -33,7 +33,7 @@ class Command(BaseCommand):
             rcount = 0
             scount = 0
             print(f"section 1 seats: ")
-            print()
+            
             for ticket in tickets:
                 
                 if ccount % 25 == 0:

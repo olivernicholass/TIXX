@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from tixx.models import Ticket  # Import your Ticket model
 import sys
+import random
 
 class Command(BaseCommand):
     help = 'Import tickets into the database'
@@ -19,6 +20,7 @@ class Command(BaseCommand):
             for j in range(1, 26):
                 letter = chr(j + ord('A') - 1)
                 for i in range(1, 26):  # Assuming you want to create 50 tickets
+                    available = random.choice([True, False])
                     data.append({
                         'eventId': event_id,  # Assuming eventId corresponds to the Event ID
                         'seatNum': f'S{s}{letter}{i}',  # Generate seat numbers dynamically
@@ -27,7 +29,7 @@ class Command(BaseCommand):
                         'ticketPrice': 100,  # Generate ticket prices dynamically
                         'ticketType': 'normal',  # Assuming all tickets are Regular type
                         'zone': s,  # Distribute zones from 1 to 8 cyclically
-                        'available': True,
+                        'available': available,
                     })
             
         # Create Ticket instances from the generated data

@@ -82,6 +82,8 @@ def admin_review(request):
                 event.isRejected = True
                 event.adminCheck = False
                 event.save()
+            elif 'delete' in request.POST:
+                check_call(['python', 'manage.py', 'remove_event_tickets', str(eventId)])
 
     # COUNTS of pending/accepted/rejected events
     pendingCount = Event.objects.filter(adminCheck=False, isRejected=False).count()
