@@ -10,12 +10,14 @@
     </div>
 </div>
 
-<div class="form-container">
+<div class="alert-container">
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
         {{ message }}
     </div>
     {% endfor %}
+</div>
+<div class="form-container">
     <form id="eventForm" method="post" class="event-form" action="{% url 'create_event' %}"> 
         {% csrf_token %}
         <div class="form-fields">
