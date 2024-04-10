@@ -3,49 +3,34 @@
 {% block content %}
   <link rel="stylesheet" href="{% static 'css/ticket_selection.css' %}" />
 
-    <div class="tickets-header">
-      {% if figure.figurePicture %}
-        <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}">
-      {% endif %}
-      <div class="header-info">
-        <h1>Event: {{ event.eventName }}</h1>
-        <div class="event-details">
-          <p><strong>Name:</strong> {{ arena.arenaName }} &nbsp</p>
-          <p><strong>Date:</strong> {{ event.eventDate }} &nbsp</p>
-          <p><strong>Time:</strong> {{ event.eventTime }} &nbsp</p>
-        </div>
+  <div class="tickets-header">
+    {% if figure.figurePicture %}
+      <img src="{{ figure.figurePicture.url }}" alt="{{ figure.figureName }}" />
+    {% endif %}
+    <div class="header-info">
+      <h1>Event: {{ event.eventName }}</h1>
+      <div class="event-details">
+        <p>
+          <strong>Name:</strong> {{ arena.arenaName }} &nbsp
+        </p>
+        <p>
+          <strong>Date:</strong> {{ event.eventDate }} &nbsp
+        </p>
+        <p>
+          <strong>Time:</strong> {{ event.eventTime }} &nbsp
+        </p>
       </div>
-
     </div>
+  </div>
 
   <div class="container">
-
-
-
     <div class="content">
       <p style="display: none;" id="eventId">{{ event.eventId }}</p>
 
-
-
-      {% comment %} <div id="ticketDataContainer">
-        {% for ticket in tickets %}
-            <li>{{ ticket }}</li>
-        {% endfor %}
-      </div> {% endcomment %}
-
       <h1>Ticket Selection</h1>
 
-
       <div class="section_container">
-        {% if event.eventGenre in sport_map %}
-          <div class="grid-container-sports">
-            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">Section 1</button>
-            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">Section 2</button>
-            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">Section 3</button>
-            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">Section 4</button>
-            <img src="{% static 'images/sports.png' %}" class="image" alt="Concert Venue" />
-          </div>
-        {% elif event.eventGenre in genre_map %}
+        {% if event.eventGenre in genre_map %}
           <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image" />
           <div class="grid-container-concert">
             <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">Section 1</button>
@@ -54,18 +39,27 @@
             <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">Section 4</button>
           </div>
         {% else %}
-          <!-- Default layout if event type is unknown or not specified -->
-          <p>No specific layout available for this event type.</p>
+          <div class="grid-container-sports">
+
+            <div class="top">
+              <button class="button" id="section1" onclick="showSection1AvailableSeats(1)">Section 1</button>
+              <button class="button" id="section2" onclick="showSection1AvailableSeats(2)">Section 2</button>
+            </div>
+
+            <img src="{% static 'images/sports.png' %}" alt="Sports Image" />
+
+            <div class="bottom">
+              <button class="button" id="section3" onclick="showSection1AvailableSeats(3)">Section 1</button>
+              <button class="button" id="section4" onclick="showSection1AvailableSeats(4)">Section 1</button>
+            </div>
+          </div>
         {% endif %}
       </div>
-      
-
-
 
       <ul class="showcase">
         <li>
           <div class="seat"></div>
-          <small>N/A</small>
+          <small>Available</small>
         </li>
 
         <li>
@@ -79,31 +73,23 @@
         </li>
       </ul>
 
-      
       <div class="seatcontainer" id="gridContainer">Select a section to get started</div>
-    
-    
-    
     </div>
 
-
-  <div class="tickets-sidebar">
+    <div class="tickets-sidebar">
       <div class="sidebar-header">
         <h3>Your Tickets</h3>
       </div>
       <div class="sidebar-content">
-        <ul id="selected-seats"></ul>
+        <div id="selected-seats"></div>
       </div>
-      
 
       <div class="sidebar-footer">
+        <div id="subtotal" class="subtotal">Subtotal: $0.00</div>
+        <hr />
         <input type="Submit" id="checkoutButton" class="btn btn-primary" value="Checkout" />
       </div>
-
     </div>
-
-    
-    
   </div>
 
   <div id="ticketsData" data-tickets="{{ tickets_json }}"></div>

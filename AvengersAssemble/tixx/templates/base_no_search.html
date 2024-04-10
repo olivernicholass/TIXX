@@ -164,9 +164,26 @@
                     <div class="contact-info">
                         <p>Contact <span style="color: #03256C;">tixxEVENTS@gmail.com</span> for requests!</p>
                     </div>
+                    {% if request.user.is_superuser %}
+                    <a href="{% url 'create_event' %}">
+                        <img src="{% static 'icons/create.png' %}" alt="Create Icon" class="create-icon"> 
+                        Create an Event
+                    </a>
+                    <a href="{% url 'admin_review' %}">
+                        <img src="{% static 'icons/check.png' %}" alt="Check Icon" class="check-icon"> 
+                        Review Events
+                    </a>
+                    {% elif request.user.isOrganiser %}
+                        <a href="{% url 'create_event' %}">
+                            <img src="{% static 'icons/create.png' %}" alt="Create Icon" class="create-icon">
+                            Create an Event
+                        </a>
+                    {% endif %}
                 {% else %}
                     <a href="{% url 'login' %}" class="sidebar-link">Login/Register</a>
                 {% endif %}
+
+                
                 <div class="tixx-logo-container">
                     <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
                 </div>               

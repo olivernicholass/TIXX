@@ -26,6 +26,11 @@ from django.contrib.auth.decorators import login_required
 import json
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import user_passes_test
+import subprocess
+import stripe
+from django.conf import settings
+from subprocess import CalledProcessError, call, check_call
+import uuid
 from django.db.models import Sum, Count
 from django.utils import timezone
 from .models import Payment
@@ -42,7 +47,7 @@ def home(request):
     else:
         events = Event.objects.filter(adminCheck=True).exclude(eventImage__isnull=True).exclude(eventImage__exact='')
 
-    carouselFigures = Figure.objects.filter(figureName__in=['Queen', 'Ye', 'Frank Ocean'])
+    carouselFigures = Figure.objects.filter(figureName__in=['TV Girl', 'Ye', 'Frank Ocean'])
 
     hipHopFigures = Figure.objects.filter(figureGenre='Hip-Hop')
     popFigures = Figure.objects.filter(figureGenre='Pop')
@@ -56,6 +61,11 @@ def home(request):
                                          'popFigures': popFigures,
                                          'basketballFigures': basketballFigures,
                                          'recently_viewed_events': viewedEvents})
+
+
+
+
+
 
 def admin_review(request):
     if request.method == 'POST':
@@ -76,6 +86,8 @@ def admin_review(request):
                 event.isRejected = True
                 event.adminCheck = False
                 event.save()
+            elif 'delete' in request.POST:
+                check_call(['python', 'manage.py', 'remove_event_tickets', str(eventId)])
 
     # COUNTS of pending/accepted/rejected events
     pendingCount = Event.objects.filter(adminCheck=False, isRejected=False).count()
@@ -164,7 +176,16 @@ def create_event(request):
             arena = Arena.objects.get(pk=arena_id) 
             event.arenaId = arena
             event.save()
+            event_id = event.eventId
             messages.success(request, 'Event created successfully!')
+            try:
+                check_call(['python', 'manage.py', 'import_tickets_concert', str(event_id), arena_id])
+                messages.success(request, 'Tickets imported successfully!')
+            except CalledProcessError as e:
+                messages.error(request, f'An error occurred while processing the action: {e}')
+            except Exception as e:
+                messages.error(request, f'An unexpected error occurred: {e}')
+            return redirect('home')
             messages.info(request, 'Your event has been created and is pending admin approval.')
             return redirect('dashboard_home')
         else:
@@ -544,6 +565,7 @@ def ticket_selection(request, eventid):
         'Indie': 'concert',
         'Metal': 'concert',
         'Punk': 'concert',
+        'Alternative': 'concert'
     }
     
     sport_map = {
@@ -574,13 +596,100 @@ def ticket_selection(request, eventid):
     return render(request, "ticket_selection.html", context)
 
 
-def temp(request):
-    return render(request, "temp.html")
-
 def checkout(request, event_id, selected_seats):
-    selected_seats = selected_seats.split(',')
+    selected_seat_nums = selected_seats.split(',')
 
-    return render(request, "checkout.html", {'event_id': event_id, 'selected_seats': selected_seats})
+    tickets = Ticket.objects.filter(eventId=event_id,seatNum__in=selected_seat_nums)
+    total_price = sum(ticket.ticketPrice for ticket in tickets)
+    
+
+
+
+    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums ,'tickets': tickets,'total_price':total_price})
+
+
+
+# This is your test secret API key.
+stripe.api_key = settings.STRIPE_SECRET_KEY
+def payment(request):
+    if request.method == "POST":
+        
+        
+        selected_seats_str = request.POST.get('selected_seat_nums')
+        selected_seats = json.loads(selected_seats_str.replace("'", "\""))
+        event_id = request.POST.get('eventId')
+
+        first_name = request.POST.get('fname')
+        last_name = request.POST.get('lname')
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        province = request.POST.get('prov')
+       
+
+        # Calculate total price for the selected tickets
+        tickets = Ticket.objects.filter(eventId=event_id, seatNum__in=selected_seats)
+        # if tickets.exists():
+        #     response_data = {"success": True, "message": "Tickets exist."}
+        # else:
+        #     response_data = {"success": False, "message": "No tickets found."}
+
+        # # Return JSON response
+        # return JsonResponse(response_data)
+        
+           
+        total_price = sum(ticket.ticketPrice for ticket in tickets)
+        # payment_id = uuid.uuid4() 
+
+        
+        # Store payment details (without transactionId and paymentAmount as they'll be confirmed after payment)
+        
+        payment = Payment.objects.create(
+                eventId=Event.objects.get(pk=event_id),
+                firstName=first_name,
+                lastName=last_name,
+                phoneNumber=phone_number,
+                email=email,
+                Address=address,
+                city=city,
+                province=province,
+                paymentAmount=total_price,  # To be updated after payment confirmation
+                paymentMethod="Stripe", # To be updated after payment confirmation
+                
+                paymentDate=datetime.now(),
+                # paymentId = payment_id
+            )
+        payment.seatNum.set(tickets)
+        try:
+                checkout_session = stripe.checkout.Session.create(
+                    line_items=[
+                        {
+                            'price_data': {
+                                'currency': 'cad',
+                                'product_data': {
+                                    'name': 'Event Tickets',
+                                },
+                                'unit_amount': (total_price*100) ,  # Stripe expects amount in cents
+                            },
+                            'quantity': 1,
+                        },
+                    ],
+                    mode='payment',
+                    success_url = request.build_absolute_uri(
+                reverse('confirmation', kwargs={'paymentId': str(payment.paymentId)})
+            ),
+                    cancel_url = request.build_absolute_uri('/'),
+                )
+                return redirect(checkout_session.url)
+        except Exception as e:
+                # Consider logging the error and returning an appropriate response
+                return JsonResponse({'error': str(e)})
+
+    # If not POST method, redirect to a relevant page or show an error
+    return redirect('/error_page')
+
+
 
 
 def filtered_events(request, eventGenre):
@@ -669,27 +778,29 @@ def get_ticket_data(request):
     tickets = Ticket.objects.all().values('ticketId', 'eventId', 'seatNum', 'arenaId', 'ticketQR', 'ticketPrice', 'ticketType', 'zone', 'available')
     return JsonResponse({'tickets': list(tickets)})
 
-def confirmation(request):
-    context = {}
-    # if request.method == 'POST':
-    #     paymentId = request.POST.get('paymentId')    
-    #     transactionId = request.POST.get('transactionId')
-    #     ticketId = request.POST.get('ticketId')
-    paymentId = '12345' 
-    transactionId = 'abcde'  
-    ticketId = 123  
+def confirmation(request,paymentId):
 
-    payment = Payment.objects.filter(paymentId=paymentId, transactionId=transactionId).first()
-    ticket = Ticket.objects.filter(ticketId=ticketId).first()
-    user = payment.userId if payment else None
-    event = ticket.eventId if ticket else None
-    arena = ticket.arenaId if ticket else None
+    payment = get_object_or_404(Payment, paymentId=paymentId)
+    payment_id_reduced = str(payment.paymentId)[:4]
+    
+    transaction_id = f"{payment.eventId.pk}_{payment_id_reduced}"
+    payment.transactionId = transaction_id
+    payment.save()
+
+    context = {}
+    
+
+    # payment = Payment.objects.filter(transactionId=transactionId)
+    # ticket = Ticket.objects.filter(ticketId=ticketId).first()
+    # user = payment.userId if payment else None
+    # event = ticket.eventId if ticket else None
+    # arena = ticket.arenaId if ticket else None
 
     context = {
         'payment': payment,
-        'user': user,
-        'ticket': ticket,
-        'event': event,
-        'arena': arena,
+        # 'user': user,
+        # 'ticket': ticket,
+        # 'event': event,
+        # 'arena': arena,
     }
     return render(request, "confirmation.html",context)

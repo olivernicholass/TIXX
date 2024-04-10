@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import BaseUserManager
+import uuid
+
 
 # Create your models here
 
@@ -97,15 +99,24 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['email', 'userPhoneNumber', 'userAddress']
     
 class Payment(models.Model):
-    paymentId = models.CharField(max_length=10, primary_key=True)
-    userId = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) 
+    paymentId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    eventId = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True) 
+    seatNum = models.ManyToManyField(Ticket, blank=True)
     paymentAmount = models.FloatField()
     paymentMethod = models.CharField(max_length=10)
     paymentDate = models.DateField()
     transactionId = models.CharField(max_length=10)
+    firstName = models.CharField(max_length=30, blank=True)
+    lastName = models.CharField(max_length=150, blank=True)
+    phoneNumber = models.IntegerField(null=True)
+    email = models.EmailField(max_length=20, blank=True)
+    Address = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=20, blank=True)
+    province = models.CharField(max_length=20, blank=True)
+   
 
     def __str__(self):
-        return self.paymentId
+        return str(self.paymentId)
 
 class Review(models.Model):
     userReview = models.ForeignKey(User, on_delete=models.CASCADE, null=True, default=None)

@@ -46,4 +46,34 @@ p {
   width: 340px;
   padding: 20px;
   text-transform: uppercase;
+  position: relative;
+}
+.receipt-image {
+        max-width: 100%; 
+        opacity: 0.6; 
+        display: block; 
+        margin: auto; 
+}
+
+::-webkit-scrollbar {
+  width: 7px; 
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #ddd; 
 }

@@ -23,6 +23,18 @@
     border:none;
 }
 
+.figure-grid-scrollable {
+    overflow-x: scroll;
+    white-space: nowrap;
+  }
+  
+  .figure-grid {
+    display: flex; 
+    flex-wrap: nowrap; 
+    gap: 20px; 
+  }
+
+
 #search-container .form-control{
     background-color: transparent;
     border:none;
@@ -158,7 +170,6 @@ input[type="text"]::placeholder {
 
   .figure-grid-scrollable {
     width: 100%;
-    overflow-x: auto;
     white-space: nowrap;
     position: relative; 
 }
@@ -189,7 +200,7 @@ input[type="text"]::placeholder {
 }
 
 .figure-image {
-    width: 100%;
+    width: 300px;
     height: 200px; 
     object-fit: cover; 
     border-radius: 5px;
@@ -231,8 +242,34 @@ input[type="text"]::placeholder {
     background-color: #ffffff;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    width: 120%;
     margin-bottom: 20px;
     border-radius: 8px;
     z-index: 1;
 }
+
+::-webkit-scrollbar {
+    width: 7px; 
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px; 
+}
+
+::-webkit-scrollbar-track:hover {
+    background: #ddd; 
+}
+
+
   

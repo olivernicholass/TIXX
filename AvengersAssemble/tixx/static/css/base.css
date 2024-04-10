@@ -273,18 +273,32 @@ recently-viewed #text{
   width:100px;
 }
 
-.tixx-logo-container {
-  margin-top: auto; 
-  width: 100%; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  padding-bottom: 20px; 
+.star-icon, .settings-icon, .viewed-icon, .logout-icon, .create-icon, .check-icon {
+  vertical-align: middle;
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
 }
 
-.sidebar-icon {
-  vertical-align: middle;
-  margin-right: 5px; 
-  width:20px;
-  height:20px;
+::-webkit-scrollbar {
+  width: 7px; 
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #ddd; 
 }

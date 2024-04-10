@@ -3,7 +3,7 @@ from django.conf import settings
 from django.test import RequestFactory, TestCase, Client
 from django.urls import reverse
 from django.utils import timezone
-from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket
+from tixx.models import Figure, Event, Review, ReviewImage, Arena, User, Ticket, Payment
 from django.utils.text import slugify
 from django.contrib.auth.hashers import make_password
 from django.template import Context, Template
@@ -16,6 +16,11 @@ from django.contrib.auth import login, logout
 from django.contrib.auth import get_user_model
 from datetime import date
 import datetime
+import stripe
+from django.http import JsonResponse
+import json
+from unittest.mock import patch
+import uuid
 from  tixx.forms import CreateEventForm
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -686,7 +691,77 @@ class AdminReviewTestCase(TestCase):
 
         # TEST an Event with a non-existing ID
         response = self.client.post(reverse('admin_review'), {'eventId': 999, 'accept': 'Accept'})
-        self.assertEqual(response.status_code, 302)  
+
+        self.assertEqual(response.status_code, 302)  # Redirects after POST
+
+class CheckoutViewTest(TestCase):
+    def setUp(self):
+        # Setup test data
+        self.client = Client()
+
+        self.arena = Arena.objects.create(
+            arenaId='A123',
+            arenaName='Main Arena',
+            arenaCapacity=5000,
+        )
+        self.event = Event.objects.create(
+            eventName='Event name',
+            eventDate='2024-07-04',
+            eventTime='17:00:00',
+            eventLocation='event location',
+            eventDescription='Enjoy an evening of music from top artists from around the world.',
+            eventStatus='Status',  
+            eventGenre='Music', 
+            arenaId=self.arena,
+            # Add or adjust fields based on your actual Event model
+        )
+        # Create some Ticket instances related to the event
+        self.ticket1 = Ticket.objects.create(
+            eventId=self.event, 
+            seatNum="A1", 
+            ticketPrice=100,
+            ticketType='Standard',
+            zone=1,
+            available=True,
+            arenaId=self.arena,  # Assuming each ticket is associated with an arena
+            # The ticketQR field is omitted in this example; include it if required for your tests
+        )
+        self.ticket2 = Ticket.objects.create(
+            eventId=self.event, 
+            seatNum="A2", 
+            ticketPrice=150,
+            ticketType='VIP',
+            zone=1,
+            available=True,
+            arenaId=self.arena,  # Assuming each ticket is associated with an arena
+            # The ticketQR field is omitted in this example; include it if required for your tests
+        )
+
+        # Generate a URL for testing
+        self.checkout_url = reverse('checkout', args=[self.event.pk, "A1,A2"])  # Adjust the URL name and parameters based on your urls.py
+
+    def test_checkout_view(self):
+        # Simulate a GET request to the checkout view
+        response = self.client.get(self.checkout_url)
+
+        # Check that the response is 200 OK.
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the response context contains the correct event_id and selected_seat_nums
+        self.assertEqual(response.context['event_id'], self.event.eventId)
+        self.assertListEqual(response.context['selected_seat_nums'], ["A1", "A2"])
+
+        # Check that the tickets in the context match the tickets created in setUp
+        expected_ticket_ids = {self.ticket1.ticketId, self.ticket2.ticketId}
+        response_ticket_ids = {ticket.ticketId for ticket in response.context['tickets']}
+        self.assertEqual(expected_ticket_ids, response_ticket_ids)
+
+        # Check that the correct template was used
+        self.assertTemplateUsed(response, "checkout.html")
+
+
+
+        
         
         
 # EDIT/VIEW PROFILE VIEW TEST (100% COVERAGE)
@@ -785,6 +860,44 @@ class EditProfile(TestCase):
 
     def tearDown(self):
         self.client.logout()
+       
+
+# class ConfirmationViewTest(TestCase):
+#     def setUp(self):
+#         # Setup
+#         self.event = Event.objects.create(eventName="Test Event", eventDate="2023-05-05")
+#         self.ticket1 = Ticket.objects.create(eventId=self.event, seatNum="A1", ticketPrice=100)
+#         self.ticket2 = Ticket.objects.create(eventId=self.event, seatNum="A2", ticketPrice=100)
+
+#         self.payment = Payment.objects.create(
+#             eventId=self.event,
+#             firstName='John',
+#             lastName='Doe',
+#             phoneNumber='1234567890',
+#             email='john@example.com',
+#             Address='123 Test St',
+#             city='Test City',
+#             province='Test Prov',
+#             paymentAmount=100,
+#             paymentMethod="Stripe",
+#             paymentDate="2023-05-01",
+#             paymentId=uuid.uuid4()
+#         )
+#         self.payment.seatNum.add(self.ticket1, self.ticket2)
+
+#     def test_confirmation_page(self):
+#         # Execution
+#         response = self.client.get(reverse('confirmation', args=[self.payment.paymentId]))
+
+#         # Assertions
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'confirmation.html')
+#         self.assertIn('payment', response.context)
+#         self.assertEqual(response.context['payment'], self.payment)
+
+
+
+
         
 # ORGANISER dashboard tests
 

@@ -32,10 +32,11 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   padding: 0px;
+  background-color: #e6e4e4;
 }
 
 .content {
-  background-color: #e6e4e4;
+
   display: flex;
   flex-direction: column;
   color: white;
@@ -44,10 +45,11 @@ h1 {
   max-height: none;
   font-family: 'Lato', 'sans-serif';
   overflow: hidden;
-  margin-left: auto;
-  margin-right: auto;
-  height: 115vh;
-  width: 100%;
+  margin-left: 30%;
+  margin-right: 0;
+  margin-top: 25px;
+  height: 1200px;
+
 }
 .section_container {
   padding: 10px;
@@ -68,8 +70,7 @@ h1 {
 .event-details{
   display: flex;
 }
-
-
+ 
 
 
 .showcase {
@@ -116,31 +117,36 @@ h1 {
 }
 
 .seatcontainer{
-  font-family: 'Poppins', sans-serif; /* Choose an appropriate font family */
-  font-size: 24px; /* Adjust the font size as needed */
-  font-weight: bold; /* Adjust the font weight as needed */
-  color: #333; /* Choose an appropriate text color */
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: bold; 
+  color: #333; 
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); 
 }
 
 .tickets-header img {
   max-width: 125px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
 }
 .seat {
-  background-color: #444451;
+  background-color: #2355c1;
   height: 12px;
   width: 15px;
   margin: 3px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .seat.selected {
-  background-color: #6feaf6;
+  
+  background-color: #148e14;
 }
 
 .seat.occupied {
-  background-color: #fff;
+  background-color: #9c9c9e;
 }
 
 .seat:not(.occupied):hover {
@@ -158,23 +164,23 @@ h1 {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 20px;
-  /* Adjust as needed */
+
 }
 
-.grid-container-concert .top {
-  background-color: #03256C; /* Blue background color for top button */
+#section1 {
+  background-color: #03256C; 
   color: #fff
 }
-.grid-container-concert .bottom {
-  background-color: #2541B2; /* Blue background color for top button */
+#section2 {
+  background-color: #2541B2; 
   color: #fff
 }
-.grid-container-concert .left {
-  background-color: #1768AC; /* Blue background color for top button */
+#section3 {
+  background-color: #1768AC; 
   color: #fff
 }
-.grid-container-concert .right {
-  background-color: #06BEE1; /* Blue background color for top button */
+#section4 {
+  background-color: #06BEE1; 
   color: #fff
 }
 
@@ -186,99 +192,130 @@ h1 {
   cursor: pointer;
   outline: none;
   border-radius: 2px;
-  /* Other button styles */
-  font-family: Arial, sans-serif; /* Choose an appropriate font family */
-  font-size: 12px; /* Adjust the font size as needed */
-  font-weight: bold; /* Adjust the font weight as needed */
-  text-transform: uppercase; /* Convert text to uppercase */
-  letter-spacing: 1px; /* Adjust letter spacing as needed */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Add a subtle text shadow for depth */
+  font-family: Arial, sans-serif;
+  font-size: 12px; 
+  font-weight: bold; 
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); 
 }
 
 
-.grid-container-sports .button {
-position: absolute;
-border: none;
-padding: 0;
-margin:0px;
-cursor: pointer;
-outline: none;
-border-radius: 2px;
+.grid-container-sports {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  margin-top: 20px;
 }
-
-
 
 .grid-container-sports .top,
-.grid-container-sports .bottom {
-  width: 100%;
+.grid-container-sports .bottom
+{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.grid-container-sports .button {
+  flex: 1;
   height: 50px;
-  left: 0;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  border-radius: 2px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
-.grid-container-sports .left,
-.grid-container-sports .right {
-  height: 100%;
-  width: 50px;
-}
 
-.grid-container-sports .top {
-  top: -50px;
-}
 
-.grid-container-sports .bottom {
-  bottom: -50px;
-}
 
-.grid-container-sports .left {
-  left: -50px;
-}
 
-.grid-container-sports .right {
-  right: -50px;
-}
 
-img {
+
+.grid-container-concert img {
   display: block;
   width: 100%;
   height: 100%;
   padding: 10px;
 }
 
+.grid-container-sports img {
+  display: block;
+  width: 420px;
+  height: 200px;
+}
+
 .hidden {
   display: none;
 }
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  margin-bottom: 5px;
+}
+
 
 .tickets-sidebar {
+  background-color: #f2f2f2;
+  color: #03256C;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  background-color: #ffffff;
-  height: 100vh;
-  width: 500px;
-  top: 0;
-  right: 0;
+  border-radius: 10px;
+  width: 400px;
+  margin: 25px;
+  margin-top: 80px;
+  height: 550px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-.sidebar-header {
-  background-color: lightgray;
-  width: 100%;
+.sidebar-header, .sidebar-footer {
+  background-color: #ddd;
+  padding: 10px;
   text-align: center;
+  
 }
 
-.sidebar-content{
-  height: 100%;
-  overflow: auto;
+.sidebar-content {
+  padding: 10px;
+  text-align: center;
+  flex-grow: 1;
+  overflow-y: auto; 
 }
 
 .sidebar-footer {
-  bottom: 0;
-  left: 0;
-  padding: 10px;
-  background-color: lightgray;
-  width: 100%;
-  height: 13vh;
-  text-align: center;
-  position: relative;
+  margin-top: auto; 
+  background-color: #ddd; 
+  padding: 10px; 
+  text-align: center; 
+}
+
+.subtotal {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .btn.btn-primary {
