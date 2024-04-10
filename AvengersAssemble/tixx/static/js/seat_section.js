@@ -169,6 +169,8 @@ gridContainer.addEventListener('click', (e) => {
 });
 
 
+
+
 document.getElementById('checkoutButton').addEventListener('click', function () {
 
   console.log("Event ID: ", eventid);
