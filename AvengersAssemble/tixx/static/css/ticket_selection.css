@@ -132,7 +132,7 @@ h1 {
   padding: 10px;
 }
 .seat {
-  background-color: #444451;
+  background-color: #2355c1;
   height: 12px;
   width: 15px;
   margin: 3px;
@@ -141,11 +141,12 @@ h1 {
 }
 
 .seat.selected {
-  background-color: #6feaf6;
+  
+  background-color: #148e14;
 }
 
 .seat.occupied {
-  background-color: #fff;
+  background-color: #9c9c9e;
 }
 
 .seat:not(.occupied):hover {
