@@ -177,7 +177,7 @@ def create_event(request):
             event.arenaId = arena
             event.save()
             event_id = event.eventId
-            messages.success(request, 'Event created successfully!')
+            messages.success(request, 'Event created successfullyy!')
             try:
                 check_call(['python', 'manage.py', 'import_tickets_concert', str(event_id), arena_id])
                 messages.success(request, 'Tickets imported successfully!')
