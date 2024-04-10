@@ -27,9 +27,8 @@ jobs:
         pip install crispy-bootstrap4 
         pip install Pillow
         pip install -r requirements.txt
-        pip install coverage
 
-    - name: Run Tests with Coverage
+    - name: Run Tests 
       run: |
         cd AvengersAssemble
-        coverage run manage.py test tixx.tests
+        python manage.py test 
