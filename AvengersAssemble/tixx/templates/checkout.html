@@ -65,11 +65,7 @@
                     <div class="card-body">
                         <h6>Order Summary</h6>
                         <hr>
-                        <ul>
-                            {% for seat in selected_seat_nums %}
-                            <li>{{ seat }}</li>
-                            {% endfor %}
-                        </ul>
+                        
 
                         <!--NEED TO QUERY SEATS WHERE SEATS.SEATNUM = SEAT SINCE 
                             THE DATA PASSES IS NOT AN OBJECT (because javascript)-->
@@ -94,7 +90,7 @@
                             </tbody>
                         </table>
                         <div class="mt-3">
-                            <!-- <a href="payment.html" >Continue to payment</a> -->
+                           <b>Total Price: </b> ${{total_price}}
                         </div>
                         {% else %}
                         <h4>Your cart is empty</h4>
