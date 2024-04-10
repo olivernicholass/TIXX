@@ -186,8 +186,6 @@ def create_event(request):
             except Exception as e:
                 messages.error(request, f'An unexpected error occurred: {e}')
             return redirect('home')
-            messages.info(request, 'Your event has been created and is pending admin approval.')
-            return redirect('dashboard_home')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
