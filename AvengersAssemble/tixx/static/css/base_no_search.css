@@ -199,7 +199,9 @@ recently-viewed #text{
 .star-icon,
 .settings-icon,
 .viewed-icon,
-.logout-icon {
+.logout-icon,
+.create-icon,
+.check-icon {
   vertical-align: middle;
   margin-right: 5px; 
   width:20px;
@@ -219,4 +221,28 @@ recently-viewed #text{
 
 .contact-info span {
   font-weight: bold;
+}
+
+
+::-webkit-scrollbar {
+  width: 7px; 
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px; 
+}
+
+::-webkit-scrollbar-track:hover {
+  background: #ddd; 
 }

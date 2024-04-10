@@ -15,7 +15,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('search_results/', views.search_results, name='search_results'),
     path('tickets/<str:eventid>/', views.ticket_selection, name='ticket_selection'),
-    path('temp/', views.temp, name='temp'),
     path('checkout/<int:event_id>/<str:selected_seats>/', views.checkout, name='checkout'),
     path('review/<str:figure_name>/', views.review, name='review'),
     path('filtered_events/<slug:eventGenre>/', views.filtered_events, name='filtered_events'),
@@ -29,7 +28,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('admin_review/', views.admin_review, name='admin_review'),
-    #path('send_to_administration/', views.create_ticket_objects, name='create_ticket_objects'),
     path('payment/', views.payment, name='payment'),
 ]
 

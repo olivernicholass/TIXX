@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
   //console.log("TicketData: " + ticketData);
 });
 
-
+var total = 0;
 
 function showSection1AvailableSeats(zone) {
   var rowsize = 0;
@@ -86,38 +86,79 @@ function available(seatLabel) {
 function addSelectedSeats(seatLabel) {
   console.log('seat selected: ' + seatLabel);
 
-  const selectedSeatsList = document.getElementById('selected-seats');
+  const selectedSeatsDiv = document.getElementById('selected-seats');
+  ticket = ticketData.find(ticket => ticket.seatNum === seatLabel);
+  // Create card element to display ticket information
+  const card = document.createElement('div');
+  card.classList.add('card', 'mb-3');
+  card.setAttribute('data-seat-label', seatLabel);
+  // Create card body
+  const cardBody = document.createElement('div');
+  cardBody.classList.add('card-body');
 
-  // Create list items for selected seats
-  const listItem = document.createElement('li');
-  listItem.textContent = 'seat selected: ' + seatLabel;
-  listItem.setAttribute('data-seat-label', seatLabel);
-  selectedSeatsList.appendChild(listItem);
+  // Populate card body with ticket information
+  const ticketInfo = `
+    <h5 class="card-title">${ticket.ticketType}</h5>
+    <p class="card-text">Seat Label: ${ticket.seatNum}</p>
+    <p class="card-text">Price: $${ticket.ticketPrice}</p>
+  `;
+  cardBody.innerHTML = ticketInfo;
 
+  // Append card body to card
+  card.appendChild(cardBody);
+
+  // Append card to selected-seats div
+  selectedSeatsDiv.appendChild(card);
   selectedSeats.push(seatLabel);
+
+  
+  updateSubtotal(true, ticket.ticketPrice);
+
 }
 
 function removeSelectedSeat(seatLabel) {
   console.log('seat deselected: ' + seatLabel);
 
   const selectedSeatsList = document.getElementById('selected-seats');
-  const listItemToRemove = selectedSeatsList.querySelector(`li[data-seat-label="${seatLabel}"]`);
-  // Find the list item with the deselected seat label and remove it
-  if (listItemToRemove) {
-    selectedSeatsList.removeChild(listItemToRemove);
-  }
+  ticket = ticketData.find(ticket => ticket.seatNum === seatLabel);
+  // Find card elements with the deselected seat label and remove them
+  const cardsToRemove = selectedSeatsList.querySelectorAll(`.card[data-seat-label="${seatLabel}"]`);
+  cardsToRemove.forEach(card => {
+    selectedSeatsList.removeChild(card);
+  });
+
   console.log('Seat Label:', seatLabel);
   console.log('Selected Seats List:', selectedSeatsList);
-  console.log('List Item to Remove:', listItemToRemove);
+  console.log('Cards to Remove:', cardsToRemove);
 
   // Remove the deselected seat label from the global array
   selectedSeats = selectedSeats.filter(label => label !== seatLabel);
+
+  updateSubtotal(false, ticket.ticketPrice);
 }
+
+
+
+
+function updateSubtotal(added, price) {
+  if(added){
+    total += price;
+  }else{
+    total -= price;
+  }
+  // Calculate subtotal based on ticketsData array and update subtotal element
+  const subtotalElement = document.getElementById('subtotal');
+  console.log(total.toFixed(2));
+  subtotalElement.textContent = `Subtotal: $${total.toFixed(2)}`; // Format subtotal to two decimal places
+}
+
 
 gridContainer.addEventListener('click', (e) => {
   if (e.target.classList.contains('seat') && !e.target.classList.contains('occupied')) {
     const seatLabel = e.target.getAttribute('data-seat-label');
     const isSelected = e.target.classList.toggle('selected');
+    
+    console.log(selectedSeats);
 
     if (isSelected) {
       addSelectedSeats(seatLabel);
@@ -129,9 +170,6 @@ gridContainer.addEventListener('click', (e) => {
 
 
 document.getElementById('checkoutButton').addEventListener('click', function () {
-
-
-
 
   console.log("Event ID: ", eventid);
 
