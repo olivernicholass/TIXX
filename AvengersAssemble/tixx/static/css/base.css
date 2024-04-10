@@ -272,8 +272,17 @@ recently-viewed #text{
 .tixx-logo{
   width:100px;
 }
+.tixx-logo-container {
+  margin-top: auto; 
+  width: 100%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding-bottom: 20px; 
+}
 
-.star-icon, .settings-icon, .viewed-icon, .logout-icon, .create-icon, .check-icon {
+
+.star-icon, .settings-icon, .viewed-icon, .logout-icon, .create-icon, .check-icon , .sidebar-icon{
   vertical-align: middle;
   margin-right: 5px;
   width: 20px;

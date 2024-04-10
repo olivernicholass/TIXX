@@ -125,10 +125,10 @@
                             <img src="{% static 'icons/tickets.png' %}" alt="Events Icon" class="sidebar-icon">
                             Your Events
                         </a>
-                        <a href="{% url 'create_event' %}" >
-                            <img src="{% static 'icons/edit.png' %}" alt="Add Icon" class="sidebar-icon">
+                        {% comment %} <a href="{% url 'create_event' %}" >
+                            <img src="{% static 'icons/create.png' %}" alt="Add Icon" class="sidebar-icon">
                             Create an Event
-                        </a>
+                        </a> {% endcomment %}
                     {% endif %}
                     <a href="/profile/" >
                         <img src="{% static 'icons/userORG.png' %}" alt="Edit Icon" class="sidebar-icon">
@@ -181,12 +181,7 @@
                     {% endif %}
                 {% else %}
                     <a href="{% url 'login' %}" class="sidebar-link">Login/Register</a>
-                {% endif %}
-
-                
-                <div class="tixx-logo-container">
-                    <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
-                </div>               
+                {% endif %}             
             </div>
         
     </nav>

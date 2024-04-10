@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Tixx{% endblock %}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base_organiser.css' %}">
     <script src="{% static 'js/sidebar.js' %}"></script>
 </head>
 <body>
@@ -22,14 +22,14 @@
             <ul class="navbar-nav mr-auto">
                 <!-- Direct link for Events -->
                 <li class="nav-item">
-                    <a href="{% url 'dashboard_home' %}" <a class="nav-link contact">Dashboard</a>
+                    <a href="{% url 'dashboard_home' %}" class="nav-link contact">Dashboard</a>
                 </li>
                 <!-- Direct link for Events -->
                 <li class="nav-item">
-                    <a href="{% url 'dashboard_events' %}" <a class="nav-link contact">Events</a>
+                    <a href="{% url 'dashboard_events' %}" class="nav-link contact">Events</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'dashboard_events' %}" <a class="nav-link contact">Customers</a>
+                    <a href="{% url 'dashboard_events' %}" class="nav-link contact">Customers</a>
                 </li>
                 </li>
                 <li class="nav-item">

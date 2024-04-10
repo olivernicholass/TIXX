@@ -36,6 +36,8 @@ class UrlTestCase(TestCase):
 
     def test_figure_url(self):
         response = self.client.get(reverse('figure', args=['some_figure']))
+        self.assertEqual(response.status_code, 404)
+
         
     def test_dashboard_url(self):
         response = self.client.get(reverse('dashboard_home'))
@@ -43,7 +45,6 @@ class UrlTestCase(TestCase):
         
         
     
-        self.assertEqual(response.status_code, 404)
 
     # def test_checkout_url(self):
     #     event_id = 1
@@ -57,4 +58,3 @@ class UrlTestCase(TestCase):
     #     self.assertEqual(response.status_code, 404)
 
 
-        self.assertEqual(response.status_code, 404)

@@ -236,7 +236,6 @@ recently-viewed #text{
   font-weight: bold;
 }
 
-
 ::-webkit-scrollbar {
   width: 7px; 
   height: 10px;
@@ -258,4 +257,18 @@ recently-viewed #text{
 
 ::-webkit-scrollbar-track:hover {
   background: #ddd; 
+}
+
+.sidebar-icon {
+  vertical-align: middle;
+  margin-right: 5px; 
+  width:20px;
+  height:20px;
+}
+
+.profile-picture-sidebar{
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%; 
+  object-fit: cover; 
 }
