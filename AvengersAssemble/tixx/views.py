@@ -475,10 +475,13 @@ def checkout(request, event_id, selected_seats):
     selected_seat_nums = selected_seats.split(',')
 
     tickets = Ticket.objects.filter(eventId=event_id,seatNum__in=selected_seat_nums)
+    total_price = sum(ticket.ticketPrice for ticket in tickets)
     
 
 
-    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums, 'tickets': tickets})
+
+    return render(request, "checkout.html", {'event_id': event_id,'selected_seat_nums':selected_seat_nums ,'tickets': tickets,'total_price':total_price})
+
 
 
 # This is your test secret API key.
