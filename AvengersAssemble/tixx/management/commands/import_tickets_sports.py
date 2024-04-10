@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from tixx.models import Ticket  # Import your Ticket model
+from tixx.models import Ticket 
 import sys
 
 class Command(BaseCommand):
@@ -16,38 +16,38 @@ class Command(BaseCommand):
         
         data = []
         for s in range(1, 5):
-            #create long sections (top and bottom)
+            
             if s == 1 or s == 3:
                 for j in range(1, 11):
                     letter = chr(j + ord('A') - 1)
-                    for i in range(1, 51):  # Assuming you want to create 50 tickets
+                    for i in range(1, 51): 
                         data.append({
-                            'eventId': event_id,  # Assuming eventId corresponds to the Event ID
-                            'seatNum': f'S{s}{letter}{i}',  # Generate seat numbers dynamically
-                            'arenaId': arena_id,  # Assuming arenaId corresponds to the Arena ID
-                            'ticketQR': 'x',  # Generate QR codes dynamically
-                            'ticketPrice': 100,  # Generate ticket prices dynamically
-                            'ticketType': 'normal',  # Assuming all tickets are Regular type
-                            'zone': s,  # Distribute zones from 1 to 8 cyclically
-                            'available': True,
-                        })
-            #create short sections (left and right)
-            if s == 2 or s == 4:
-                for j in range(1, 21):
-                    letter = chr(j + ord('A') - 1)
-                    for i in range(1, 11):  # Assuming you want to create 50 tickets
-                        data.append({
-                            'eventId': event_id,  # Assuming eventId corresponds to the Event ID
-                            'seatNum': f'S{s}{letter}{i}',  # Generate seat numbers dynamically
-                            'arenaId': arena_id,  # Assuming arenaId corresponds to the Arena ID
-                            'ticketQR': 'x',  # Generate QR codes dynamically
-                            'ticketPrice': 100,  # Generate ticket prices dynamically
-                            'ticketType': 'normal',  # Assuming all tickets are Regular type
-                            'zone': s,  # Distribute zones from 1 to 8 cyclically
+                            'eventId': event_id,
+                            'seatNum': f'S{s}{letter}{i}',
+                            'arenaId': arena_id,  
+                            'ticketQR': 'x', 
+                            'ticketPrice': 100,
+                            'ticketType': 'normal', 
+                            'zone': s, 
                             'available': True,
                         })
             
-        # Create Ticket instances from the generated data
+            if s == 2 or s == 4:
+                for j in range(1, 21):
+                    letter = chr(j + ord('A') - 1)
+                    for i in range(1, 11):
+                        data.append({
+                            'eventId': event_id,
+                            'seatNum': f'S{s}{letter}{i}',
+                            'arenaId': arena_id, 
+                            'ticketQR': 'x', 
+                            'ticketPrice': 100, 
+                            'ticketType': 'normal',
+                            'zone': s, 
+                            'available': True,
+                        })
+            
+       
         for item in data:
             ticket = Ticket.objects.create(
                 eventId_id=item['eventId'],

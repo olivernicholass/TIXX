@@ -27,12 +27,9 @@
     <div class="content">
       <p style="display: none;" id="eventId">{{ event.eventId }}</p>
 
-
-
       <h1>Ticket Selection</h1>
 
       <div class="section_container">
-
         {% if event.eventGenre in genre_map %}
           <img src="{% static 'icons/concert.jpg' %}" class="image" alt="image" />
           <div class="grid-container-concert">
@@ -43,11 +40,18 @@
           </div>
         {% else %}
           <div class="grid-container-sports">
-            <button class="button top" id="section1" onclick="showSection1AvailableSeats(1)">Section 1</button>
-            <button class="button bottom" id="section2" onclick="showSection1AvailableSeats(2)">Section 2</button>
-            <button class="button left" id="section3" onclick="showSection1AvailableSeats(3)">Section 3</button>
-            <button class="button right" id="section4" onclick="showSection1AvailableSeats(4)">Section 4</button>
-            <img src="{% static 'images/sports.png' %}" class="image" alt="Concert Venue" />
+
+            <div class="top">
+              <button class="button" id="section1" onclick="showSection1AvailableSeats(1)">Section 1</button>
+              <button class="button" id="section2" onclick="showSection1AvailableSeats(2)">Section 2</button>
+            </div>
+
+            <img src="{% static 'images/sports.png' %}" alt="Sports Image" />
+
+            <div class="bottom">
+              <button class="button" id="section3" onclick="showSection1AvailableSeats(3)">Section 1</button>
+              <button class="button" id="section4" onclick="showSection1AvailableSeats(4)">Section 1</button>
+            </div>
           </div>
         {% endif %}
       </div>
@@ -82,7 +86,7 @@
 
       <div class="sidebar-footer">
         <div id="subtotal" class="subtotal">Subtotal: $0.00</div>
-        <hr>
+        <hr />
         <input type="Submit" id="checkoutButton" class="btn btn-primary" value="Checkout" />
       </div>
     </div>
