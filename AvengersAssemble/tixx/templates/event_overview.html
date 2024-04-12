@@ -7,13 +7,13 @@
 
 <div class="container">
     <div class="info">
-        <div class="event-image">
-            {% if event.eventImage %}
-                <img src="{{ event.eventImage.url }}" alt="{{ event.eventName }}">
-            {% else %}
-                <p>No Image Available</p>
-            {% endif %}
-        </div>
+    <div class="event-image">
+        {% if figure_image_url %}
+            <img src="{{ figure_image_url }}" alt="{{ event.figureId.figureName }}">
+        {% else %}
+            <p>No Figure Image Available</p>
+        {% endif %}
+    </div>
         <h1>{{ event.eventName }}</h1>
         <p>{{ event.eventGenre }}</p>
         <div class="event-details">

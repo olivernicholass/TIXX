@@ -896,8 +896,6 @@ class EditProfile(TestCase):
 
 
 
-
-        
 # ORGANISER dashboard tests
 
 # class EventViewTests(TestCase):

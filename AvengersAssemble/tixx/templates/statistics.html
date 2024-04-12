@@ -1,0 +1,49 @@
+{% extends "base_organiser.html" %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/stats.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="statistics-container">
+    <div class="chart-container">
+        <h2>Event Revenue</h2>
+        <canvas id="revenueChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    // Wait for the page to load before executing the script
+    document.addEventListener('DOMContentLoaded', function () {
+        // Extract data from the Django context into JavaScript variables
+        var labels = {{ labels | safe }};
+        var revenues = {{ revenues | safe }};
+    
+        // Get the context of the canvas element we want to select
+        var ctx = document.getElementById('revenueChart').getContext('2d');
+        var revenueChart = new Chart(ctx, {
+            type: 'bar',  // You can change this to 'line', 'pie', etc.
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: revenues,
+                    backgroundColor: 'rgba(92, 107, 192, 0.2)',  // Customizable
+                    borderColor: 'rgba(92, 107, 192, 1)',  // Customizable
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+    });
+    </script>
+    
+    {% endblock %}

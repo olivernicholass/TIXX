@@ -20,16 +20,11 @@
         </button>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
-                <!-- Direct link for Events -->
                 <li class="nav-item">
                     <a href="{% url 'dashboard_home' %}" class="nav-link contact">Dashboard</a>
                 </li>
-                <!-- Direct link for Events -->
                 <li class="nav-item">
-                    <a href="{% url 'dashboard_events' %}" class="nav-link contact">Events</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'dashboard_events' %}" class="nav-link contact">Customers</a>
+                    <a href="{% url 'dashboard_statistics' %}" class="nav-link contact">Statistics</a>
                 </li>
                 </li>
                 <li class="nav-item">
@@ -84,9 +79,9 @@
                                 <img src="{% static 'icons/star.png' %}" alt="Dashboard Icon" class="sidebar-icon">
                                 Dashboard
                             </a>
-                            <a href="{% url 'dashboard_events' %}" >
+                            <a href="{% url 'dashboard_statistics' %}" >
                                 <img src="{% static 'icons/tickets.png' %}" alt="Events Icon" class="sidebar-icon">
-                                Your Events
+                                Your Analytics
                             </a>
                             <a href="{% url 'create_event' %}" >
                                 <img src="{% static 'icons/edit.png' %}" alt="Add Icon" class="sidebar-icon">

@@ -37,6 +37,7 @@ from .models import Payment
 from datetime import timedelta
 
 
+
 def home(request):
     searchQuery = None
     if request.method == 'GET' and 'searchQuery' in request.GET:
@@ -177,7 +178,7 @@ def create_event(request):
             event.arenaId = arena
             event.save()
             event_id = event.eventId
-            messages.success(request, 'Event created successfullyy!')
+            messages.success(request, 'Event created successfully!')
             try:
                 check_call(['python', 'manage.py', 'import_tickets_concert', str(event_id), arena_id])
                 messages.success(request, 'Tickets imported successfully!')
@@ -279,8 +280,9 @@ def dashboard_home(request):
 @user_passes_test(isOrganiser)
 def event_overview(request, event_id):
     event = get_object_or_404(Event, pk=event_id, organiser=request.user)
-    form = CreateEventForm(instance=event)  
-    tickets_sold = Ticket.objects.filter(eventId=event, available=False).count()  
+    form = CreateEventForm(instance=event)
+    tickets_sold = Ticket.objects.filter(eventId=event, available=False).count()
+    figure_image_url = event.figureId.figurePicture.url if event.figureId and event.figureId.figurePicture else None
 
     if request.method == 'POST':
         form = CreateEventForm(request.POST, request.FILES, instance=event)
@@ -293,26 +295,46 @@ def event_overview(request, event_id):
 
     context = {
         'event': event,
-        'form': form,  
+        'form': form,
         'tickets_sold': tickets_sold,
+        'figure_image_url': figure_image_url, 
     }
     return render(request, 'event_overview.html', context)
 
+@login_required
+@user_passes_test(isOrganiser)
+def dashboard_statistics(request):
+    events = Event.objects.filter(organiser=request.user)
 
+    event_data = []
+    for event in events:
+        tickets = Ticket.objects.filter(eventId=event)
+        sold_tickets = tickets.filter(available=False)
+        total_revenue = sold_tickets.aggregate(Sum('ticketPrice'))['ticketPrice__sum'] or 0
+        tickets_sold = sold_tickets.count()
+        
+        event_data.append({
+            'event_name': event.eventName,
+            'total_revenue': total_revenue,
+            'tickets_sold': tickets_sold,
+        })
 
-def dashboard_events(request):
-    upcoming_events = Event.objects.filter(organiser=request.user, eventDate__gte=timezone.now()).order_by('eventDate')
-    recent_ticket_sales = []  # Populate with mock data or real queries
+    total_events = events.count()
+    total_tickets_sold = sum([data['tickets_sold'] for data in event_data])
+    total_revenue = sum([data['total_revenue'] for data in event_data])
 
-    # upcoming_events = Event.objects.filter(organiser=request.user, event_date__gte=timezone.now()).order_by('event_date')
-    # recent_ticket_sales = TicketSale.objects.filter(event__organiser=request.user)
-    # upcoming_events = Event.objects.all().order_by('event_date')[:5]
-    # recent_ticket_sales = TicketSale.objects.all()[:5]
+    labels = [data['event_name'] for data in event_data]
+    revenues = [data['total_revenue'] for data in event_data]
 
-    return render(request, 'event_overview.html', {
-        'upcoming_events': upcoming_events,
-        'recent_ticket_sales': recent_ticket_sales,
-    })
+    context = {
+        'events': events,
+        'total_events': total_events,
+        'total_tickets_sold': total_tickets_sold,
+        'total_revenue': total_revenue,
+        'labels': labels,  # for chart
+        'revenues': revenues,  # for chart
+    }
+    return render(request, 'statistics.html', context)
 
 
 def login(request):
