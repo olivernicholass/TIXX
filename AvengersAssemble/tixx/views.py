@@ -231,7 +231,6 @@ def delete_event(request, event_id):
         messages.success(request, 'Event deleted successfully!')
         return redirect('dashboard_home')  
     else:
-        # confirmation page before deletion
         return render(request, 'confirm_delete.html', {'event': event})
 
 
@@ -331,8 +330,8 @@ def dashboard_statistics(request):
         'total_events': total_events,
         'total_tickets_sold': total_tickets_sold,
         'total_revenue': total_revenue,
-        'labels': labels,  # for chart
-        'revenues': revenues,  # for chart
+        'labels': labels,  
+        'revenues': revenues, 
     }
     return render(request, 'statistics.html', context)
 
