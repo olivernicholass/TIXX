@@ -92,8 +92,6 @@
 
 }
 
-
-
 .dashboard-stats, .events-container {
     display: flex;
     flex-wrap: wrap;
@@ -314,10 +312,8 @@
     }
   }
 
-  
-  
   :root {
-    /* Define a coherent color palette and stick with it throughout */
+
     --primary-color: #5C6BC0;
     --background-color: #ecf0f3;
     --card-background: #ffffff;
@@ -348,7 +344,6 @@ html, body {
     align-items: flex-start;
 }
 
-/* Header styles simplified */
 .dashboard-header {
     background-color: var(--card-background);
     padding: 20px;
@@ -357,15 +352,14 @@ html, body {
     box-shadow: var(--box-shadow);
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Allows for space between elements without flex-gap */
+    justify-content: space-between; 
 }
 
 .dashboard-header h1 {
-    font-size: 1.5rem; /* Use rem for font sizes */
+    font-size: 1.5rem; 
     font-weight: 600;
 }
 
-/* Stat card styles streamlined */
 .stat-card, .event-card {
     background: var(--card-background);
     border-radius: var(--border-radius);
@@ -377,13 +371,11 @@ html, body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Hover effect for cards */
 .stat-card:hover, .event-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 20px rgba(0,0,0,0.1);
 }
 
-/* Button styling with interaction states */
 .btn-create-event {
     background-image: linear-gradient(to right, var(--primary-color), darken(var(--primary-color), 10%));
     color: white;
@@ -415,7 +407,6 @@ html, body {
 }
 
 
-/* Responsive adjustments */
 @media (max-width: 992px) {
     .dashboard-wrapper {
         flex-direction: column;
