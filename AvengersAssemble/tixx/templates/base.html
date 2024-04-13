@@ -87,10 +87,12 @@
                 {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto login-register">
-                    <div class="navbar-custom-search">
-                        <input type="text" class="search-input" placeholder="  Search by Event, Figure or Artist">
-                        <img src="{% static 'icons/search.png' %}" alt="Search Icon" class="search-icon">
-                    </div>
+                    <form action="{% url 'search_results' %}" method="get" class="navbar-custom-search">
+                        <input type="text" name="searchQuery" class="search-input" placeholder="Search by Event, Figure, or Artist" aria-label="Search">
+                        <a type="submit" class="search-icon-button" aria-label="Submit Search">
+                            <img src="{% static 'icons/search.png' %}" alt="Search Icon" class="search-icon">
+                        </a>
+                    </form>
                     {% if request.user.is_authenticated %}
                         {% if request.user.userProfilePicture %}
                             <li class="nav-item">

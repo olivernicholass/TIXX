@@ -28,7 +28,7 @@
 
 .navbar-custom-search img.search-icon {
   position: absolute;
-  top: 40%;
+  top: 30%;
   right: -5px;
   transform: translateY(-50%);
   cursor: pointer;
