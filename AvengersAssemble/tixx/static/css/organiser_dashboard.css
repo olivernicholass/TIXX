@@ -1,4 +1,16 @@
 
+:root {
+
+  --primary-color: #5C6BC0;
+  --background-color: #ecf0f3;
+  --card-background: #ffffff;
+  --text-color: #333;
+  --text-secondary-color: #666;
+  --border-radius: 10px;
+  --box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+
 .dashboard-header {
     background-color: #ffffff;
     color: var(--main-color);
@@ -47,20 +59,6 @@
     flex-basis: calc(33.333% - 20px);
 }
 
-.btn-create-event {
-    background-color: #5C6BC0;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: inline-block;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.btn-create-event:hover {
-    background-color: #3F51B5;
-}
-
 
 .side-container {
     width: var(--sidebar-width);
@@ -98,29 +96,10 @@
     gap: 20px;
 }
 
-@media (max-width: 992px) {
-    .dashboard-wrapper {
-        flex-direction: column;
-    }
-    .side-container {
-        position: static;
-        width: 100%;
-        height: auto;
-    }
-    .main-content {
-        padding-left: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .btn-create-event {
-        width: 100%;
-    }
-}
 
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
-  .dashboard-stats, .events-container {
+.dashboard-stats, .events-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px; 
@@ -312,16 +291,6 @@
     }
   }
 
-  :root {
-
-    --primary-color: #5C6BC0;
-    --background-color: #ecf0f3;
-    --card-background: #ffffff;
-    --text-color: #333;
-    --text-secondary-color: #666;
-    --border-radius: 10px;
-    --box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
 
 * {
     box-sizing: border-box;
@@ -377,7 +346,6 @@ html, body {
 }
 
 .btn-create-event {
-    background-image: linear-gradient(to right, var(--primary-color), darken(var(--primary-color), 10%));
     color: white;
     padding: 15px 30px;
     border: none;
@@ -392,11 +360,11 @@ html, body {
     margin: 20px auto;
 }
 
-.btn-create-event:hover, .btn-create-event:focus, .btn-create-event:active {
+/* .btn-create-event:hover, .btn-create-event:active {
     background-image: linear-gradient(to right, darken(var(--primary-color), 10%), darken(var(--primary-color), 15%));
     box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     transform: translateY(-2px);
-}
+} */
 
 .chart-container {
     margin: 2em auto;

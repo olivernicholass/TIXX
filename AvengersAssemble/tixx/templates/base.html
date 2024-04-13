@@ -20,6 +20,7 @@
         </button>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
+                {% if not request.user.is_authenticated or not request.user.isOrganiser %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle concerts" href="#" id="navbarDropdownConcerts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Concerts
@@ -50,6 +51,7 @@
                     <a class="nav-link dropdown-toggle sports" href="#" id="navbarDropdownSports" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Sports
                     </a>
+                    {% endif %}
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownSports">
                         <div class="container">
                             <div class="row">
@@ -75,6 +77,14 @@
                 <li class="nav-item">
                     <a class="nav-link contact" href="#">Contact</a>
                 </li>
+                {% if request.user.is_authenticated and request.user.isOrganiser %}
+                <li class="nav-item">
+                    <a href="{% url 'dashboard_home' %}" class="nav-link contact">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'dashboard_statistics' %}" class="nav-link contact">Statistics</a>
+                </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto login-register">
                     <div class="navbar-custom-search">
