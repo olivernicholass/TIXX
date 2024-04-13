@@ -126,6 +126,26 @@
                             Hey there! <span class="name-greeting">{{ request.user.firstName }}</span>
                         </div>
                     </div>
+                    <!-- Recently Viewed -->
+                    <div class="recently-viewed">
+                        <h3>
+                            <img src="{% static 'icons/viewed.png' %}" alt="Viewed Icon" class="viewed-icon">
+                            Recently Viewed
+                        </h3>
+                        <ul>
+                            {% for figure_id in request.session.recently_viewed %}
+                            {% with figure=figure_id|getFigure %}
+                                <p>
+                                    <a href="{% url 'figure' figure.figureName %}">
+                                        <img src="{% static 'icons/star.png' %}" alt="Star Icon" class="star-icon">
+                                        {{ figure.figureName }}
+                                    </a>
+                                </p>
+                            {% endwith %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- Contact Info -->
                     {% if request.user.isOrganiser %}
                         <!-- Organiser-specific links -->
                         <a href="{% url 'dashboard_home' %}" >
@@ -153,25 +173,6 @@
                         <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="sidebar-icon">
                         Sign Out
                     </a>
-                    <!-- Recently Viewed -->
-                    <div class="recently-viewed">
-                        <h3>
-                            <img src="{% static 'icons/viewed.png' %}" alt="Viewed Icon" class="viewed-icon">
-                            Recently Viewed
-                        </h3>
-                        <ul>
-                            {% for figure_id in request.session.recently_viewed %}
-                                {% with figure=figure_id|getFigure %}
-                                    <li>
-                                        <a href="{% url 'figure' figure.figureName %}">
-                                            {{ figure.figureName }}
-                                        </a>
-                                    </li>
-                                {% endwith %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <!-- Contact Info -->
                     <div class="contact-info">
                         <p>Contact <span style="color: #03256C;">tixxEVENTS@gmail.com</span> for requests!</p>
                     </div>

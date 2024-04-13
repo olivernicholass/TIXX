@@ -96,6 +96,10 @@
   width: 400px;
 }
 
+.sidebar p {
+  margin: 0;
+}
+
 .horizontal-space {
   height: 35px;
   width: auto;
@@ -214,7 +218,7 @@ recently-viewed #text{
   text-align: center; 
   align-items: center;
   justify-content: center;
-  margin-bottom:10%;
+  margin-bottom:5%;
 }
 
 .star-icon,

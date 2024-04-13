@@ -206,7 +206,11 @@ recently-viewed #text{
   text-align: center; 
   align-items: center;
   justify-content: center;
-  margin-bottom:10%;
+  margin-bottom:5%;
+}
+
+.sidebar p {
+  margin: 0;
 }
 
 .star-icon,
