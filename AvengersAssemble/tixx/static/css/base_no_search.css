@@ -33,6 +33,16 @@
 .tixx-logo{
   width:100px;
 }
+
+.tixx-logo-container {
+  margin-top: auto; 
+  width: 100%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding-bottom: 20px; 
+}
+
 .nav-link.concerts::after {
   display: none !important;
 }
@@ -134,10 +144,15 @@
 }
 
 .name-greeting {
-  font-weight: 500;
+  font-size:21px;
+  font-weight: 700;
   color: #03256C;
 }
 
+.greeting{
+  margin-top:3%;
+  font-size:20px;
+}
 
 .sidebar a {
   transition: color 0.3s ease, transform 0.3s ease;
@@ -150,10 +165,6 @@
   text-decoration: none;
 }
 
-.greeting{
-  margin-left: 3%;
-  margin-top:3%;
-}
 
 .sidebar a {
   padding: 10px 15px;
@@ -190,10 +201,16 @@ recently-viewed #text{
 }
 .user-info {
   display: flex;
-  align-items: center;
-  margin-left: 5%;
+  flex-direction: column;
   justify-content: center;
-  margin-bottom:10%;
+  text-align: center; 
+  align-items: center;
+  justify-content: center;
+  margin-bottom:5%;
+}
+
+.sidebar p {
+  margin: 0;
 }
 
 .star-icon,
@@ -223,7 +240,6 @@ recently-viewed #text{
   font-weight: bold;
 }
 
-
 ::-webkit-scrollbar {
   width: 7px; 
   height: 10px;
@@ -245,4 +261,18 @@ recently-viewed #text{
 
 ::-webkit-scrollbar-track:hover {
   background: #ddd; 
+}
+
+.sidebar-icon {
+  vertical-align: middle;
+  margin-right: 5px; 
+  width:20px;
+  height:20px;
+}
+
+.profile-picture-sidebar{
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%; 
+  object-fit: cover; 
 }

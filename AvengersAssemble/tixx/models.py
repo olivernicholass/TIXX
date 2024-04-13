@@ -39,6 +39,8 @@ class Event(models.Model):
     adminCheck = models.BooleanField(default=False)
     isRejected = models.BooleanField(default=False)
     figureId = models.ForeignKey(Figure, on_delete=models.SET_NULL, null=True)
+    organiser = models.ForeignKey('tixx.User', on_delete=models.CASCADE, related_name='events',  null=True)
+
 
     def __str__(self):
         return self.eventName

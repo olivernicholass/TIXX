@@ -1,42 +1,40 @@
-{% extends "base.html" %}
+{% extends "organiser_base.html" %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/create_event.css' %}">
+<link rel="stylesheet" href="{% static 'css/edit_event.css' %}">
 <script src="{% static 'js/create_event.js' %}"></script>
 <div class="container">
     <div class="info">
         <img src="{% static 'icons/event.png' %}" >
-        <h1>Organize an Event</h1>
+        <h1>Update your Event</h1>
     </div>
 </div>
 
-<div class="alert-container">
+<div class="form-container">
     {% for message in messages %}
     <div class="alert alert-{{ message.tags }}">
         {{ message }}
     </div>
     {% endfor %}
-</div>
-<div class="form-container">
-    <form id="eventForm" method="post" class="event-form" action="{% url 'create_event' %}"> 
+    <form id="eventForm" method="post" class="event-form" action="{% url 'update_event' event.id %}"> 
         {% csrf_token %}
         <div class="form-fields">
             <div>
                 <span class="contains-icon">
                     <img src="{% static 'icons/disco.png' %}" alt="Event Icon" class="icon">
-                    <input type="text" id="id_eventName" name="eventName" placeholder="Event Name" required>
+                    <input type="text" id="id_eventName" name="eventName" placeholder="Event Name" value = "{{ event.name }}" required>
                 </span>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <span class="contains-icon">
-                        <input type="date" id="id_eventDate" name="eventDate" class="form-control" required>
+                        <input type="date" id="id_eventDate" name="eventDate" class="form-control" value = "{{ event.date }}"required>
                         <img src="{% static 'icons/date.png' %}" alt="Calendar Icon" class="icon">
                     </span>
                 </div>
                 <div class="col-md-6">
                     <span class="contains-icon">
-                        <input type="time" id="id_eventTime" name="eventTime" class="form-control" required>
+                        <input type="time" id="id_eventTime" name="eventTime" class="form-control" value = "{{event.eventTime }}" required>
                         <img src="{% static 'icons/time.png' %}" alt="Clock Icon" class="icon">
                     </span>
                 </div>
@@ -44,7 +42,7 @@
             <div>
                 <span class="contains-icon">
                     <img src="{% static 'icons/globe.png' %}" alt="Location Icon" class="icon">
-                    <input type="text" id="id_eventLocation" name="eventLocation" placeholder="Event Location" required>
+                    <input type="text" id="id_eventLocation" name="eventLocation" placeholder="Event Location" value ="{{eventLocation}}"required>
                 </span>
             </div>
             <div>
@@ -129,9 +127,4 @@
         </div>
     </div>
 </div>
-
-
-
-
-
 {% endblock %}

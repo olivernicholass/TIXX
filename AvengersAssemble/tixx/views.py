@@ -31,6 +31,11 @@ import stripe
 from django.conf import settings
 from subprocess import CalledProcessError, call, check_call
 import uuid
+from django.db.models import Sum, Count
+from django.utils import timezone
+from .models import Payment
+from datetime import timedelta
+
 
 
 def home(request):
@@ -116,13 +121,15 @@ def getRecentlyViewed(request, figureId):
     return viewedList
 
 def organiser_login(request):
+    if request.user.is_authenticated and request.user.isOrganiser:
+        return redirect(reverse('dashboard_home'))
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None and user.is_authenticated and user.isOrganiser:
             auth_login(request, user)
-            return redirect('create_event')
+            return redirect(dashboard_home) 
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'organiser_login.html')
@@ -165,6 +172,7 @@ def create_event(request):
         if form.is_valid():
             event = form.save(commit=False)
             event.adminCheck = False
+            event.organiser = request.user
             arena_id = request.POST.get('arenaId')  
             arena = Arena.objects.get(pk=arena_id) 
             event.arenaId = arena
@@ -190,6 +198,142 @@ def create_event(request):
                                                  'genres': genres, 
                                                  'arenas': arenas, 
                                                  'figures': figures})
+
+
+@login_required
+@user_passes_test(isOrganiser)
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+
+    if request.method == 'POST':
+        form = CreateEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event updated successfully!')
+            return redirect('event_overview', event_id=event.pk)  
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error in {field}: {error}')
+    else:
+        form = CreateEventForm(instance=event)
+
+    return render(request, 'edit_event.html', {'form': form, 'event': event})
+
+    
+@login_required
+@user_passes_test(isOrganiser)
+def delete_event(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+    
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, 'Event deleted successfully!')
+        return redirect('dashboard_home')  
+    else:
+        return render(request, 'confirm_delete.html', {'event': event})
+
+
+@login_required
+@user_passes_test(isOrganiser)
+def dashboard_home(request):
+    current_date = timezone.now().date()
+    events = Event.objects.filter(
+        organiser=request.user).order_by('eventDate')
+    for event in events:
+        tickets_sold = Ticket.objects.filter(
+            eventId=event,
+            available=False  
+        ).count()
+        event.tickets_sold = tickets_sold
+        event.days_left = (event.eventDate - current_date).days
+    total_revenue = Ticket.objects.filter(
+        eventId__organiser=request.user,
+        available=False  
+    ).aggregate(Sum('ticketPrice'))['ticketPrice__sum'] or 0
+
+    total_tickets_sold = Ticket.objects.filter(
+        eventId__organiser=request.user,
+        available=False  
+    ).count()
+
+    total_events_count = Event.objects.filter(organiser=request.user).count()
+    pending_events_count = Event.objects.filter(
+        organiser=request.user,
+        adminCheck=False,
+        isRejected=False
+    ).count()
+    upcoming_events_count = events.count()
+
+    return render(request, 'organiser_dashboard.html', {
+        'events': events,
+        'current_date': current_date,
+        'total_events_count': total_events_count,
+        'pending_events_count': pending_events_count,
+        'upcoming_events_count': upcoming_events_count,
+        'total_revenue': total_revenue,
+        'total_tickets_sold': total_tickets_sold,
+    })
+
+@login_required
+@user_passes_test(isOrganiser)
+def event_overview(request, event_id):
+    event = get_object_or_404(Event, pk=event_id, organiser=request.user)
+    form = CreateEventForm(instance=event)
+    tickets_sold = Ticket.objects.filter(eventId=event, available=False).count()
+    figure_image_url = event.figureId.figurePicture.url if event.figureId and event.figureId.figurePicture else None
+
+    if request.method == 'POST':
+        form = CreateEventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event updated successfully!')
+            return redirect('event_overview', event_id=event.pk)
+        else:
+            messages.error(request, 'There was an error updating the event.')
+
+    context = {
+        'event': event,
+        'form': form,
+        'tickets_sold': tickets_sold,
+        'figure_image_url': figure_image_url, 
+    }
+    return render(request, 'event_overview.html', context)
+
+@login_required
+@user_passes_test(isOrganiser)
+def dashboard_statistics(request):
+    events = Event.objects.filter(organiser=request.user)
+
+    event_data = []
+    for event in events:
+        tickets = Ticket.objects.filter(eventId=event)
+        sold_tickets = tickets.filter(available=False)
+        total_revenue = sold_tickets.aggregate(Sum('ticketPrice'))['ticketPrice__sum'] or 0
+        tickets_sold = sold_tickets.count()
+        
+        event_data.append({
+            'event_name': event.eventName,
+            'total_revenue': total_revenue,
+            'tickets_sold': tickets_sold,
+        })
+
+    total_events = events.count()
+    total_tickets_sold = sum([data['tickets_sold'] for data in event_data])
+    total_revenue = sum([data['total_revenue'] for data in event_data])
+
+    labels = [data['event_name'] for data in event_data]
+    revenues = [data['total_revenue'] for data in event_data]
+
+    context = {
+        'events': events,
+        'total_events': total_events,
+        'total_tickets_sold': total_tickets_sold,
+        'total_revenue': total_revenue,
+        'labels': labels,  
+        'revenues': revenues, 
+    }
+    return render(request, 'statistics.html', context)
 
 
 def login(request):

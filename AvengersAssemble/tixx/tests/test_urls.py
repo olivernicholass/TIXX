@@ -38,6 +38,14 @@ class UrlTestCase(TestCase):
         response = self.client.get(reverse('figure', args=['some_figure']))
         self.assertEqual(response.status_code, 404)
 
+        
+    def test_dashboard_url(self):
+        response = self.client.get(reverse('dashboard_home'))
+        self.assertEqual(response.status_code, 302)
+        
+        
+    
+
     # def test_checkout_url(self):
     #     event_id = 1
     #     selected_seats = '[S1A1,S1B2,S1C3]'

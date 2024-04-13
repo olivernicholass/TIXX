@@ -1,0 +1,67 @@
+{% extends "base_no_search.html" %}
+{% load static %}
+{% block title %}Tixx - Organiser{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/organiser_dashboard.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+{% comment %} <script src="{% static 'js/organiser_dashboard.js' %}"></script> {% endcomment %}
+
+<div class="dashboard-wrapper">
+  <div class="side-container">
+    <h4>Total Revenue </h4>
+    <p class="revenue">${{ total_revenue }}</p>
+    <h4>Total Tickets Sold</h4>
+    <p class="tickets-sold">{{ total_tickets_sold }}</p>
+</div>
+<div class="main-content">
+    <div class="dashboard-header">
+      <i class="fas fa-chart-line dashboard-header-icon"></i>
+        <h1>Organiser Dashboard</h1>
+        <p class="dashboard-date">{{ current_date }}</p>
+    </div>
+    <div class="dashboard-stats">
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Events pending approval</p>
+            <h3>{{ pending_events_count }}</h3>
+        </div>
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Upcoming events</p>
+            <h3>{{ upcoming_events_count }}</h3>
+        </div>
+        <div class="stat-card" >
+          <i class="fa fa-user stat-icon"></i>
+            <p>Total events made</p>
+            <h3>{{ total_events_count }}</h3>
+        </div>
+    </div>
+
+    <div class="events-container">
+        {% for event in events %}
+        <a href="{% url 'event_overview' event.eventId %}" class="event-card-link">
+          <div class="event-card">
+                <div class="event-body">
+                    <h5 class="event-title">{{ event.eventName }}</h5>
+                    <p class="event-text">Event Date: {{ event.eventDate }}</p>
+                    <p class="event-text">Tickets Sold: {{ event.tickets_sold }}</p>
+                    <p class="days-left">Days left: {{ event.days_left }}</p>
+                </div>
+            </div>
+            <a>
+        {% empty %}
+            <p>No events to display.</p>
+        {% endfor %}
+    </div>
+
+    
+
+    <a href="{% url 'create_event' %}" class="btn-create-event">Create Event</a>
+</div>
+</div>
+
+
+
+{% endblock %}
+

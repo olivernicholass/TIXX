@@ -96,6 +96,10 @@
   width: 400px;
 }
 
+.sidebar p {
+  margin: 0;
+}
+
 .horizontal-space {
   height: 35px;
   width: auto;
@@ -151,8 +155,14 @@
 }
 
 .name-greeting {
-  font-weight: 500;
+  font-size:21px;
+  font-weight: 700;
   color: #03256C;
+}
+
+.greeting{
+  margin-top:3%;
+  font-size:20px;
 }
 
 
@@ -165,11 +175,6 @@
   transform: translateX(5px);
   font-weight: 400; 
   text-decoration: none;
-}
-
-.greeting{
-  margin-left: 3%;
-  margin-top:3%;
 }
 
 .sidebar a {
@@ -205,12 +210,15 @@ recently-viewed #text{
 .recently-viewed img{
   margin-right: 2%;
 }
+
 .user-info {
   display: flex;
-  align-items: center;
-  margin-left: 5%;
+  flex-direction: column;
   justify-content: center;
-  margin-bottom:10%;
+  text-align: center; 
+  align-items: center;
+  justify-content: center;
+  margin-bottom:5%;
 }
 
 .star-icon,
@@ -247,6 +255,13 @@ recently-viewed #text{
   margin-bottom: 5%;
 }
 
+.profile-picture-sidebar{
+  width: 70px; 
+  height: 70px;
+  border-radius: 50%; 
+  object-fit: cover; 
+}
+
 #accountLink{
   color:black;
 }
@@ -261,8 +276,17 @@ recently-viewed #text{
 .tixx-logo{
   width:100px;
 }
+.tixx-logo-container {
+  margin-top: auto; 
+  width: 100%; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  padding-bottom: 20px; 
+}
 
-.star-icon, .settings-icon, .viewed-icon, .logout-icon, .create-icon, .check-icon {
+
+.star-icon, .settings-icon, .viewed-icon, .logout-icon, .create-icon, .check-icon , .sidebar-icon{
   vertical-align: middle;
   margin-right: 5px;
   width: 20px;

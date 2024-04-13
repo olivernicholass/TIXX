@@ -28,6 +28,11 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('admin_review/', views.admin_review, name='admin_review'),
+    path('organiser/dashboard/', views.dashboard_home, name='dashboard_home'),
+    path('organiser/dashboard/statistics/', views.dashboard_statistics, name='dashboard_statistics'),
+    path('organiser/dashboard/edit/<int:event_id>', views.edit_event, name='edit_event'),
+    path('organiser/dashboard/delete/<int:event_id>', views.delete_event, name='delete_event'),
+    path('organiser/dashboard/events/<int:event_id>/', views.event_overview, name='event_overview'), 
     path('payment/', views.payment, name='payment'),
 ]
 

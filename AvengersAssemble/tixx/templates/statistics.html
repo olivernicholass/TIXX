@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/stats.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="statistics-container">
+    <div class="chart-container">
+        <h2>Event Revenue</h2>
+        <canvas id="revenueChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var labels = {{ labels | safe }};
+        var revenues = {{ revenues | safe }};
+    
+        var ctx = document.getElementById('revenueChart').getContext('2d');
+        var revenueChart = new Chart(ctx, {
+            type: 'bar', 
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue',
+                    data: revenues,
+                    backgroundColor: 'rgba(92, 107, 192, 0.2)',  
+                    borderColor: 'rgba(92, 107, 192, 1)',  
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+    });
+    </script>
+    
+    {% endblock %}

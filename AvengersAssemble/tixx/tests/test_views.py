@@ -21,6 +21,14 @@ from django.http import JsonResponse
 import json
 from unittest.mock import patch
 import uuid
+from  tixx.forms import CreateEventForm
+from django.contrib.auth.models import User
+from django.db.models import Sum
+from django.utils import timezone
+
+
+
+
 class ViewTests(TestCase):
     
     # Browser Test for Home
@@ -538,7 +546,7 @@ class OrganiserViewsTestCase(TestCase):
 
     def test_organiser_login(self):
         response = self.client.post(reverse('organiser_login'), {'username': self.username, 'password': self.password})
-        self.assertRedirects(response, reverse('create_event'))
+        self.assertRedirects(response, reverse('dashboard_home'))
         self.assertTrue(response.wsgi_request.user.is_authenticated)
         self.assertTrue(response.wsgi_request.user.isOrganiser)
 
@@ -887,4 +895,36 @@ class EditProfile(TestCase):
 #         self.assertEqual(response.context['payment'], self.payment)
 
 
+
+# ORGANISER dashboard tests
+
+# class EventViewTests(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username='testuser', password='12345')
+#         self.organiser = User.objects.create_user(username='organiser', password='12345')
+#         self.event = Event.objects.create(
+#             organiser=self.organiser, 
+#             eventName="Sample Event", 
+#             eventDate=timezone.now() + timezone.timedelta(days=30),
+#             eventTime="12:00",
+#             eventLocation="Sample Location",
+#             eventDescription="Sample Description",
+#             eventStatus="Upcoming",
+#             eventGenre="Sample Genre",
+#         )
+#         self.client.login(username='organiser', password='12345')
+        
+#     def test_delete_event_get_request(self):
+#         response = self.client.get(reverse('delete_event', args=[self.event.eventId]))  
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'confirm_delete.html')
+#         self.assertEqual(response.context['event'], self.event)
+
+#     def test_delete_event_post_request(self):
+#         response = self.client.post(reverse('delete_event', args=[self.event.eventId])) 
+#         self.assertRedirects(response, reverse('dashboard_home'))
+#         self.assertFalse(Event.objects.filter(eventId=self.event.eventId).exists()) 
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertEqual(len(messages), 1)
+#         self.assertIn('Event deleted successfully!', str(messages[0]))
 

@@ -20,6 +20,7 @@
         </button>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
+                {% if not request.user.is_authenticated or not request.user.isOrganiser %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle concerts" href="#" id="navbarDropdownConcerts" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Concerts
@@ -72,6 +73,16 @@
                         </div>
                     </div>
                 </li>
+                {% endif %}
+
+                {% if request.user.is_authenticated and request.user.isOrganiser %}
+                <li class="nav-item">
+                    <a href="{% url 'dashboard_home' %}" class="nav-link contact">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'dashboard_statistics' %}" class="nav-link contact">Statistics</a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link contact" href="#">Contact</a>
                 </li>
@@ -107,14 +118,15 @@
                 {% if request.user.is_authenticated %}
                     <div class="user-info">
                         {% if request.user.userProfilePicture %}
-                        <img src="{% static 'images/tixx.png' %}" class="tixx-logo">
+                            <img src="{{ request.user.userProfilePicture.url }}" class="profile-picture-sidebar">
                         {% else %}
-                            <img src="{% static 'icons/user.png' %}" class="icon">
+                            <img src="{% static 'icons/user.png' %}" class="profile-picture-sidebar">
                         {% endif %}
                         <div class="greeting">
                             Hey there! <span class="name-greeting">{{ request.user.firstName }}</span>
                         </div>
                     </div>
+                    <!-- Recently Viewed -->
                     <div class="recently-viewed">
                         <h3>
                             <img src="{% static 'icons/viewed.png' %}" alt="Viewed Icon" class="viewed-icon">
@@ -133,16 +145,32 @@
                         {% endfor %}
                         </ul>
                     </div>
-                    <a href="/profile/">
-                        <img src="{% static 'icons/edit.png' %}" alt="Edit Icon" class="edit-icon">
+                    <!-- Contact Info -->
+                    {% if request.user.isOrganiser %}
+                        <!-- Organiser-specific links -->
+                        <a href="{% url 'dashboard_home' %}" >
+                            <img src="{% static 'icons/star.png' %}" alt="Dashboard Icon" class="sidebar-icon">
+                            Dashboard
+                        </a>
+                        <a href="{% url 'dashboard_statistics' %}" >
+                            <img src="{% static 'icons/tickets.png' %}" alt="Events Icon" class="sidebar-icon">
+                            Your Analytics
+                        </a>
+                        {% comment %} <a href="{% url 'create_event' %}" >
+                            <img src="{% static 'icons/create.png' %}" alt="Add Icon" class="sidebar-icon">
+                            Create an Event
+                        </a> {% endcomment %}
+                    {% endif %}
+                    <a href="/profile/" >
+                        <img src="{% static 'icons/userORG.png' %}" alt="Edit Icon" class="sidebar-icon">
                         View Profile
                     </a>
-                    <a href="#">
-                        <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="settings-icon">
+                    <a href="#" >
+                        <img src="{% static 'icons/gear.png' %}" alt="Settings Icon" class="sidebar-icon">
                         Settings
                     </a>
-                    <a href="{% url 'logout' %}">
-                        <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="logout-icon">
+                    <a href="{% url 'logout' %}" >
+                        <img src="{% static 'icons/logout.png' %}" alt="Logout Icon" class="sidebar-icon">
                         Sign Out
                     </a>
                     <div class="contact-info">
@@ -164,10 +192,8 @@
                         </a>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'login' %}">Login/Register</a>
-                {% endif %}
-
-                
+                    <a href="{% url 'login' %}" class="sidebar-link">Login/Register</a>
+                {% endif %}             
             </div>
         
     </nav>
